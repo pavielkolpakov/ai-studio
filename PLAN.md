@@ -26,6 +26,7 @@ Aithena is a B2B AI development services company targeting tech/IT businesses. T
 | AI / RAG       | LangChain                     | Chains, retrieval, prompt management                |
 | Vector DB      | Qdrant (self-hosted, Docker)  | Production-grade, strong LangChain integration      |
 | Embeddings     | OpenAI `text-embedding-3-small` | Cost-effective, high quality                      |
+
 | LLM            | OpenAI `gpt-4o`               | Best reasoning for consultant-style answers         |
 | Database       | PostgreSQL                    | Conversation logging, reliable, familiar            |
 | ORM            | SQLAlchemy + Alembic           | Async support, migrations                          |
