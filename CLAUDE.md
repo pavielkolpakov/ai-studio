@@ -5,7 +5,8 @@ AI-powered business chat backend (FastAPI + LangChain + Qdrant + Postgres).
 ## Quick Start
 
 ```bash
-docker compose up -d          # Postgres (5433) + Qdrant (6333)
+docker compose up -d                        # Postgres (5433) + Qdrant (6333)
+cd src && python -m app.ingestion           # Ingest RAG.md into Qdrant
 cd src && uvicorn app.main:app --reload
 ```
 
@@ -17,12 +18,14 @@ src/
     api/v1/          # Routes: chat.py, health.py
     core/            # config.py, setup.py, db/
     crud/            # crud_conversations.py
+    ingestion/       # splitter.py, vector_store.py, __main__.py
     models/          # conversation.py (SQLAlchemy)
     schemas/         # chat.py (Pydantic)
     middleware/      # logger_middleware.py
   migrations/        # Alembic (run from src/)
   .env               # Config (not committed)
-docs/RAG.md          # Source content for ingestion (55KB)
+docs/RAG.md          # Source content for ingestion (55KB, 10 sections)
+tests/               # pytest (run from project root)
 ```
 
 ## Key Details
@@ -32,11 +35,18 @@ docs/RAG.md          # Source content for ingestion (55KB)
 - **Postgres creds**: aistudio/aistudio/aistudio (user/pass/db)
 - **Alembic**: must run from `src/` directory
 - **Python**: 3.14, venv at `.venv/`
+- **LangChain**: 1.0 LTS (not 0.3)
+- **Ingestion**: single Qdrant collection, wipe-and-reload, 800 token chunks / 100 overlap, top-k=4
+- **Topic tags**: about, services, technical, use-cases, process, faq, projects
 
 ## Progress (per PLAN.md)
 
 - Phase 1 (Foundation): Done
-- Phase 2 (Ingestion): Not started — `docs/RAG.md` exists but no pipeline
+- Phase 2 (Ingestion): Done — splitter + vector store + CLI, needs `python -m app.ingestion` run
 - Phase 3 (RAG Chain): Not started — deps installed, no chain code
 - Phase 4 (Chat API): Partial — endpoints work, DB logging works, RAG not wired
 - Phase 5 (Polish): Partial — validation + CORS + health done, no rate limiting
+
+## Rules
+
+- Always use uv not pip
