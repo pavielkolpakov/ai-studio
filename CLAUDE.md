@@ -43,8 +43,8 @@ tests/               # pytest (run from project root)
 
 - Phase 1 (Foundation): Done
 - Phase 2 (Ingestion): Done — splitter + vector store + CLI, needs `python -m app.ingestion` run
-- Phase 3 (RAG Chain): Not started — deps installed, no chain code
-- Phase 4 (Chat API): Partial — endpoints work, DB logging works, RAG not wired
+- Phase 3 (RAG Chain): Done — LCEL chain, history-aware rephrase, streaming, CTA injection
+- Phase 4 (Chat API): Done — endpoints wired to RAG chain, SSE streaming, DB logging
 - Phase 5 (Polish): Partial — validation + CORS + health done, no rate limiting
 
 ## Rules
