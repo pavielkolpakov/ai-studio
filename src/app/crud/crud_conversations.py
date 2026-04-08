@@ -37,3 +37,11 @@ async def append_message(
         {"role": role, "content": content},
     ]
     await db.flush()
+
+
+def get_recent_messages(
+    messages: list[dict],
+    limit: int = 10,
+) -> list[dict]:
+    """Return the last `limit` messages from a conversation's message list."""
+    return messages[-limit:]
