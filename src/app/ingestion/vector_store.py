@@ -34,12 +34,14 @@ def recreate_collection(client: QdrantClient) -> None:
     )
 
 
-def load_documents(documents: list[Document]) -> None:
+def load_documents(
+    documents: list[Document],
+    client: QdrantClient,
+    embeddings: OpenAIEmbeddings,
+) -> None:
     """Embed and upload documents to Qdrant."""
-    client = get_qdrant_client()
     recreate_collection(client)
 
-    embeddings = get_embeddings()
     QdrantVectorStore.from_documents(
         documents=documents,
         embedding=embeddings,

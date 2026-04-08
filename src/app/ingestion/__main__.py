@@ -5,7 +5,7 @@ from collections import Counter
 from pathlib import Path
 
 from app.ingestion.splitter import load_and_split
-from app.ingestion.vector_store import load_documents
+from app.ingestion.vector_store import get_embeddings, get_qdrant_client, load_documents
 
 DOCS_PATH = Path(__file__).resolve().parents[3] / "docs" / "RAG.md"
 
@@ -23,7 +23,9 @@ def main() -> None:
     print(f"  total: {len(documents)}")
 
     print("\nEmbedding and uploading to Qdrant...")
-    load_documents(documents)
+    client = get_qdrant_client()
+    embeddings = get_embeddings()
+    load_documents(documents, client, embeddings)
 
     elapsed = round(time.perf_counter() - start, 2)
     print(f"\nDone in {elapsed}s")
