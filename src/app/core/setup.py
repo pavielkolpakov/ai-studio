@@ -4,7 +4,10 @@ from contextlib import asynccontextmanager
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from fastapi.responses import JSONResponse
+
 from app.core.config import Settings
+from app.core.rate_limiter import RateLimitExceeded
 from app.middleware.logger_middleware import LoggerMiddleware
 
 
@@ -47,5 +50,13 @@ def create_application(
     app.add_middleware(LoggerMiddleware)
 
     app.include_router(router)
+
+    @app.exception_handler(RateLimitExceeded)
+    async def rate_limit_handler(request, exc: RateLimitExceeded):
+        return JSONResponse(
+            status_code=429,
+            content={"detail": "Rate limit exceeded", "retry_after": exc.retry_after},
+            headers={"Retry-After": str(exc.retry_after)},
+        )
 
     return app
