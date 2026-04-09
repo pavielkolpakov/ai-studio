@@ -1,4 +1,4 @@
-# Aithena Backend
+# Neuronetis Backend
 
 AI-powered business chat backend (FastAPI + LangChain + Qdrant + Postgres).
 

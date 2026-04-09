@@ -5,22 +5,28 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class AppSettings(BaseSettings):
-    APP_NAME: str = "Aithena"
+    APP_NAME: str = "Neuronetis"
     APP_DESCRIPTION: str = "AI-powered business assistant backend"
     APP_VERSION: str = "0.1.0"
     ENVIRONMENT: str = "local"  # local | staging | production
 
 
 class PostgresSettings(BaseSettings):
-    POSTGRES_USER: str = "aithena"
-    POSTGRES_PASSWORD: str = "aithena"
+    DATABASE_URL: str = ""
+    POSTGRES_USER: str = "neuronetis"
+    POSTGRES_PASSWORD: str = "neuronetis"
     POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: int = 5432
-    POSTGRES_DB: str = "aithena"
+    POSTGRES_DB: str = "neuronetis"
 
     @computed_field  # type: ignore[prop-decorator]
     @property
     def postgres_async_url(self) -> str:
+        if self.DATABASE_URL:
+            url = self.DATABASE_URL
+            if url.startswith("postgresql://"):
+                url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+            return url
         return (
             f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
             f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
@@ -28,9 +34,9 @@ class PostgresSettings(BaseSettings):
 
 
 class QdrantSettings(BaseSettings):
-    QDRANT_HOST: str = "localhost"
-    QDRANT_PORT: int = 6333
-    QDRANT_COLLECTION: str = "aithena"
+    QDRANT_URL: str = "http://localhost:6333"
+    QDRANT_API_KEY: str = ""
+    QDRANT_COLLECTION: str = "neuronetis"
 
 
 class OpenAISettings(BaseSettings):

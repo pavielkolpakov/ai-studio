@@ -10,7 +10,10 @@ EMBEDDING_DIMENSIONS = 1536
 
 
 def get_qdrant_client() -> QdrantClient:
-    return QdrantClient(host=settings.QDRANT_HOST, port=settings.QDRANT_PORT)
+    return QdrantClient(
+        url=settings.QDRANT_URL,
+        api_key=settings.QDRANT_API_KEY or None,
+    )
 
 
 def get_embeddings() -> OpenAIEmbeddings:
@@ -46,5 +49,6 @@ def load_documents(
         documents=documents,
         embedding=embeddings,
         collection_name=settings.QDRANT_COLLECTION,
-        url=f"http://{settings.QDRANT_HOST}:{settings.QDRANT_PORT}",
+        url=settings.QDRANT_URL,
+        api_key=settings.QDRANT_API_KEY or None,
     )

@@ -1,16 +1,16 @@
-FROM python:3.12-slim AS builder
+FROM python:3.14-slim AS builder
 
 WORKDIR /code
 COPY pyproject.toml .
-RUN pip install --no-cache-dir .
+RUN pip install uv && uv pip install --system .
 
-FROM python:3.12-slim
+FROM python:3.14-slim
 
 RUN groupadd -g 1000 app && useradd -u 1000 -g app app
-WORKDIR /code
-COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+WORKDIR /code/src
+COPY --from=builder /usr/local/lib/python3.14/site-packages /usr/local/lib/python3.14/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
-COPY src/ ./src/
+COPY src/ .
 
 USER app
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"

@@ -1,7 +1,7 @@
 [project]
-name = "aithena-backend"
+name = "neuronetis-backend"
 version = "0.1.0"
-description = "AI-powered business assistant backend for Aithena"
+description = "AI-powered business assistant backend for Neuronetis"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115,<1",
