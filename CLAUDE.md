@@ -5,7 +5,8 @@ AI-powered business chat backend (FastAPI + LangChain + Qdrant + Postgres).
 ## Quick Start
 
 ```bash
-docker compose up -d                        # Postgres (5433) + Qdrant (6333)
+docker compose up -d                        # Postgres (5433) + Qdrant (6333, local only)
+cd src && alembic upgrade head              # Run migrations
 cd src && python -m app.ingestion           # Ingest RAG.md into Qdrant
 cd src && uvicorn app.main:app --reload
 ```
@@ -33,9 +34,10 @@ tests/               # pytest (run from project root)
 - **Routes prefix**: `/api/v1/` (not `/api/`)
 - **Postgres port**: 5433 (avoids local PG conflict on 5432)
 - **Postgres creds**: aistudio/aistudio/aistudio (user/pass/db)
-- **Alembic**: must run from `src/` directory
+- **Alembic**: run from `src/`; migration files in `src/migrations/versions/` — always commit them
 - **Python**: 3.14, venv at `.venv/`
 - **LangChain**: 1.0 LTS (not 0.3)
+- **Qdrant**: Qdrant Cloud in prod; local Docker instance for dev (port 6333)
 - **Ingestion**: single Qdrant collection, wipe-and-reload, 800 token chunks / 100 overlap, top-k=4
 - **Topic tags**: about, services, technical, use-cases, process, faq, projects
 
@@ -47,6 +49,14 @@ tests/               # pytest (run from project root)
 - Phase 4 (Chat API): Done — endpoints wired to RAG chain, SSE streaming, DB logging
 - Phase 5 (Polish): Partial — validation + CORS + health done, no rate limiting
 
+## Deployment (Railway)
+
+- **Dockerfile**: multi-stage build, runs `alembic upgrade head` then `uvicorn` on startup
+- **Postgres**: Railway-managed, connected via `DATABASE_URL` env var
+- **Qdrant**: Qdrant Cloud (not Railway), connected via `QDRANT_URL` + `QDRANT_API_KEY`
+- New model changes require a committed Alembic migration to take effect on deploy
+
 ## Rules
 
 - Always use uv not pip
+- Always commit Alembic migration files
