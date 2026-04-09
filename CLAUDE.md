@@ -1,6 +1,6 @@
-# Neuronetis Backend
+# Neuronetis
 
-AI-powered business chat backend (FastAPI + LangChain + Qdrant + Postgres).
+AI-powered business chat (FastAPI + LangChain + Qdrant + Postgres + React).
 
 ## Quick Start
 
@@ -14,6 +14,11 @@ cd src && uvicorn app.main:app --reload
 ## Project Layout
 
 ```
+client/              # React frontend (Vite + Tailwind + shadcn/ui)
+  src/
+    api/             # chat.ts — SSE streaming client
+    components/      # ChatPage, MessageList, MessageBubble, ChatInput, SuggestionButtons
+    types/           # TypeScript types
 src/
   app/
     api/v1/          # Routes: chat.py, health.py
@@ -48,6 +53,7 @@ tests/               # pytest (run from project root)
 - Phase 3 (RAG Chain): Done — LCEL chain, history-aware rephrase, streaming, CTA injection
 - Phase 4 (Chat API): Done — endpoints wired to RAG chain, SSE streaming, DB logging
 - Phase 5 (Polish): Partial — validation + CORS + health done, no rate limiting
+- Phase 6 (Frontend): Done — React chat UI with SSE streaming, suggestion buttons, markdown
 
 ## Deployment (Railway)
 

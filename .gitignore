@@ -25,4 +25,8 @@ htmlcov/
 # Alembic
 src/migrations/versions/*.pyc
 
+# Node
+node_modules/
+dist/
+
 .claude/
