@@ -18,7 +18,7 @@ Neuronetis is a B2B AI development services company targeting tech/IT businesses
 
 - Admin UI for browsing conversation logs
 - Authentication / API key management
-- Frontend / website UI (separate repo)
+- ~~Frontend / website UI~~ (done — `/client`)
 - Deployment pipeline / CI-CD
 - Multi-language support
 
@@ -98,6 +98,16 @@ Client (website frontend)
 - [ ] Rate limiting (per IP or session)
 - [ ] CORS configuration for frontend domain
 - [ ] Basic health check endpoint
+
+### Phase 6 — Frontend (Chat UI)
+
+- [x] Vite + React 19 + TypeScript scaffold in `/client`
+- [x] Tailwind CSS v4 + shadcn/ui
+- [x] SSE streaming API client
+- [x] Chat page with message bubbles, markdown rendering
+- [x] Dynamic suggestion buttons (initial + topic-based)
+- [x] Sources display + CTA banner
+- [x] Responsive layout, error handling, keyboard shortcuts
 
 ## Backlog
 
