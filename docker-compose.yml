@@ -1,16 +1,16 @@
 services:
-  web:
-    build: .
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./src:/code/src
-    env_file:
-      - src/.env
-    depends_on:
-      - postgres
-      - qdrant
+  # web:
+  #   build: .
+  #   command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+  #   ports:
+  #     - "8000:8000"
+  #   volumes:
+  #     - ./src:/code/src
+  #   env_file:
+  #     - src/.env
+  #   depends_on:
+  #     - postgres
+  #     - qdrant
 
   postgres:
     image: postgres:16-alpine

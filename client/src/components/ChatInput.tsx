@@ -39,7 +39,7 @@ export function ChatInput({ onSend, onStop, disabled, isStreaming }: Props) {
 
   return (
     <div className="px-4 pb-4 pt-2">
-      <div className="relative flex items-end rounded-2xl bg-[#2f2f2f] px-4 py-3">
+      <div className="relative flex items-end rounded-2xl bg-[#2f2f2f] px-4 py-4">
         <textarea
           ref={textareaRef}
           value={value}
@@ -51,12 +51,12 @@ export function ChatInput({ onSend, onStop, disabled, isStreaming }: Props) {
           placeholder="Ask about Neuronetis..."
           disabled={disabled}
           rows={1}
-          className="flex-1 resize-none bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-50"
+          className="flex-1 resize-none bg-transparent text-sm leading-6 min-h-[36px] text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-50 self-center"
         />
         {isStreaming ? (
           <button
             onClick={onStop}
-            className="ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white transition-colors hover:bg-white/80"
+            className="cursor-pointer ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white transition-colors hover:bg-white/80"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +71,7 @@ export function ChatInput({ onSend, onStop, disabled, isStreaming }: Props) {
           <button
             onClick={handleSend}
             disabled={disabled || !value.trim()}
-            className="ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white transition-colors hover:bg-white/80 disabled:opacity-30 disabled:hover:bg-white"
+            className="disabled:cursor-default cursor-pointer ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white transition-colors hover:bg-white/80 disabled:opacity-30 disabled:hover:bg-white"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
