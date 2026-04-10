@@ -109,6 +109,12 @@ Client (website frontend)
 - [x] Sources display + CTA banner
 - [x] Responsive layout, error handling, keyboard shortcuts
 
+### Phase 7 - Issues to fix
+
+- [ ] Currently chat is answering all possible questions like what is the weather in London or how much is 2 + 2. 
+Like a proffesional RAG application it must reject what is not in its context and response something like "I am only 
+responsible for providing information about Nouronetis".
+
 ## Backlog
 
 - Admin UI for browsing and filtering conversation logs

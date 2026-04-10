@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import type { ChatMessage, CTA } from "@/types/chat";
 import { createSession, sendMessage } from "@/api/chat";
+import { TokenQueue } from "@/lib/tokenQueue";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
 import { SuggestionButtons } from "./SuggestionButtons";
@@ -36,13 +37,27 @@ const DEFAULT_FOLLOWUPS = [
   "How can I get started?",
 ];
 
-function getSuggestions(cta: CTA | null | undefined): string[] {
+interface SuggestionItem {
+  text: string;
+  isCTA?: boolean;
+}
+
+function getSuggestions(cta: CTA | null | undefined): SuggestionItem[] {
+  const items: SuggestionItem[] = [];
+
   if (cta?.url) {
-    // Extract topic from CTA url like "/services" -> "services"
     const topic = cta.url.replace("/", "");
-    if (topic in TOPIC_SUGGESTIONS) return TOPIC_SUGGESTIONS[topic];
+    const texts = topic in TOPIC_SUGGESTIONS ? TOPIC_SUGGESTIONS[topic] : DEFAULT_FOLLOWUPS;
+    items.push(...texts.map((t) => ({ text: t })));
+  } else {
+    items.push(...DEFAULT_FOLLOWUPS.map((t) => ({ text: t })));
   }
-  return DEFAULT_FOLLOWUPS;
+
+  if (cta) {
+    items.push({ text: cta.label || "Book a Call", isCTA: true });
+  }
+
+  return items;
 }
 
 export function ChatPage() {
@@ -50,9 +65,12 @@ export function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingId, setStreamingId] = useState<string | null>(null);
-  const [suggestions, setSuggestions] = useState<string[]>(INITIAL_SUGGESTIONS);
+  const [suggestions, setSuggestions] = useState<SuggestionItem[]>(
+    INITIAL_SUGGESTIONS.map((t) => ({ text: t }))
+  );
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const queueRef = useRef<TokenQueue | null>(null);
 
   useEffect(() => {
     createSession()
@@ -85,28 +103,48 @@ export function ChatPage() {
       const controller = new AbortController();
       abortRef.current = controller;
 
+      let pendingCta: CTA | null | undefined = null;
+
+      const queue = new TokenQueue((token) => {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantId
+              ? { ...m, content: m.content + token }
+              : m
+          )
+        );
+      });
+      queueRef.current = queue;
+
       try {
         await sendMessage(
           sessionId,
           text,
           (event) => {
             if (!event.done) {
-              setMessages((prev) =>
-                prev.map((m) =>
-                  m.id === assistantId
-                    ? { ...m, content: m.content + event.token }
-                    : m
-                )
-              );
+              queue.push(event.token);
             } else {
-              setMessages((prev) =>
-                prev.map((m) =>
-                  m.id === assistantId
-                    ? { ...m, sources: event.sources, cta: event.cta }
-                    : m
-                )
-              );
-              setSuggestions(getSuggestions(event.cta));
+              pendingCta = event.cta;
+              queue.finish();
+
+              // Wait for queue to drain before showing suggestions
+              const checkDrained = () => {
+                if (queue.isDrained) {
+                  setMessages((prev) =>
+                    prev.map((m) =>
+                      m.id === assistantId
+                        ? { ...m, cta: pendingCta }
+                        : m
+                    )
+                  );
+                  setSuggestions(getSuggestions(pendingCta));
+                  setIsStreaming(false);
+                  setStreamingId(null);
+                } else {
+                  setTimeout(checkDrained, 50);
+                }
+              };
+              checkDrained();
             }
           },
           controller.signal
@@ -115,42 +153,52 @@ export function ChatPage() {
         if ((err as Error).name !== "AbortError") {
           setError((err as Error).message);
         }
-      } finally {
+        queue.destroy();
         setIsStreaming(false);
         setStreamingId(null);
+      } finally {
         abortRef.current = null;
+        queueRef.current = null;
       }
     },
     [sessionId, isStreaming]
   );
 
+  const handleStop = useCallback(() => {
+    abortRef.current?.abort();
+    queueRef.current?.destroy();
+  }, []);
+
   return (
-    <div className="flex flex-col h-dvh max-w-3xl mx-auto">
+    <div className="flex flex-col h-dvh">
       {/* Header */}
       <header className="border-b border-border px-4 py-3 shrink-0">
-        <h1 className="text-lg font-semibold">Neuronetis</h1>
-        <p className="text-xs text-muted-foreground">
-          Ask me anything about our studio
-        </p>
+        <div className="max-w-3xl mx-auto flex items-center justify-between">
+          <h1 className="text-lg font-semibold">Neuronetis</h1>
+          <button
+            onClick={() => console.log("Contact Us clicked")}
+            className="rounded-full border border-border px-4 py-1.5 text-sm text-foreground hover:bg-accent transition-colors"
+          >
+            Contact Us
+          </button>
+        </div>
       </header>
 
       {/* Messages */}
       {messages.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center px-4 text-center">
-          <div className="mb-2 text-4xl">💬</div>
-          <h2 className="text-xl font-semibold mb-1">
-            Welcome to Neuronetis
+          <h2 className="text-3xl font-bold mb-3">
+            Production AI for IT companies
           </h2>
-          <p className="text-sm text-muted-foreground mb-6 max-w-md">
-            I'm your AI assistant. Ask me about our services, process, projects,
-            or anything else about the studio.
+          <p className="text-sm text-muted-foreground mb-8 max-w-lg">
+            Custom AI development for tech companies. RAG, semantic search, AI Agents integration, fine-tuning.
           </p>
           <SuggestionButtons suggestions={suggestions} onSelect={handleSend} />
         </div>
       ) : (
         <>
           <MessageList messages={messages} streamingId={streamingId} />
-          {!isStreaming && (
+          {!isStreaming && suggestions.length > 0 && (
             <SuggestionButtons suggestions={suggestions} onSelect={handleSend} />
           )}
         </>
@@ -164,7 +212,14 @@ export function ChatPage() {
       )}
 
       {/* Input */}
-      <ChatInput onSend={handleSend} disabled={isStreaming || !sessionId} />
+      <div className="max-w-3xl mx-auto w-full">
+        <ChatInput
+          onSend={handleSend}
+          onStop={handleStop}
+          disabled={!sessionId}
+          isStreaming={isStreaming}
+        />
+      </div>
     </div>
   );
 }
