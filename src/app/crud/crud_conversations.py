@@ -26,6 +26,15 @@ async def get_or_create_conversation(
     return conversation
 
 
+async def get_conversation(
+    db: AsyncSession,
+    session_id: str,
+) -> Conversation | None:
+    stmt = select(Conversation).where(Conversation.session_id == session_id)
+    result = await db.execute(stmt)
+    return result.scalar_one_or_none()
+
+
 async def append_message(
     db: AsyncSession,
     conversation: Conversation,

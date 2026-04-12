@@ -45,6 +45,11 @@ class OpenAISettings(BaseSettings):
     OPENAI_CHAT_MODEL: str = "gpt-4o"
 
 
+class ResendSettings(BaseSettings):
+    RESEND_API_KEY: str = ""
+    CONTACT_TO_EMAIL: str = "paviel@neuronetis.com"
+
+
 class CORSSettings(BaseSettings):
     CORS_ORIGINS: list[str] = ["http://localhost:3000"]
 
@@ -54,6 +59,7 @@ class Settings(
     PostgresSettings,
     QdrantSettings,
     OpenAISettings,
+    ResendSettings,
     CORSSettings,
 ):
     model_config = SettingsConfigDict(
