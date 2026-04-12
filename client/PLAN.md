@@ -79,7 +79,59 @@ ChatGPT-style dark UI for Neuronetis chat.
 | `api/chat.ts` | Add token queue with variable-speed flush |
 | `types/chat.ts` | May need updates for CTA-as-suggestion |
 
-## Implementation Order
+## Contact Us + Calendly
+
+### Contact Form (Modal)
+
+- **Trigger**: "Contact Us" button in header (secondary/ghost style)
+- **UI**: shadcn/ui `Dialog` modal, dark-themed to match app
+- **Fields**: name (1–200 chars), email (valid email), message (1–5000 chars)
+- **Session ID**: attached silently if chat session is active
+- **Backend**: `POST /api/v1/contact` (rate-limited 5/hr per IP)
+- **Validation**: hybrid — validate on submit, then inline for errored fields on correction
+- **Success state**: replace form with "Thanks" message + "Book a Call" upsell button (Calendly popup)
+- **Error handling**: inline error above Send button, form data preserved (no modal close)
+
+### Calendly Integration
+
+- **Approach**: Calendly popup widget (`Calendly.initPopupWidget()`). Fallback: inline embed if popup looks bad
+- **URL**: `VITE_CALENDLY_URL` env var
+- **Load**: Calendly JS SDK script tag, loaded on demand (not on page load)
+
+### Header Changes
+
+- Two separate buttons on the right:
+  - "Contact Us" — secondary/ghost style, opens contact form modal
+  - "Book a Call" — golden-orange gradient CTA style, opens Calendly popup
+- Order: Contact Us | Book a Call (CTA on far right)
+
+### Chat Suggestion: Book a Call
+
+- "Book a Call" appears as golden-orange gradient suggestion button
+- Only when backend returns CTA (existing CTA trigger logic)
+- Opens Calendly popup on click (not the contact form)
+
+### Files to Change
+
+| File | Changes |
+|---|---|
+| `ContactModal.tsx` | New — modal with form, validation, success/error states, Book a Call upsell |
+| `api/contact.ts` | New — `submitContact()` POST to `/api/v1/contact` |
+| `ChatPage.tsx` | Import ContactModal, pass session_id, update header with both buttons |
+| `SuggestionButtons.tsx` | Handle "Book a Call" CTA suggestion → Calendly popup |
+| `lib/calendly.ts` | New — helper to load Calendly SDK + trigger popup |
+
+### Implementation Order
+
+1. `api/contact.ts` — POST helper
+2. `ContactModal.tsx` — form + validation + success/error states
+3. Wire "Contact Us" header button → modal
+4. `lib/calendly.ts` — SDK loader + popup trigger
+5. "Book a Call" header button → Calendly popup
+6. "Book a Call" as CTA suggestion button in chat
+7. Upsell in contact form success state → Calendly popup
+
+## Implementation Order (Original Redesign)
 
 1. Theme + colors (index.css, remove light mode)
 2. Favicon

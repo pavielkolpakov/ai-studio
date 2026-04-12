@@ -1,3 +1,5 @@
+import { openCalendlyPopup } from "@/lib/calendly";
+
 interface SuggestionItem {
   text: string;
   isCTA?: boolean;
@@ -16,7 +18,7 @@ export function SuggestionButtons({ suggestions, onSelect }: Props) {
       {suggestions.map((s) => (
         <button
           key={s.text}
-          onClick={() => onSelect(s.text)}
+          onClick={() => (s.isCTA ? openCalendlyPopup() : onSelect(s.text))}
           className={
             s.isCTA
               ? "cta-gradient-pill cursor-pointer px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm text-foreground transition-colors hover:brightness-110"
