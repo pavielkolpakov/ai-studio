@@ -89,7 +89,9 @@ async def stream_response(
 ) -> AsyncGenerator[str, None]:
     """Stream chain response as JSON SSE events."""
     if not classify_query(question):
-        yield f"data: {json.dumps({'token': REJECTION_MESSAGE, 'done': True, 'sources': [], 'cta': None})}\n\n"
+        for word in REJECTION_MESSAGE.split(" "):
+            yield f"data: {json.dumps({'token': word + ' ', 'done': False})}\n\n"
+        yield f"data: {json.dumps({'token': '', 'done': True, 'sources': [], 'cta': None})}\n\n"
         return
 
     full_answer = ""
