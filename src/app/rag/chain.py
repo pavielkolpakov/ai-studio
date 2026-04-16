@@ -10,6 +10,7 @@ from langchain_qdrant import QdrantVectorStore
 from app.core.config import settings
 from app.ingestion.vector_store import get_embeddings, get_qdrant_client
 from app.rag.cta import maybe_cta
+from app.rag.guardrail import REJECTION_MESSAGE, classify_query
 from app.rag.prompts import QA_PROMPT, REPHRASE_PROMPT
 
 
@@ -87,6 +88,10 @@ async def stream_response(
     chat_history: list[BaseMessage],
 ) -> AsyncGenerator[str, None]:
     """Stream chain response as JSON SSE events."""
+    if not classify_query(question):
+        yield f"data: {json.dumps({'token': REJECTION_MESSAGE, 'done': True, 'sources': [], 'cta': None})}\n\n"
+        return
+
     full_answer = ""
     sources: list[dict] = []
     topics: set[str] = set()

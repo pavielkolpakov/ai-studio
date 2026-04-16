@@ -54,12 +54,13 @@ def mock_conversation():
 
 class TestChatEndpoint:
     @pytest.mark.asyncio
+    @patch("app.rag.chain.classify_query", return_value=True)
     @patch("app.api.v1.chat.build_chain")
     @patch("app.api.v1.chat.get_or_create_conversation")
     @patch("app.api.v1.chat.append_message")
     @patch("app.api.v1.chat.async_get_db")
     async def test_returns_sse_stream(
-        self, mock_db_dep, mock_append, mock_get_conv, mock_build_chain
+        self, mock_db_dep, mock_append, mock_get_conv, mock_build_chain, _mock_classify
     ):
         mock_conv = MagicMock()
         mock_conv.messages = []
@@ -99,12 +100,13 @@ class TestChatEndpoint:
         assert "sources" in last
 
     @pytest.mark.asyncio
+    @patch("app.rag.chain.classify_query", return_value=True)
     @patch("app.api.v1.chat.build_chain")
     @patch("app.api.v1.chat.get_or_create_conversation")
     @patch("app.api.v1.chat.append_message")
     @patch("app.api.v1.chat.async_get_db")
     async def test_saves_assistant_response_to_db(
-        self, mock_db_dep, mock_append, mock_get_conv, mock_build_chain
+        self, mock_db_dep, mock_append, mock_get_conv, mock_build_chain, _mock_classify
     ):
         mock_conv = MagicMock()
         mock_conv.messages = []

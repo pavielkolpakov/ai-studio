@@ -14,6 +14,18 @@ QA_PROMPT = ChatPromptTemplate.from_messages([
     ("human", "{input}"),
 ])
 
+GUARDRAIL_PROMPT = ChatPromptTemplate.from_messages([
+    (
+        "system",
+        "You are a topic classifier. Decide whether the user's question is related "
+        "to ANY of these categories: a company's services, team, about, process, "
+        "projects, pricing, FAQ, AI/software consulting, or how AI could help a "
+        "business.\n\n"
+        "Reply with only YES or NO.",
+    ),
+    ("human", "{input}"),
+])
+
 REPHRASE_PROMPT = ChatPromptTemplate.from_messages([
     (
         "system",

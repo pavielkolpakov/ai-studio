@@ -109,11 +109,19 @@ Client (website frontend)
 - [x] Sources display + CTA banner
 - [x] Responsive layout, error handling, keyboard shortcuts
 
-### Phase 7 - Issues to fix
+### Phase 7 — Topic Guardrail
 
-- [ ] Currently chat is answering all possible questions like what is the weather in London or how much is 2 + 2. 
-Like a proffesional RAG application it must reject what is not in its context and response something like "I am only 
-responsible for providing information about Nouronetis".
+Add a pre-chain guardrail that rejects off-topic queries before the RAG chain runs.
+
+**Approach A (chosen): LLM classifier**
+- [ ] Cheap LLM call (`gpt-4o-mini`) classifies query as on-topic or off-topic
+- [ ] Off-topic → short-circuit with canned rejection, skip RAG chain entirely
+- [ ] On-topic → proceed to RAG chain as normal
+
+**Approach B (future alternative): Embedding similarity threshold**
+- [ ] Embed the query, compare cosine similarity to Qdrant content
+- [ ] Below threshold → reject as off-topic
+- [ ] Tradeoff: faster/cheaper but less semantically accurate (borderline queries may false-positive)
 
 ## Backlog
 

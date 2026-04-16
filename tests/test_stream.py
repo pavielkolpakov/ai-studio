@@ -1,7 +1,7 @@
 import json
 import sys
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -29,9 +29,10 @@ def make_mock_chain(answer_tokens: list[str], context_docs: list[Document] | Non
     return chain
 
 
+@patch("app.rag.chain.classify_query", return_value=True)
 class TestStreamResponse:
     @pytest.mark.asyncio
-    async def test_yields_token_events(self):
+    async def test_yields_token_events(self, _mock_classify):
         chain = make_mock_chain(["Hello", " world"])
         events = []
         async for event in stream_response(chain, "hi", []):
@@ -43,7 +44,7 @@ class TestStreamResponse:
         assert first == {"token": "Hello", "done": False}
 
     @pytest.mark.asyncio
-    async def test_final_event_has_done_true(self):
+    async def test_final_event_has_done_true(self, _mock_classify):
         chain = make_mock_chain(["ok"])
         events = []
         async for event in stream_response(chain, "hi", []):
@@ -56,7 +57,7 @@ class TestStreamResponse:
         assert "cta" in final
 
     @pytest.mark.asyncio
-    async def test_sources_from_context_docs(self):
+    async def test_sources_from_context_docs(self, _mock_classify):
         docs = [
             Document(
                 page_content="text",
@@ -77,7 +78,7 @@ class TestStreamResponse:
         assert {"source": "RAG.md", "header": "Services"} in final["sources"]
 
     @pytest.mark.asyncio
-    async def test_cta_included_for_services_topic(self):
+    async def test_cta_included_for_services_topic(self, _mock_classify):
         docs = [
             Document(
                 page_content="text",
@@ -94,7 +95,7 @@ class TestStreamResponse:
         assert "label" in final["cta"]
 
     @pytest.mark.asyncio
-    async def test_no_cta_for_technical_topic(self):
+    async def test_no_cta_for_technical_topic(self, _mock_classify):
         docs = [
             Document(
                 page_content="text",
@@ -110,7 +111,7 @@ class TestStreamResponse:
         assert final["cta"] is None
 
     @pytest.mark.asyncio
-    async def test_sse_format(self):
+    async def test_sse_format(self, _mock_classify):
         chain = make_mock_chain(["hi"])
         events = []
         async for event in stream_response(chain, "q", []):
@@ -121,7 +122,7 @@ class TestStreamResponse:
             assert event.endswith("\n\n")
 
     @pytest.mark.asyncio
-    async def test_deduplicates_sources(self):
+    async def test_deduplicates_sources(self, _mock_classify):
         docs = [
             Document(page_content="a", metadata={"source": "RAG.md", "header": "X", "topic": "about"}),
             Document(page_content="b", metadata={"source": "RAG.md", "header": "X", "topic": "about"}),
