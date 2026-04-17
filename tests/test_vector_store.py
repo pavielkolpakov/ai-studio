@@ -26,8 +26,8 @@ def qdrant_client():
 @pytest.fixture(autouse=True)
 def _patch_settings(monkeypatch):
     monkeypatch.setattr("app.ingestion.vector_store.settings.QDRANT_COLLECTION", COLLECTION)
-    monkeypatch.setattr("app.ingestion.vector_store.settings.QDRANT_HOST", "localhost")
-    monkeypatch.setattr("app.ingestion.vector_store.settings.QDRANT_PORT", 6333)
+    monkeypatch.setattr("app.ingestion.vector_store.settings.QDRANT_URL", "http://localhost:6333")
+    monkeypatch.setattr("app.ingestion.vector_store.settings.QDRANT_API_KEY", "")
 
 
 class TestRecreateCollection:
@@ -78,6 +78,7 @@ class TestLoadDocuments:
             embedding=mock_embeddings,
             collection_name=COLLECTION,
             url="http://localhost:6333",
+            api_key=None,
         )
 
     @patch("app.ingestion.vector_store.QdrantVectorStore.from_documents")
