@@ -17,7 +17,7 @@ def main() -> None:
     documents = load_and_split(DOCS_PATH)
 
     topic_counts = Counter(doc.metadata["topic"] for doc in documents)
-    print(f"\nChunks by topic:")
+    print("\nChunks by topic:")
     for topic, count in sorted(topic_counts.items()):
         print(f"  {topic}: {count}")
     print(f"  total: {len(documents)}")

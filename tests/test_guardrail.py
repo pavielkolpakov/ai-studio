@@ -1,79 +1,58 @@
-import json
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from app.rag.chain import stream_response
+from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
+from langgraph.graph import END
+from langgraph.types import Command
 
 
-REJECTION_MESSAGE = (
-    "I'm sorry, but as Neuronetis AI assistant, I can only answer questions "
-    "about Neuronetis — our services, process, projects, and how AI can help "
-    "your business. Feel free to ask about any of these!"
-)
+class TestGuardrailMiddleware:
+    @patch("app.rag.guardrail.classify_query", return_value=False)
+    def test_offtopic_short_circuits_with_rejection_message(self, _mock):
+        from app.rag.guardrail import REJECTION_MESSAGE, GuardrailMiddleware
 
+        mw = GuardrailMiddleware()
+        state = {"messages": [HumanMessage(content="what's the weather?")]}
+        result = mw.before_model(state, runtime=None)
 
-class TestGuardrail:
-    @pytest.mark.asyncio
-    @patch("app.rag.chain.classify_query")
-    async def test_offtopic_query_returns_rejection(self, mock_classify):
-        mock_classify.return_value = False
-        chain = MagicMock()
+        assert isinstance(result, Command)
+        assert result.goto == END
+        new_msgs = result.update["messages"]
+        assert len(new_msgs) == 1
+        assert isinstance(new_msgs[0], AIMessage)
+        assert new_msgs[0].content == REJECTION_MESSAGE
 
-        events = []
-        async for event in stream_response(chain, "What's the weather?", []):
-            events.append(event)
+    @patch("app.rag.guardrail.classify_query", return_value=True)
+    def test_ontopic_returns_none_and_lets_agent_proceed(self, _mock):
+        from app.rag.guardrail import GuardrailMiddleware
 
-        # Should yield exactly one SSE event with the rejection
-        assert len(events) == 1
-        parsed = json.loads(events[0].removeprefix("data: ").strip())
-        assert parsed["done"] is True
-        assert parsed["token"] == REJECTION_MESSAGE
-        # Chain should never be called
-        chain.astream.assert_not_called()
+        mw = GuardrailMiddleware()
+        state = {"messages": [HumanMessage(content="what services do you offer?")]}
+        result = mw.before_model(state, runtime=None)
 
-    @pytest.mark.asyncio
-    @patch("app.rag.chain.classify_query")
-    async def test_ontopic_query_runs_chain(self, mock_classify):
-        mock_classify.return_value = True
+        assert result is None
 
-        async def astream(inputs):
-            yield {"context_docs": []}
-            yield {"answer": "We offer AI consulting."}
+    @patch("app.rag.guardrail.classify_query")
+    def test_skips_classification_during_tool_loop(self, mock_classify):
+        """After a tool call, the last message is a ToolMessage, not Human.
+        Middleware must not re-classify mid-loop."""
+        from app.rag.guardrail import GuardrailMiddleware
 
-        chain = MagicMock()
-        chain.astream = astream
+        mw = GuardrailMiddleware()
+        state = {
+            "messages": [
+                HumanMessage(content="services?"),
+                AIMessage(content="", tool_calls=[
+                    {"id": "t1", "name": "search_knowledge_base",
+                     "args": {"query": "services"}, "type": "tool_call"}
+                ]),
+                ToolMessage(content="…", tool_call_id="t1"),
+            ]
+        }
+        result = mw.before_model(state, runtime=None)
 
-        events = []
-        async for event in stream_response(chain, "What services do you offer?", []):
-            events.append(event)
-
-        # Should have token events + final event (not a rejection)
-        assert len(events) >= 2
-        final = json.loads(events[-1].removeprefix("data: ").strip())
-        assert final["done"] is True
-        first = json.loads(events[0].removeprefix("data: ").strip())
-        assert first["token"] == "We offer AI consulting."
-        assert first["done"] is False
-
-    @pytest.mark.asyncio
-    @patch("app.rag.chain.classify_query")
-    async def test_rejection_has_no_sources_no_cta(self, mock_classify):
-        mock_classify.return_value = False
-        chain = MagicMock()
-
-        events = []
-        async for event in stream_response(chain, "Tell me a joke", []):
-            events.append(event)
-
-        parsed = json.loads(events[0].removeprefix("data: ").strip())
-        assert parsed["sources"] == []
-        assert parsed["cta"] is None
-        assert parsed["token"] == REJECTION_MESSAGE
-        # Valid SSE format
-        assert events[0].startswith("data: ")
-        assert events[0].endswith("\n\n")
+        assert result is None
+        mock_classify.assert_not_called()

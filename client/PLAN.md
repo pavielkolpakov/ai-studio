@@ -131,6 +131,27 @@ ChatGPT-style dark UI for Neuronetis chat.
 6. "Book a Call" as CTA suggestion button in chat
 7. Upsell in contact form success state → Calendly popup
 
+## Agent Event Stream (follow-up for backend agent migration)
+
+Backend is moving from LCEL to a LangChain agent with `search_knowledge_base` as a tool. SSE will expose agent events instead of raw tokens only.
+
+### New SSE Event Shape
+
+- `{type: "tool_call", tool: "search_knowledge_base", query: "..."}` — agent started a retrieval
+- `{type: "token", token: "...", done: false}` — answer token (unchanged semantics)
+- `{type: "done", sources: [...], cta: {...} | null}` — final event (unchanged payload)
+
+Existing `{token, done}` shape stays compatible via `type: "token"` default.
+
+### UI Changes
+
+- Show transient "Searching knowledge base…" indicator on `tool_call`, hide on first `token` event
+- `types/chat.ts` — add `ToolCallEvent` to `SSEEvent` union
+- `api/chat.ts` — parse `type` field, dispatch to handlers
+- `ChatPage.tsx` / `MessageList.tsx` — render searching state on the in-flight assistant message
+
+Defer until backend agent PR lands.
+
 ## Implementation Order (Original Redesign)
 
 1. Theme + colors (index.css, remove light mode)

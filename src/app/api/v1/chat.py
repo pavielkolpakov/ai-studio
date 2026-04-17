@@ -7,13 +7,13 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.dependencies import async_get_db
+from app.core.rate_limiter import check_chat_rate_limit, rate_limit_session
 from app.crud.crud_conversations import (
     append_message,
     get_or_create_conversation,
     get_recent_messages,
 )
-from app.core.rate_limiter import check_chat_rate_limit, rate_limit_session
-from app.rag.chain import build_chain, messages_from_dicts, stream_response
+from app.rag.chain import build_agent, messages_from_dicts, stream_response
 from app.schemas.chat import ChatRequest, SessionResponse
 
 router = APIRouter(prefix="/chat", tags=["chat"])
@@ -36,13 +36,13 @@ async def chat(
 
     recent = get_recent_messages(conversation.messages)
     chat_history = messages_from_dicts(recent)
-    chain = build_chain()
+    agent = build_agent()
 
     async def sse_stream():
         full_answer = ""
-        async for event in stream_response(chain, body.message, chat_history):
+        async for event in stream_response(agent, body.message, chat_history):
             parsed = json.loads(event.removeprefix("data: ").strip())
-            if not parsed["done"]:
+            if parsed.get("type") == "token":
                 full_answer += parsed["token"]
             yield event
 

@@ -1,7 +1,6 @@
 import time
 
 from fastapi import Request
-from fastapi.responses import JSONResponse
 
 
 class RateLimitExceeded(Exception):

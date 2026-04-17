@@ -1,0 +1,61 @@
+name: backend
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/backend.yml"
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: aistudio
+          POSTGRES_PASSWORD: aistudio
+          POSTGRES_DB: aistudio
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://aistudio:aistudio@localhost:5432/aistudio
+      OPENAI_API_KEY: test
+      QDRANT_URL: http://localhost:6333
+      QDRANT_API_KEY: test
+      RESEND_API_KEY: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.14
+
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: Lint
+        run: uv run ruff check src
+
+      - name: Alembic upgrade head
+        working-directory: src
+        run: uv run alembic upgrade head
+
+      - name: Pytest
+        run: uv run pytest
