@@ -1,136 +1,140 @@
 import json
 import sys
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from langchain_core.documents import Document
+from langchain_core.messages import AIMessage, AIMessageChunk, ToolMessage
 
 from app.rag.chain import stream_response
 
 
-def make_mock_chain(answer_tokens: list[str], context_docs: list[Document] | None = None):
-    """Create a mock chain that yields answer tokens and optionally context docs."""
-    chunks = []
-    if context_docs is not None:
-        chunks.append({"context_docs": context_docs})
-    for token in answer_tokens:
-        chunks.append({"answer": token})
-
-    async def astream(inputs):
-        for chunk in chunks:
-            yield chunk
-
-    chain = MagicMock()
-    chain.astream = astream
-    return chain
+def parse(event: str) -> dict:
+    return json.loads(event.removeprefix("data: ").strip())
 
 
-@patch("app.rag.chain.classify_query", return_value=True)
+def fake_agent(stream_items):
+    """Build an agent-like mock whose astream yields the given (mode, data) tuples."""
+    async def astream(inputs, stream_mode=None):
+        for item in stream_items:
+            yield item
+
+    agent = MagicMock()
+    agent.astream = astream
+    return agent
+
+
 class TestStreamResponse:
     @pytest.mark.asyncio
-    async def test_yields_token_events(self, _mock_classify):
-        chain = make_mock_chain(["Hello", " world"])
-        events = []
-        async for event in stream_response(chain, "hi", []):
-            events.append(event)
-
-        # Should have 2 token events + 1 final event
-        assert len(events) == 3
-        first = json.loads(events[0].removeprefix("data: ").strip())
-        assert first == {"token": "Hello", "done": False}
-
-    @pytest.mark.asyncio
-    async def test_final_event_has_done_true(self, _mock_classify):
-        chain = make_mock_chain(["ok"])
-        events = []
-        async for event in stream_response(chain, "hi", []):
-            events.append(event)
-
-        final = json.loads(events[-1].removeprefix("data: ").strip())
-        assert final["done"] is True
-        assert final["token"] == ""
-        assert "sources" in final
-        assert "cta" in final
-
-    @pytest.mark.asyncio
-    async def test_sources_from_context_docs(self, _mock_classify):
-        docs = [
-            Document(
-                page_content="text",
-                metadata={"source": "RAG.md", "header": "Services", "topic": "services"},
-            ),
-            Document(
-                page_content="more",
-                metadata={"source": "RAG.md", "header": "About", "topic": "about"},
-            ),
+    async def test_yields_token_events_from_ai_chunks(self):
+        items = [
+            ("messages", (AIMessageChunk(content="Hello"), {})),
+            ("messages", (AIMessageChunk(content=" world"), {})),
         ]
-        chain = make_mock_chain(["answer"], context_docs=docs)
-        events = []
-        async for event in stream_response(chain, "hi", []):
-            events.append(event)
+        agent = fake_agent(items)
 
-        final = json.loads(events[-1].removeprefix("data: ").strip())
-        assert len(final["sources"]) == 2
-        assert {"source": "RAG.md", "header": "Services"} in final["sources"]
+        events = [e async for e in stream_response(agent, "hi", [])]
+
+        tokens = [parse(e) for e in events if '"type": "token"' in e]
+        assert tokens[0] == {"type": "token", "token": "Hello", "done": False}
+        assert tokens[1] == {"type": "token", "token": " world", "done": False}
 
     @pytest.mark.asyncio
-    async def test_cta_included_for_services_topic(self, _mock_classify):
-        docs = [
-            Document(
-                page_content="text",
-                metadata={"source": "RAG.md", "header": "Services", "topic": "services"},
-            ),
+    async def test_emits_tool_call_event_on_tool_invocation(self):
+        ai_with_tool = AIMessage(
+            content="",
+            tool_calls=[
+                {"id": "t1", "name": "search_knowledge_base",
+                 "args": {"query": "pricing"}, "type": "tool_call"}
+            ],
+        )
+        items = [
+            ("updates", {"model": {"messages": [ai_with_tool]}}),
         ]
-        chain = make_mock_chain(["answer"], context_docs=docs)
-        events = []
-        async for event in stream_response(chain, "hi", []):
-            events.append(event)
+        agent = fake_agent(items)
 
-        final = json.loads(events[-1].removeprefix("data: ").strip())
+        events = [e async for e in stream_response(agent, "q", [])]
+
+        tool_events = [parse(e) for e in events if '"tool_call"' in e]
+        assert len(tool_events) == 1
+        assert tool_events[0] == {
+            "type": "tool_call",
+            "tool": "search_knowledge_base",
+            "query": "pricing",
+        }
+
+    @pytest.mark.asyncio
+    async def test_done_event_includes_cta_for_services_topic(self):
+        tool_msg = ToolMessage(
+            content="body",
+            tool_call_id="t1",
+            artifact={"topics": ["services"]},
+        )
+        items = [
+            ("updates", {"tools": {"messages": [tool_msg]}}),
+        ]
+        agent = fake_agent(items)
+
+        events = [e async for e in stream_response(agent, "q", [])]
+
+        final = parse(events[-1])
+        assert final["type"] == "done"
         assert final["cta"] is not None
         assert "label" in final["cta"]
 
     @pytest.mark.asyncio
-    async def test_no_cta_for_technical_topic(self, _mock_classify):
-        docs = [
-            Document(
-                page_content="text",
-                metadata={"source": "RAG.md", "header": "Tech", "topic": "technical"},
-            ),
-        ]
-        chain = make_mock_chain(["answer"], context_docs=docs)
-        events = []
-        async for event in stream_response(chain, "hi", []):
-            events.append(event)
+    async def test_done_event_has_no_cta_for_technical_topic(self):
+        tool_msg = ToolMessage(
+            content="body", tool_call_id="t1", artifact={"topics": ["technical"]},
+        )
+        items = [("updates", {"tools": {"messages": [tool_msg]}})]
+        agent = fake_agent(items)
 
-        final = json.loads(events[-1].removeprefix("data: ").strip())
-        assert final["cta"] is None
+        events = [e async for e in stream_response(agent, "q", [])]
+
+        final = parse(events[-1])
+        assert final == {"type": "done", "cta": None}
 
     @pytest.mark.asyncio
-    async def test_sse_format(self, _mock_classify):
-        chain = make_mock_chain(["hi"])
-        events = []
-        async for event in stream_response(chain, "q", []):
-            events.append(event)
+    async def test_no_sources_field_in_any_event(self):
+        tool_msg = ToolMessage(
+            content="body", tool_call_id="t1", artifact={"topics": ["services"]},
+        )
+        items = [
+            ("messages", (AIMessageChunk(content="answer"), {})),
+            ("updates", {"tools": {"messages": [tool_msg]}}),
+        ]
+        agent = fake_agent(items)
 
-        for event in events:
-            assert event.startswith("data: ")
-            assert event.endswith("\n\n")
+        events = [e async for e in stream_response(agent, "q", [])]
+
+        for e in events:
+            assert "sources" not in parse(e)
 
     @pytest.mark.asyncio
-    async def test_deduplicates_sources(self, _mock_classify):
-        docs = [
-            Document(page_content="a", metadata={"source": "RAG.md", "header": "X", "topic": "about"}),
-            Document(page_content="b", metadata={"source": "RAG.md", "header": "X", "topic": "about"}),
-        ]
-        chain = make_mock_chain(["answer"], context_docs=docs)
-        events = []
-        async for event in stream_response(chain, "hi", []):
-            events.append(event)
+    async def test_sse_format(self):
+        agent = fake_agent([("messages", (AIMessageChunk(content="hi"), {}))])
+        events = [e async for e in stream_response(agent, "q", [])]
+        for e in events:
+            assert e.startswith("data: ")
+            assert e.endswith("\n\n")
 
-        final = json.loads(events[-1].removeprefix("data: ").strip())
-        assert len(final["sources"]) == 1
+    @pytest.mark.asyncio
+    async def test_deduplicates_tool_call_events(self):
+        ai_with_tool = AIMessage(
+            content="",
+            tool_calls=[{"id": "t1", "name": "search_knowledge_base",
+                         "args": {"query": "x"}, "type": "tool_call"}],
+        )
+        items = [
+            ("updates", {"model": {"messages": [ai_with_tool]}}),
+            ("updates", {"model": {"messages": [ai_with_tool]}}),
+        ]
+        agent = fake_agent(items)
+
+        events = [e async for e in stream_response(agent, "q", [])]
+        tool_events = [e for e in events if '"tool_call"' in e]
+        assert len(tool_events) == 1

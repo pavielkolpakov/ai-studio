@@ -4,21 +4,18 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from httpx import ASGITransport, AsyncClient
-from langchain_core.documents import Document
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from langchain_core.messages import AIMessageChunk
 
-def _make_mock_chain(answer="Hello!", topic="about"):
-    docs = [Document(page_content="c", metadata={"source": "RAG.md", "header": "H", "topic": topic})]
 
-    async def astream(inputs):
-        yield {"context_docs": docs}
-        yield {"answer": answer}
+def _make_mock_agent(answer="Hello!"):
+    async def astream(inputs, stream_mode=None):
+        yield ("messages", (AIMessageChunk(content=answer), {}))
 
-    chain = MagicMock()
-    chain.astream = astream
-    return chain
+    agent = MagicMock()
+    agent.astream = astream
+    return agent
 
 
 @pytest.fixture(autouse=True)
@@ -87,17 +84,17 @@ class TestWindowReset:
 
 class TestIndependentCounters:
     @pytest.mark.asyncio
-    @patch("app.api.v1.chat.build_chain")
+    @patch("app.api.v1.chat.build_agent")
     @patch("app.api.v1.chat.get_or_create_conversation")
     @patch("app.api.v1.chat.append_message")
     @patch("app.api.v1.chat.async_get_db")
     async def test_different_sessions_have_separate_limits(
-        self, mock_db_dep, mock_append, mock_get_conv, mock_build_chain
+        self, mock_db_dep, mock_append, mock_get_conv, mock_build_agent
     ):
         mock_conv = MagicMock()
         mock_conv.messages = []
         mock_get_conv.return_value = mock_conv
-        mock_build_chain.return_value = _make_mock_chain()
+        mock_build_agent.return_value = _make_mock_agent()
 
         mock_session = AsyncMock()
 
@@ -136,17 +133,17 @@ class TestIndependentCounters:
 
 class TestChatRateLimit:
     @pytest.mark.asyncio
-    @patch("app.api.v1.chat.build_chain")
+    @patch("app.api.v1.chat.build_agent")
     @patch("app.api.v1.chat.get_or_create_conversation")
     @patch("app.api.v1.chat.append_message")
     @patch("app.api.v1.chat.async_get_db")
     async def test_blocks_after_30_messages_per_session(
-        self, mock_db_dep, mock_append, mock_get_conv, mock_build_chain
+        self, mock_db_dep, mock_append, mock_get_conv, mock_build_agent
     ):
         mock_conv = MagicMock()
         mock_conv.messages = []
         mock_get_conv.return_value = mock_conv
-        mock_build_chain.return_value = _make_mock_chain()
+        mock_build_agent.return_value = _make_mock_agent()
 
         mock_session = AsyncMock()
 
