@@ -7,12 +7,12 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.dependencies import async_get_db
+from app.core.rate_limiter import check_chat_rate_limit, rate_limit_session
 from app.crud.crud_conversations import (
     append_message,
     get_or_create_conversation,
     get_recent_messages,
 )
-from app.core.rate_limiter import check_chat_rate_limit, rate_limit_session
 from app.rag.chain import build_agent, messages_from_dicts, stream_response
 from app.schemas.chat import ChatRequest, SessionResponse
 
