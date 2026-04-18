@@ -4,9 +4,10 @@ import type { ChatMessage } from "@/types/chat";
 interface Props {
   message: ChatMessage;
   isStreaming?: boolean;
+  isSearching?: boolean;
 }
 
-export function MessageBubble({ message, isStreaming }: Props) {
+export function MessageBubble({ message, isStreaming, isSearching }: Props) {
   const isUser = message.role === "user";
 
   if (isUser) {
@@ -26,7 +27,7 @@ export function MessageBubble({ message, isStreaming }: Props) {
       </div>
       {isStreaming && !message.content && (
         <span className="inline-block text-sm text-muted-foreground animate-pulse">
-          Thinking...
+          {isSearching ? "Searching knowledge base..." : "Thinking..."}
         </span>
       )}
     </div>

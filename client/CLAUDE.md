@@ -18,12 +18,14 @@ Requires backend running on localhost:8000 (CORS configured).
 - `src/components/ContactModal.tsx` — contact form modal with validation, success state + Book a Call upsell
 - `src/api/contact.ts` — `submitContact()` POST to `/api/v1/contact`
 - `src/lib/calendly.ts` — on-demand Calendly SDK loader + popup trigger
-- `src/types/chat.ts` — `ChatMessage`, `SSEEvent`, `Source`, `CTA`
+- `src/types/chat.ts` — `ChatMessage`, `SSEEvent` (discriminated union), `CTA`
 
 ## SSE Event Format (from backend)
 
-- Tokens: `data: {"token": "...", "done": false}`
-- Final: `data: {"token": "", "done": true, "sources": [...], "cta": {...} | null}`
+Discriminated by `type`:
+- `{type: "tool_call", tool: "search_knowledge_base", query: "..."}` — agent invoked retrieval; UI swaps "Thinking…" → "Searching knowledge base…"
+- `{type: "token", token: "...", done: false}` — answer token
+- `{type: "done", cta: {...} | null}` — final event
 
 ## Rules
 

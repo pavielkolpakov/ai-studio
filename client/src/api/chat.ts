@@ -14,7 +14,7 @@ export async function createSession(): Promise<string> {
 export async function sendMessage(
   sessionId: string,
   message: string,
-  onToken: (event: SSEEvent) => void,
+  onEvent: (event: SSEEvent) => void,
   signal?: AbortSignal
 ): Promise<void> {
   const res = await fetch(`${API_URL}/api/v1/chat`, {
@@ -49,7 +49,7 @@ export async function sendMessage(
       const json = trimmed.slice(6);
       try {
         const event: SSEEvent = JSON.parse(json);
-        onToken(event);
+        onEvent(event);
       } catch {
         // skip malformed events
       }

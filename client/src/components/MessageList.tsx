@@ -5,9 +5,10 @@ import { MessageBubble } from "./MessageBubble";
 interface Props {
   messages: ChatMessage[];
   streamingId: string | null;
+  searchingId: string | null;
 }
 
-export function MessageList({ messages, streamingId }: Props) {
+export function MessageList({ messages, streamingId, searchingId }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,6 +22,7 @@ export function MessageList({ messages, streamingId }: Props) {
           key={msg.id}
           message={msg}
           isStreaming={msg.id === streamingId}
+          isSearching={msg.id === searchingId}
         />
       ))}
       <div ref={bottomRef} />

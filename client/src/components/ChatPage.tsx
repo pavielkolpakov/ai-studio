@@ -67,6 +67,7 @@ export function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingId, setStreamingId] = useState<string | null>(null);
+  const [searchingId, setSearchingId] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<SuggestionItem[]>(
     INITIAL_SUGGESTIONS.map((t) => ({ text: t }))
   );
@@ -74,8 +75,11 @@ export function ChatPage() {
   const [contactOpen, setContactOpen] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const queueRef = useRef<TokenQueue | null>(null);
+  const sessionRequested = useRef(false);
 
   useEffect(() => {
+    if (sessionRequested.current) return;
+    sessionRequested.current = true;
     createSession()
       .then(setSessionId)
       .catch(() => setError("Failed to connect. Is the server running?"));
@@ -110,11 +114,11 @@ export function ChatPage() {
 
       const queue = new TokenQueue((token) => {
         setMessages((prev) =>
-          prev.map((m) =>
-            m.id === assistantId
-              ? { ...m, content: m.content + token }
-              : m
-          )
+          prev.map((m) => {
+            if (m.id !== assistantId) return m;
+            if (m.content === "") setSearchingId(null);
+            return { ...m, content: m.content + token };
+          })
         );
       });
       queueRef.current = queue;
@@ -124,9 +128,11 @@ export function ChatPage() {
           sessionId,
           text,
           (event) => {
-            if (!event.done) {
+            if (event.type === "tool_call") {
+              setSearchingId(assistantId);
+            } else if (event.type === "token") {
               queue.push(event.token);
-            } else {
+            } else if (event.type === "done") {
               pendingCta = event.cta;
               queue.finish();
 
@@ -143,6 +149,7 @@ export function ChatPage() {
                   setSuggestions(getSuggestions(pendingCta));
                   setIsStreaming(false);
                   setStreamingId(null);
+                  setSearchingId(null);
                 } else {
                   setTimeout(checkDrained, 50);
                 }
@@ -159,6 +166,7 @@ export function ChatPage() {
         queue.destroy();
         setIsStreaming(false);
         setStreamingId(null);
+        setSearchingId(null);
       } finally {
         abortRef.current = null;
         queueRef.current = null;
@@ -170,6 +178,23 @@ export function ChatPage() {
   const handleStop = useCallback(() => {
     abortRef.current?.abort();
     queueRef.current?.destroy();
+    setMessages((prev) => {
+      const last = prev[prev.length - 1];
+      const next =
+        last?.role === "assistant" && last.content === ""
+          ? prev.slice(0, -1)
+          : prev;
+      const lastCta = [...next]
+        .reverse()
+        .find((m) => m.role === "assistant" && m.cta)?.cta;
+      setSuggestions(
+        lastCta
+          ? getSuggestions(lastCta)
+          : INITIAL_SUGGESTIONS.map((t) => ({ text: t }))
+      );
+      return next;
+    });
+    setSearchingId(null);
   }, []);
 
   return (
@@ -212,7 +237,7 @@ export function ChatPage() {
           </p>
         </div>
       ) : (
-        <MessageList messages={messages} streamingId={streamingId} />
+        <MessageList messages={messages} streamingId={streamingId} searchingId={searchingId} />
       )}
 
       {/* Error */}
