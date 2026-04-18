@@ -89,7 +89,9 @@ async def stream_response(
         {"messages": messages}, stream_mode=["messages", "updates"]
     ):
         if mode == "messages":
-            chunk, _metadata = data
+            chunk, metadata = data
+            if "guardrail" in (metadata.get("tags") or []):
+                continue
             if isinstance(chunk, AIMessageChunk):
                 token = chunk.content if isinstance(chunk.content, str) else ""
                 if token:

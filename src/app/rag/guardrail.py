@@ -23,7 +23,8 @@ def classify_query(question: str) -> bool:
         model="gpt-4o-mini",
         api_key=settings.OPENAI_API_KEY,
         temperature=0,
-    )
+        streaming=False,
+    ).with_config(tags=["guardrail"])
     chain = GUARDRAIL_PROMPT | llm | StrOutputParser()
     result = chain.invoke({"input": question})
     return result.strip().upper() == "YES"
