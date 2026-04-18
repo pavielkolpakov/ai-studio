@@ -180,10 +180,19 @@ export function ChatPage() {
     queueRef.current?.destroy();
     setMessages((prev) => {
       const last = prev[prev.length - 1];
-      if (last?.role === "assistant" && last.content === "") {
-        return prev.slice(0, -1);
-      }
-      return prev;
+      const next =
+        last?.role === "assistant" && last.content === ""
+          ? prev.slice(0, -1)
+          : prev;
+      const lastCta = [...next]
+        .reverse()
+        .find((m) => m.role === "assistant" && m.cta)?.cta;
+      setSuggestions(
+        lastCta
+          ? getSuggestions(lastCta)
+          : INITIAL_SUGGESTIONS.map((t) => ({ text: t }))
+      );
+      return next;
     });
     setSearchingId(null);
   }, []);
