@@ -44,7 +44,10 @@ interface SuggestionItem {
   isCTA?: boolean;
 }
 
-function getSuggestions(cta: CTA | null | undefined): SuggestionItem[] {
+function getSuggestions(
+  cta: CTA | null | undefined,
+  hasIdeas = false
+): SuggestionItem[] {
   const items: SuggestionItem[] = [];
 
   if (cta?.url) {
@@ -55,7 +58,9 @@ function getSuggestions(cta: CTA | null | undefined): SuggestionItem[] {
     items.push(...DEFAULT_FOLLOWUPS.map((t) => ({ text: t })));
   }
 
-  if (cta) {
+  if (hasIdeas) {
+    items.push({ text: "Book a call to discuss", isCTA: true });
+  } else if (cta) {
     items.push({ text: cta.label || "Book a Call", isCTA: true });
   }
 
@@ -149,7 +154,7 @@ export function ChatPage() {
                         : m
                     )
                   );
-                  setSuggestions(getSuggestions(pendingCta));
+                  setSuggestions(getSuggestions(pendingCta, !!pendingIdeas?.length));
                   setIsStreaming(false);
                   setStreamingId(null);
                   setSearching(null);
@@ -187,12 +192,12 @@ export function ChatPage() {
         last?.role === "assistant" && last.content === ""
           ? prev.slice(0, -1)
           : prev;
-      const lastCta = [...next]
+      const lastAssistant = [...next]
         .reverse()
-        .find((m) => m.role === "assistant" && m.cta)?.cta;
+        .find((m) => m.role === "assistant" && (m.cta || m.ideas?.length));
       setSuggestions(
-        lastCta
-          ? getSuggestions(lastCta)
+        lastAssistant
+          ? getSuggestions(lastAssistant.cta, !!lastAssistant.ideas?.length)
           : INITIAL_SUGGESTIONS.map((t) => ({ text: t }))
       );
       return next;
@@ -245,6 +250,11 @@ export function ChatPage() {
           streamingId={streamingId}
           searchingId={searching?.id ?? null}
           searchingTool={searching?.tool ?? null}
+          footer={
+            !isStreaming && suggestions.length > 0 ? (
+              <SuggestionButtons suggestions={suggestions} onSelect={handleSend} />
+            ) : null
+          }
         />
       )}
 
@@ -257,7 +267,7 @@ export function ChatPage() {
 
       {/* Suggestions + Input */}
       <div className="max-w-4xl mx-auto w-full">
-        {!isStreaming && suggestions.length > 0 && (
+        {!isStreaming && suggestions.length > 0 && messages.length === 0 && (
           <SuggestionButtons suggestions={suggestions} onSelect={handleSend} />
         )}
         <ChatInput

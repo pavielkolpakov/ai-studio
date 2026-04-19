@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import type { ChatMessage } from "@/types/chat";
 import { MessageBubble } from "./MessageBubble";
 
@@ -7,26 +7,54 @@ interface Props {
   streamingId: string | null;
   searchingId: string | null;
   searchingTool: string | null;
+  footer?: ReactNode;
 }
 
-export function MessageList({ messages, streamingId, searchingId, searchingTool }: Props) {
-  const bottomRef = useRef<HTMLDivElement>(null);
+export function MessageList({
+  messages,
+  streamingId,
+  searchingId,
+  searchingTool,
+  footer,
+}: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const userMsgRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const lastScrolledUserId = useRef<string | null>(null);
+
+  const lastUserId = [...messages].reverse().find((m) => m.role === "user")?.id ?? null;
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, messages[messages.length - 1]?.content]);
+    if (!lastUserId || lastUserId === lastScrolledUserId.current) return;
+    const el = userMsgRefs.current.get(lastUserId);
+    const container = containerRef.current;
+    if (!el || !container) return;
+    const top = el.offsetTop - container.offsetTop;
+    container.scrollTo({ top, behavior: "smooth" });
+    lastScrolledUserId.current = lastUserId;
+  }, [lastUserId]);
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-6 max-w-3xl mx-auto w-full">
+    <div
+      ref={containerRef}
+      className="flex-1 overflow-y-auto px-4 py-6 max-w-3xl mx-auto w-full"
+    >
       {messages.map((msg) => (
-        <MessageBubble
+        <div
           key={msg.id}
-          message={msg}
-          isStreaming={msg.id === streamingId}
-          searchingTool={msg.id === searchingId ? searchingTool : null}
-        />
+          ref={(el) => {
+            if (msg.role !== "user") return;
+            if (el) userMsgRefs.current.set(msg.id, el);
+            else userMsgRefs.current.delete(msg.id);
+          }}
+        >
+          <MessageBubble
+            message={msg}
+            isStreaming={msg.id === streamingId}
+            searchingTool={msg.id === searchingId ? searchingTool : null}
+          />
+        </div>
       ))}
-      <div ref={bottomRef} />
+      {footer}
     </div>
   );
 }
