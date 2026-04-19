@@ -123,6 +123,34 @@ class TestStreamResponse:
             assert e.endswith("\n\n")
 
     @pytest.mark.asyncio
+    async def test_emits_ideas_event_when_tool_artifact_carries_ideas(self):
+        ideas = [
+            {
+                "title": "Doc Search",
+                "description": "Semantic search.",
+                "deliverables": ["A", "B"],
+                "tech": ["Qdrant"],
+                "price_range": "$5k–$10k",
+                "time_estimate": "2–4 weeks",
+            }
+        ]
+        tool_msg = ToolMessage(
+            content="Generated 1 idea.",
+            tool_call_id="i1",
+            artifact={"ideas": ideas},
+        )
+        items = [("updates", {"tools": {"messages": [tool_msg]}})]
+        agent = fake_agent(items)
+
+        events = [e async for e in stream_response(agent, "q", [])]
+        parsed = [parse(e) for e in events]
+        ideas_events = [p for p in parsed if p.get("type") == "ideas"]
+        assert len(ideas_events) == 1
+        assert ideas_events[0]["ideas"] == ideas
+        # done event still emitted after
+        assert parsed[-1]["type"] == "done"
+
+    @pytest.mark.asyncio
     async def test_deduplicates_tool_call_events(self):
         ai_with_tool = AIMessage(
             content="",

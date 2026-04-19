@@ -152,6 +152,38 @@ Existing `{token, done}` shape stays compatible via `type: "token"` default.
 
 Defer until backend agent PR lands.
 
+## Idea Generation Mode
+
+Backend adds a second tool `generate_project_ideas` (thick tool: retrieves `topic=use-cases` chunks itself and calls a structured-output LLM). Agent decides when to call it from the user's description. Frontend renders ideas as cards below the assistant message with a shared "Book a call" CTA.
+
+### New SSE Event
+
+- `{type: "ideas", ideas: Idea[]}` — emitted after the tool runs, before `done`
+
+### Idea Shape
+
+```ts
+interface Idea {
+  title: string;
+  description: string;
+  deliverables: string[];
+  tech: string[];
+  price_range: string;   // e.g. "$8k–$15k"
+  time_estimate: string; // e.g. "3–5 weeks"
+}
+```
+
+### Frontend Changes
+
+| File | Changes |
+|---|---|
+| `types/chat.ts` | Add `Idea`; extend `SSEEvent` with `ideas` variant; add `ideas?: Idea[]` to `ChatMessage` |
+| `components/IdeaCards.tsx` | New — grid of shadcn `Card`s + shared "Book a call" button (`openCalendlyPopup`) |
+| `components/MessageBubble.tsx` | Render `<IdeaCards>` below markdown when `message.ideas` is set |
+| `ChatPage.tsx` | Handle `event.type === "ideas"` → set `ideas` on the in-flight assistant message |
+
+Tool-call indicator reuses existing "Searching knowledge base…" copy (acceptable — can specialize per `event.tool` later).
+
 ## Implementation Order (Original Redesign)
 
 1. Theme + colors (index.css, remove light mode)

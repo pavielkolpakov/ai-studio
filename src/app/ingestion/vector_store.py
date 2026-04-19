@@ -2,7 +2,7 @@ from langchain_core.documents import Document
 from langchain_openai import OpenAIEmbeddings
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams
+from qdrant_client.models import Distance, PayloadSchemaType, VectorParams
 
 from app.core.config import settings
 
@@ -34,6 +34,11 @@ def recreate_collection(client: QdrantClient) -> None:
             size=EMBEDDING_DIMENSIONS,
             distance=Distance.COSINE,
         ),
+    )
+    client.create_payload_index(
+        collection_name=collection,
+        field_name="metadata.topic",
+        field_schema=PayloadSchemaType.KEYWORD,
     )
 
 

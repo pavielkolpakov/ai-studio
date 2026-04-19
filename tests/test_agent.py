@@ -19,3 +19,16 @@ class TestBuildAgent:
         # create_agent returns a compiled StateGraph with astream
         assert hasattr(agent, "astream")
         assert hasattr(agent, "ainvoke")
+
+    @patch("app.rag.chain.create_agent")
+    @patch("app.rag.chain.ChatOpenAI")
+    def test_registers_both_tools(self, mock_llm_cls, mock_create_agent):
+        mock_llm_cls.return_value = MagicMock()
+
+        from app.rag.chain import build_agent
+
+        build_agent()
+
+        tools = mock_create_agent.call_args[1]["tools"]
+        names = {t.name for t in tools}
+        assert names == {"search_knowledge_base", "generate_project_ideas"}

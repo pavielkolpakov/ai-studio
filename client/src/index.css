@@ -118,6 +118,16 @@ body {
   border-radius: 9999px;
 }
 
+@keyframes idea-card-reveal {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.idea-card-reveal {
+  opacity: 0;
+  animation: idea-card-reveal 300ms ease-out forwards;
+}
+
 .cta-gradient-pill::before {
   content: "";
   position: absolute;
