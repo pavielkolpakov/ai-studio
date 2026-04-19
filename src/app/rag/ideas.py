@@ -45,7 +45,8 @@ def generate_ideas_payload(description: str) -> IdeasPayload:
     llm = ChatOpenAI(
         model=settings.OPENAI_CHAT_MODEL,
         api_key=settings.OPENAI_API_KEY,
+        streaming=False,
     )
-    structured_llm = llm.with_structured_output(IdeasPayload)
+    structured_llm = llm.with_structured_output(IdeasPayload).with_config(tags=["ideas"])
     prompt = IDEAS_GENERATION_PROMPT.format(description=description, context=context)
     return structured_llm.invoke(prompt)

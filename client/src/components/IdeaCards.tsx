@@ -13,7 +13,12 @@ export function IdeaCards({ ideas }: Props) {
     <div className="mt-4 flex flex-col gap-3">
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         {ideas.map((idea, i) => (
-          <Card key={i} size="sm">
+          <Card
+            key={i}
+            size="sm"
+            className="idea-card-reveal"
+            style={{ animationDelay: `${250 + i * 80}ms` }}
+          >
             <CardHeader>
               <CardTitle>{idea.title}</CardTitle>
               <CardDescription>{idea.description}</CardDescription>
@@ -53,7 +58,8 @@ export function IdeaCards({ ideas }: Props) {
       <button
         type="button"
         onClick={() => openCalendlyPopup()}
-        className="self-start rounded-full bg-gradient-to-r from-[#f5a623] to-[#f57202] px-4 py-2 text-sm font-medium text-black transition hover:brightness-110"
+        className="idea-card-reveal self-start rounded-full bg-gradient-to-r from-[#f5a623] to-[#f57202] px-4 py-2 text-sm font-medium text-black transition hover:brightness-110"
+        style={{ animationDelay: `${250 + ideas.length * 80}ms` }}
       >
         Book a call to discuss
       </button>

@@ -5,10 +5,16 @@ import { IdeaCards } from "./IdeaCards";
 interface Props {
   message: ChatMessage;
   isStreaming?: boolean;
-  isSearching?: boolean;
+  searchingTool?: string | null;
 }
 
-export function MessageBubble({ message, isStreaming, isSearching }: Props) {
+const INDICATOR_COPY: Record<string, string> = {
+  search_knowledge_base: "Searching knowledge base...",
+  generate_project_ideas: "Generating ideas...",
+};
+
+export function MessageBubble({ message, isStreaming, searchingTool }: Props) {
+  const indicatorText = searchingTool ? INDICATOR_COPY[searchingTool] ?? "Thinking..." : "Thinking...";
   const isUser = message.role === "user";
 
   if (isUser) {
@@ -29,7 +35,7 @@ export function MessageBubble({ message, isStreaming, isSearching }: Props) {
       {message.ideas && message.ideas.length > 0 && <IdeaCards ideas={message.ideas} />}
       {isStreaming && !message.content && (
         <span className="inline-block text-sm text-muted-foreground animate-pulse">
-          {isSearching ? "Searching knowledge base..." : "Thinking..."}
+          {indicatorText}
         </span>
       )}
     </div>

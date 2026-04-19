@@ -6,9 +6,10 @@ interface Props {
   messages: ChatMessage[];
   streamingId: string | null;
   searchingId: string | null;
+  searchingTool: string | null;
 }
 
-export function MessageList({ messages, streamingId, searchingId }: Props) {
+export function MessageList({ messages, streamingId, searchingId, searchingTool }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export function MessageList({ messages, streamingId, searchingId }: Props) {
           key={msg.id}
           message={msg}
           isStreaming={msg.id === streamingId}
-          isSearching={msg.id === searchingId}
+          searchingTool={msg.id === searchingId ? searchingTool : null}
         />
       ))}
       <div ref={bottomRef} />

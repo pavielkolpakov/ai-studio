@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import type { ChatMessage, CTA } from "@/types/chat";
+import type { ChatMessage, CTA, Idea } from "@/types/chat";
 import { createSession, sendMessage } from "@/api/chat";
 import { TokenQueue } from "@/lib/tokenQueue";
 import { openCalendlyPopup } from "@/lib/calendly";
@@ -67,7 +67,7 @@ export function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingId, setStreamingId] = useState<string | null>(null);
-  const [searchingId, setSearchingId] = useState<string | null>(null);
+  const [searching, setSearching] = useState<{ id: string; tool: string } | null>(null);
   const [suggestions, setSuggestions] = useState<SuggestionItem[]>(
     INITIAL_SUGGESTIONS.map((t) => ({ text: t }))
   );
@@ -111,12 +111,13 @@ export function ChatPage() {
       abortRef.current = controller;
 
       let pendingCta: CTA | null | undefined = null;
+      let pendingIdeas: Idea[] | null = null;
 
       const queue = new TokenQueue((token) => {
         setMessages((prev) =>
           prev.map((m) => {
             if (m.id !== assistantId) return m;
-            if (m.content === "") setSearchingId(null);
+            if (m.content === "") setSearching(null);
             return { ...m, content: m.content + token };
           })
         );
@@ -129,13 +130,9 @@ export function ChatPage() {
           text,
           (event) => {
             if (event.type === "tool_call") {
-              setSearchingId(assistantId);
+              setSearching({ id: assistantId, tool: event.tool });
             } else if (event.type === "ideas") {
-              setMessages((prev) =>
-                prev.map((m) =>
-                  m.id === assistantId ? { ...m, ideas: event.ideas } : m
-                )
-              );
+              pendingIdeas = event.ideas;
             } else if (event.type === "token") {
               queue.push(event.token);
             } else if (event.type === "done") {
@@ -148,14 +145,14 @@ export function ChatPage() {
                   setMessages((prev) =>
                     prev.map((m) =>
                       m.id === assistantId
-                        ? { ...m, cta: pendingCta }
+                        ? { ...m, cta: pendingCta, ideas: pendingIdeas ?? undefined }
                         : m
                     )
                   );
                   setSuggestions(getSuggestions(pendingCta));
                   setIsStreaming(false);
                   setStreamingId(null);
-                  setSearchingId(null);
+                  setSearching(null);
                 } else {
                   setTimeout(checkDrained, 50);
                 }
@@ -172,7 +169,7 @@ export function ChatPage() {
         queue.destroy();
         setIsStreaming(false);
         setStreamingId(null);
-        setSearchingId(null);
+        setSearching(null);
       } finally {
         abortRef.current = null;
         queueRef.current = null;
@@ -200,7 +197,7 @@ export function ChatPage() {
       );
       return next;
     });
-    setSearchingId(null);
+    setSearching(null);
   }, []);
 
   return (
@@ -243,7 +240,12 @@ export function ChatPage() {
           </p>
         </div>
       ) : (
-        <MessageList messages={messages} streamingId={streamingId} searchingId={searchingId} />
+        <MessageList
+          messages={messages}
+          streamingId={streamingId}
+          searchingId={searching?.id ?? null}
+          searchingTool={searching?.tool ?? null}
+        />
       )}
 
       {/* Error */}
