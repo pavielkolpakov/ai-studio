@@ -64,6 +64,7 @@ class TestGenerateIdeasPayload:
         )
         structured_llm = MagicMock()
         structured_llm.invoke.return_value = payload
+        structured_llm.with_config.return_value = structured_llm
         llm = MagicMock()
         llm.with_structured_output.return_value = structured_llm
         mock_llm_cls.return_value = llm
