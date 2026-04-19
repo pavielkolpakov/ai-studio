@@ -11,6 +11,7 @@ from app.core.config import settings
 from app.ingestion.vector_store import get_embeddings, get_qdrant_client
 from app.rag.cta import maybe_cta
 from app.rag.guardrail import GuardrailMiddleware
+from app.rag.ideas import generate_ideas_payload
 from app.rag.prompts import AGENT_SYSTEM_PROMPT
 
 
@@ -43,6 +44,19 @@ def search_knowledge_base(query: str) -> tuple[str, dict]:
     return content, {"topics": topics}
 
 
+@tool(response_format="content_and_artifact")
+def generate_project_ideas(description: str) -> tuple[str, dict]:
+    """Generate 3–5 tailored AI project ideas when the user describes their
+    company, project, industry, or a problem they want AI to help solve.
+    Pass the user's description verbatim. Returns ideas with rough scope,
+    tech, price, and time; the frontend renders them as cards."""
+    payload = generate_ideas_payload(description)
+    ideas = [idea.model_dump() for idea in payload.ideas]
+    titles = ", ".join(i["title"] for i in ideas)
+    content = f"Generated {len(ideas)} tailored AI project ideas: {titles}."
+    return content, {"ideas": ideas}
+
+
 def build_agent():
     """Build a LangChain agent with knowledge-base search tool and guardrail middleware."""
     llm = ChatOpenAI(
@@ -52,7 +66,7 @@ def build_agent():
     )
     return create_agent(
         model=llm,
-        tools=[search_knowledge_base],
+        tools=[search_knowledge_base, generate_project_ideas],
         system_prompt=AGENT_SYSTEM_PROMPT,
         middleware=[GuardrailMiddleware()],
     )
@@ -113,6 +127,9 @@ async def stream_response(
                         artifact = getattr(msg, "artifact", None)
                         if isinstance(artifact, dict):
                             topics.update(artifact.get("topics", []))
+                            ideas = artifact.get("ideas")
+                            if ideas:
+                                yield _sse({"type": "ideas", "ideas": ideas})
 
     cta = maybe_cta(list(topics))
     yield _sse({"type": "done", "cta": cta})

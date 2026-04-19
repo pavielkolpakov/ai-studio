@@ -130,6 +130,12 @@ export function ChatPage() {
           (event) => {
             if (event.type === "tool_call") {
               setSearchingId(assistantId);
+            } else if (event.type === "ideas") {
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === assistantId ? { ...m, ideas: event.ideas } : m
+                )
+              );
             } else if (event.type === "token") {
               queue.push(event.token);
             } else if (event.type === "done") {

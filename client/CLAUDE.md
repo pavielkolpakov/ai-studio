@@ -25,6 +25,7 @@ Requires backend running on localhost:8000 (CORS configured).
 Discriminated by `type`:
 - `{type: "tool_call", tool: "search_knowledge_base", query: "..."}` — agent invoked retrieval; UI swaps "Thinking…" → "Searching knowledge base…"
 - `{type: "token", token: "...", done: false}` — answer token
+- `{type: "ideas", ideas: Idea[]}` — tailored AI project ideas (from `generate_project_ideas` tool); rendered as cards by `IdeaCards`
 - `{type: "done", cta: {...} | null}` — final event
 
 ## Rules

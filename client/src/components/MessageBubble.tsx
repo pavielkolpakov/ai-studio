@@ -1,5 +1,6 @@
 import Markdown from "react-markdown";
 import type { ChatMessage } from "@/types/chat";
+import { IdeaCards } from "./IdeaCards";
 
 interface Props {
   message: ChatMessage;
@@ -25,6 +26,7 @@ export function MessageBubble({ message, isStreaming, isSearching }: Props) {
       <div className="prose prose-sm prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
         <Markdown>{message.content}</Markdown>
       </div>
+      {message.ideas && message.ideas.length > 0 && <IdeaCards ideas={message.ideas} />}
       {isStreaming && !message.content && (
         <span className="inline-block text-sm text-muted-foreground animate-pulse">
           {isSearching ? "Searching knowledge base..." : "Thinking..."}
