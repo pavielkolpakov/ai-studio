@@ -51,7 +51,7 @@ export function ChatInput({ onSend, onStop, disabled, isStreaming }: Props) {
           placeholder="Ask about Neuronetis..."
           disabled={disabled}
           rows={1}
-          className="flex-1 resize-none bg-transparent text-sm leading-6 min-h-[36px] text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-50 self-center"
+          className="flex-1 resize-none bg-transparent text-base sm:text-sm leading-6 min-h-[36px] text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-50 self-center"
         />
         {isStreaming ? (
           <button
@@ -62,7 +62,7 @@ export function ChatInput({ onSend, onStop, disabled, isStreaming }: Props) {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="#212121"
-              className="h-4 w-4"
+              className="h-5 w-5"
             >
               <rect x="6" y="6" width="12" height="12" rx="2" />
             </svg>

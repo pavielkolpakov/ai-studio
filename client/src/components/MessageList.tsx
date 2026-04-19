@@ -36,25 +36,27 @@ export function MessageList({
   return (
     <div
       ref={containerRef}
-      className="flex-1 overflow-y-auto px-4 py-6 max-w-3xl mx-auto w-full"
+      className="flex-1 overflow-y-auto"
     >
-      {messages.map((msg) => (
-        <div
-          key={msg.id}
-          ref={(el) => {
-            if (msg.role !== "user") return;
-            if (el) userMsgRefs.current.set(msg.id, el);
-            else userMsgRefs.current.delete(msg.id);
-          }}
-        >
-          <MessageBubble
-            message={msg}
-            isStreaming={msg.id === streamingId}
-            searchingTool={msg.id === searchingId ? searchingTool : null}
-          />
-        </div>
-      ))}
-      {footer}
+      <div className="flex flex-col min-h-full px-4 py-6 max-w-3xl mx-auto w-full">
+        {messages.map((msg) => (
+          <div
+            key={msg.id}
+            ref={(el) => {
+              if (msg.role !== "user") return;
+              if (el) userMsgRefs.current.set(msg.id, el);
+              else userMsgRefs.current.delete(msg.id);
+            }}
+          >
+            <MessageBubble
+              message={msg}
+              isStreaming={msg.id === streamingId}
+              searchingTool={msg.id === searchingId ? searchingTool : null}
+            />
+          </div>
+        ))}
+        {footer && <div className="mt-auto pt-4">{footer}</div>}
+      </div>
     </div>
   );
 }
