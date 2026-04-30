@@ -236,12 +236,15 @@ export function ChatPage() {
 
       {/* Messages */}
       {messages.length === 0 ? (
-        <div className="flex-1 flex flex-col items-center justify-center px-4 text-center">
+        <div className="flex-1 flex flex-col items-center px-4 py-14 text-center">
           <h2 className="text-3xl font-bold mb-3">
             Production AI for IT companies
           </h2>
-          <p className="text-sm text-muted-foreground max-w-lg">
-            We build RAG systems, semantic search, and LLM integrations - engineered to ship, not just demo.
+          <p className="text-m text-muted-foreground max-w-lg">
+            AI Audits · Agents integrations · Software Development services.
+          </p>
+          <p className="py-2 text-m text-muted-foreground max-w-lg">
+            Use this tool to get more information about our services and get costom suggestions for your company.
           </p>
         </div>
       ) : (
