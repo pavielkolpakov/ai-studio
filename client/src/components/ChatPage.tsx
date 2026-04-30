@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import type { ChatMessage, CTA, Idea } from "@/types/chat";
 import { createSession, sendMessage } from "@/api/chat";
 import { TokenQueue } from "@/lib/tokenQueue";
-import { openCalendlyPopup } from "@/lib/calendly";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
 import { SuggestionButtons } from "./SuggestionButtons";
@@ -211,20 +210,12 @@ export function ChatPage() {
       <header className="border-b border-border px-4 py-3 shrink-0">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <h1 className="text-lg font-semibold">Neuronetis</h1>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setContactOpen(true)}
-              className="cursor-pointer rounded-full border border-border px-4 py-1.5 text-sm text-foreground hover:bg-accent transition-colors"
-            >
-              Contact Us
-            </button>
-            <button
-              onClick={() => openCalendlyPopup()}
-              className="cta-gradient-pill cursor-pointer px-4 py-1.5 text-sm text-foreground transition-colors hover:brightness-110"
-            >
-              Book a Call
-            </button>
-          </div>
+          <button
+            onClick={() => setContactOpen(true)}
+            className="cursor-pointer rounded-full border border-border px-4 py-1.5 text-sm text-foreground hover:bg-accent transition-colors"
+          >
+            Contact Us
+          </button>
         </div>
       </header>
 
