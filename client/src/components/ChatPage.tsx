@@ -4,14 +4,17 @@ import { createSession, sendMessage } from "@/api/chat";
 import { TokenQueue } from "@/lib/tokenQueue";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
-import { SuggestionButtons } from "./SuggestionButtons";
+import { SuggestionButtons, type SuggestionItem } from "./SuggestionButtons";
 import { ContactModal } from "./ContactModal";
 
-const INITIAL_SUGGESTIONS = [
-  "What do you build?",
-  "Tell me about your process",
-  "Show me some projects",
-  "What technologies do you use?",
+const IDEAS_PROMPT_TEXT =
+  "Describe your existing project or any ideas you have in mind to get tailored suggestions";
+
+const INITIAL_SUGGESTIONS: SuggestionItem[] = [
+  { text: "Services & pricing" },
+  { text: "How you work" },
+  { text: "About Neuronetis" },
+  { text: "Ideas for my project", action: "ideas-prompt" },
 ];
 
 const TOPIC_SUGGESTIONS: Record<string, string[]> = {
@@ -38,11 +41,6 @@ const DEFAULT_FOLLOWUPS = [
   "How can I get started?",
 ];
 
-interface SuggestionItem {
-  text: string;
-  isCTA?: boolean;
-}
-
 function getSuggestions(
   cta: CTA | null | undefined,
   hasIdeas = false
@@ -58,9 +56,9 @@ function getSuggestions(
   }
 
   if (hasIdeas) {
-    items.push({ text: "Book a call to discuss", isCTA: true });
+    items.push({ text: "Book a call to discuss", action: "calendly" });
   } else if (cta) {
-    items.push({ text: cta.label || "Book a Call", isCTA: true });
+    items.push({ text: cta.label || "Book a Call", action: "calendly" });
   }
 
   return items;
@@ -72,9 +70,7 @@ export function ChatPage() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingId, setStreamingId] = useState<string | null>(null);
   const [searching, setSearching] = useState<{ id: string; tool: string } | null>(null);
-  const [suggestions, setSuggestions] = useState<SuggestionItem[]>(
-    INITIAL_SUGGESTIONS.map((t) => ({ text: t }))
-  );
+  const [suggestions, setSuggestions] = useState<SuggestionItem[]>(INITIAL_SUGGESTIONS);
   const [error, setError] = useState<string | null>(null);
   const [contactOpen, setContactOpen] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -182,6 +178,45 @@ export function ChatPage() {
     [sessionId, isStreaming]
   );
 
+  const handleIdeasPrompt = useCallback(() => {
+    if (isStreaming) return;
+    const assistantId = crypto.randomUUID();
+    setMessages((prev) => [
+      ...prev,
+      { id: assistantId, role: "assistant", content: "" },
+    ]);
+    setSuggestions([]);
+    setIsStreaming(true);
+    setStreamingId(assistantId);
+
+    const queue = new TokenQueue((token) => {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === assistantId ? { ...m, content: m.content + token } : m
+        )
+      );
+    });
+    queueRef.current = queue;
+
+    const tokens = IDEAS_PROMPT_TEXT.match(/\S+\s*|\s+/g) ?? [IDEAS_PROMPT_TEXT];
+    tokens.forEach((t) => queue.push(t));
+    queue.finish();
+
+    const checkDrained = () => {
+      if (queue.isDrained) {
+        setIsStreaming(false);
+        setStreamingId(null);
+        setSuggestions(
+          INITIAL_SUGGESTIONS.filter((s) => s.action !== "ideas-prompt")
+        );
+        queueRef.current = null;
+      } else {
+        setTimeout(checkDrained, 50);
+      }
+    };
+    checkDrained();
+  }, [isStreaming]);
+
   const handleStop = useCallback(() => {
     abortRef.current?.abort();
     queueRef.current?.destroy();
@@ -197,7 +232,7 @@ export function ChatPage() {
       setSuggestions(
         lastAssistant
           ? getSuggestions(lastAssistant.cta, !!lastAssistant.ideas?.length)
-          : INITIAL_SUGGESTIONS.map((t) => ({ text: t }))
+          : INITIAL_SUGGESTIONS
       );
       return next;
     });
@@ -231,11 +266,11 @@ export function ChatPage() {
           <h2 className="text-3xl font-bold mb-3">
             Production AI for IT companies
           </h2>
-          <p className="text-m text-muted-foreground max-w-lg">
+          <p className="text-l text-muted-foreground max-w-lg">
             AI Audits · Agents integrations · Software Development services.
           </p>
-          <p className="py-2 text-m text-muted-foreground max-w-lg">
-            Use this tool to get more information about our services and get costom suggestions for your company.
+          <p className="py-2 text-l text-muted-foreground max-w-lg">
+            Use this tool to ask about our services, see how we work or get a custom recommendation for your company.
           </p>
         </div>
       ) : (
@@ -246,7 +281,7 @@ export function ChatPage() {
           searchingTool={searching?.tool ?? null}
           footer={
             !isStreaming && suggestions.length > 0 ? (
-              <SuggestionButtons suggestions={suggestions} onSelect={handleSend} />
+              <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} />
             ) : null
           }
         />
@@ -262,7 +297,7 @@ export function ChatPage() {
       {/* Suggestions + Input */}
       <div className="max-w-4xl mx-auto w-full">
         {!isStreaming && suggestions.length > 0 && messages.length === 0 && (
-          <SuggestionButtons suggestions={suggestions} onSelect={handleSend} />
+          <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} />
         )}
         <ChatInput
           onSend={handleSend}
