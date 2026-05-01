@@ -204,6 +204,20 @@ export function ContactModal({ open, onOpenChange, sessionId }: Props) {
             {sending ? "Sending..." : "Send Message"}
           </Button>
         </form>
+
+        <div className="flex items-center gap-3 py-1">
+          <div className="h-px flex-1 bg-border" />
+          <span className="text-xs text-muted-foreground">or</span>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+
+        <Button
+          type="button"
+          onClick={() => openCalendlyPopup()}
+          className="w-full rounded-full border border-border bg-[#2f2f2f] text-foreground hover:bg-accent cursor-pointer transition-colors"
+        >
+          Book a Call
+        </Button>
       </DialogContent>
     </Dialog>
   );
