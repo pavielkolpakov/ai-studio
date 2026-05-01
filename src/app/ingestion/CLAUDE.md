@@ -1,7 +1,7 @@
 # Ingestion Module
 
-Wipe-and-reload pipeline: splits `docs/RAG.md` into chunks, embeds via OpenAI, stores in Qdrant.
+Wipe-and-reload pipeline: splits `docs/RAG.md` and `docs/project_templates.md` into chunks, embeds via OpenAI, stores in single Qdrant collection.
 
-- `splitter.py` — markdown-aware chunking (800 tokens / 100 overlap), attaches topic+header metadata
-- `vector_store.py` — `get_qdrant_client()`, `get_embeddings()`, upserts chunks to single collection; uses Qdrant Cloud in prod, local Docker in dev
-- `__main__.py` — CLI entry: `python -m app.ingestion`
+- `splitter.py` — markdown chunking. `load_and_split` (RAG.md, 800/100, topic+header metadata). `load_and_split_templates` (project_templates.md, 6000/200, one chunk per `### Example` case study, metadata `topic="templates"` + `service_type` (audit|integration|custom_app) + `industry` (fintech|devtools|marketing_sales|data_analytics, or None)).
+- `vector_store.py` — `recreate_collection` indexes `metadata.topic`, `metadata.service_type`, `metadata.industry` as keywords.
+- `__main__.py` — CLI: `python -m app.ingestion`. Loads both sources, concatenates, single wipe-and-upload.

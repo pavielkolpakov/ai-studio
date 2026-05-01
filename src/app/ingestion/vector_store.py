@@ -35,11 +35,12 @@ def recreate_collection(client: QdrantClient) -> None:
             distance=Distance.COSINE,
         ),
     )
-    client.create_payload_index(
-        collection_name=collection,
-        field_name="metadata.topic",
-        field_schema=PayloadSchemaType.KEYWORD,
-    )
+    for field in ("metadata.topic", "metadata.service_type", "metadata.industry"):
+        client.create_payload_index(
+            collection_name=collection,
+            field_name=field,
+            field_schema=PayloadSchemaType.KEYWORD,
+        )
 
 
 def load_documents(

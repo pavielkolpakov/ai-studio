@@ -4,17 +4,19 @@ import time
 from collections import Counter
 from pathlib import Path
 
-from app.ingestion.splitter import load_and_split
+from app.ingestion.splitter import load_and_split, load_and_split_templates
 from app.ingestion.vector_store import get_embeddings, get_qdrant_client, load_documents
 
-DOCS_PATH = Path(__file__).resolve().parents[3] / "docs" / "RAG.md"
+DOCS_DIR = Path(__file__).resolve().parents[3] / "docs"
+RAG_PATH = DOCS_DIR / "RAG.md"
+TEMPLATES_PATH = DOCS_DIR / "project_templates.md"
 
 
 def main() -> None:
-    print(f"Loading documents from {DOCS_PATH}")
+    print(f"Loading documents from {RAG_PATH} and {TEMPLATES_PATH}")
     start = time.perf_counter()
 
-    documents = load_and_split(DOCS_PATH)
+    documents = load_and_split(RAG_PATH) + load_and_split_templates(TEMPLATES_PATH)
 
     topic_counts = Counter(doc.metadata["topic"] for doc in documents)
     print("\nChunks by topic:")
