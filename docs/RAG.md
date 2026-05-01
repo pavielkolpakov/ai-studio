@@ -38,7 +38,44 @@ We do not build generic chatbots powered by a system prompt. We do not resell Op
 
 ## Our location and setup
 
-We are a distributed studio. Our lead engineers are based in Eastern Europe with client delivery experience across the EU, Israel, and North America. We work in European and overlap-friendly time zones and are fluent in English for all technical communication.
+We are a distributed studio. Our lead engineers are based in Isreal, US and Eastern Europe with client delivery experience across the EU, Israel, and North America. We work in European and overlap-friendly time zones and are fluent in English for all technical communication.
+
+## Our team
+
+We are organized around three specialized teams that cover the full delivery stack:
+
+- **AI / Backend team** — responsible for AI engineering work (RAG pipelines, LLM integration, fine-tuning, agents) as well as the backend services and APIs that wrap them. This is the core of every project we deliver.
+- **Frontend / Mobile team** — builds the client-facing layer when a project requires it: web applications, admin interfaces, embedded chat widgets, and mobile apps.
+- **DevOps team** — handles infrastructure, CI/CD pipelines, cloud deployments, observability, and production reliability across all our engagements.
+
+Each project is staffed with senior engineers from the relevant teams, scaled to match the scope of the work.
+
+## Our technology stack
+
+We have a default stack we are most productive with, refined across many projects. We are not dogmatic about it — if a client has an existing project on different technologies, we will discuss the best way to integrate with their setup during the discovery phase.
+
+**Backend:**
+- **Python** with **FastAPI** — our primary choice for AI services, RAG pipelines, and most backend work
+- **Go** — for performance-critical services and high-throughput components
+- **TypeScript** (Node.js) — for backend work that benefits from a shared language with the frontend or for specific ecosystem fit
+
+**Frontend and mobile:**
+- **React** for web applications
+- **React Native** for mobile (iOS and Android from a shared codebase)
+
+**Hosting and infrastructure:**
+- **AWS** and **Azure** for production cloud deployments, especially for clients with enterprise compliance requirements
+- **Vercel** for frontend deployments
+- **Railway** for fast-moving projects, prototypes, and lighter backend workloads
+
+**Databases and data layer:**
+- **PostgreSQL** as our default relational database
+- **Supabase** when we need Postgres plus auth, storage, and realtime out of the box
+- **MongoDB** for document-oriented workloads
+- **Qdrant** and **FAISS** for vector storage and semantic search
+- **Redis** for caching, queues, and session storage
+
+If a client comes to us with an existing codebase using a different stack — Django, Ruby on Rails, .NET, Java, Vue, Angular, GCP, or anything else — we are happy to work within their environment. We discuss the integration approach during discovery and adapt our delivery accordingly.
 
 ---
 

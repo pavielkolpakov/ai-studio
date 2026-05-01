@@ -21,8 +21,11 @@ class IdeasPayload(BaseModel):
     ideas: list[Idea] = Field(description="Between 3 and 5 tailored AI project ideas.")
 
 
-def get_use_cases_retriever():
-    """Qdrant retriever scoped to topic=use-cases chunks."""
+def get_templates_retriever(
+    industry: str | None = None,
+    service_type: str | None = None,
+):
+    """Qdrant retriever scoped to topic=templates with optional industry/service_type filters."""
     client = get_qdrant_client()
     embeddings = get_embeddings()
     vector_store = QdrantVectorStore(
@@ -30,16 +33,41 @@ def get_use_cases_retriever():
         collection_name=settings.QDRANT_COLLECTION,
         embedding=embeddings,
     )
-    topic_filter = Filter(
-        must=[FieldCondition(key="metadata.topic", match=MatchValue(value="use-cases"))]
-    )
-    return vector_store.as_retriever(search_kwargs={"k": 6, "filter": topic_filter})
+    must = [FieldCondition(key="metadata.topic", match=MatchValue(value="templates"))]
+    if industry:
+        must.append(FieldCondition(key="metadata.industry", match=MatchValue(value=industry)))
+    if service_type:
+        must.append(FieldCondition(key="metadata.service_type", match=MatchValue(value=service_type)))
+    return vector_store.as_retriever(search_kwargs={"k": 4, "filter": Filter(must=must)})
 
 
-def generate_ideas_payload(description: str) -> IdeasPayload:
-    """Retrieve relevant use-cases and ask a structured-output LLM for 3–5 tailored ideas."""
-    retriever = get_use_cases_retriever()
-    docs = retriever.invoke(description)
+def generate_ideas_payload(
+    description: str,
+    industry: str | None = None,
+    service_type: str | None = None,
+) -> IdeasPayload:
+    """Retrieve relevant case-study templates and ask a structured-output LLM for 3–5 tailored ideas.
+
+    Filter fallback: industry + service_type → industry only → no filters.
+    """
+    docs: list = []
+    # Try with both filters, then drop service_type, then drop industry.
+    filter_tries = [
+        {"industry": industry, "service_type": service_type},
+        {"industry": industry, "service_type": None},
+        {"industry": None, "service_type": None},
+    ]
+    seen: set[tuple[str | None, str | None]] = set()
+    for kwargs in filter_tries:
+        key = (kwargs["industry"], kwargs["service_type"])
+        if key in seen:
+            continue
+        seen.add(key)
+        retriever = get_templates_retriever(**kwargs)
+        docs = retriever.invoke(description)
+        if docs:
+            break
+
     context = "\n\n".join(d.page_content for d in docs)
 
     llm = ChatOpenAI(

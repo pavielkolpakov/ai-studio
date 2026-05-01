@@ -40,7 +40,7 @@ tests/               # pytest (run from project root)
 - **LangChain**: 1.0 LTS (not 0.3)
 - **Qdrant**: Qdrant Cloud in prod; local Docker instance for dev (port 6333)
 - **Ingestion**: single Qdrant collection, wipe-and-reload, 800 token chunks / 100 overlap, top-k=4
-- **Topic tags**: about, services, technical, use-cases, process, faq, projects
+- **Topic tags**: about, services, technical, use-cases, process, faq, projects, templates (case studies; also tagged with `service_type` + `industry`)
 
 ## Deployment (Railway)
 

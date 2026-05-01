@@ -45,12 +45,24 @@ def search_knowledge_base(query: str) -> tuple[str, dict]:
 
 
 @tool(response_format="content_and_artifact")
-def generate_project_ideas(description: str) -> tuple[str, dict]:
+def generate_project_ideas(
+    description: str,
+    industry: str | None = None,
+    service_type: str | None = None,
+) -> tuple[str, dict]:
     """Generate 3–5 tailored AI project ideas when the user describes their
     company, project, industry, or a problem they want AI to help solve.
-    Pass the user's description verbatim. Returns ideas with rough scope,
-    tech, price, and time; the frontend renders them as cards."""
-    payload = generate_ideas_payload(description)
+    Pass the user's description verbatim.
+
+    When you can infer the user's industry from the conversation, pass it as
+    `industry` (one of: 'fintech', 'devtools', 'marketing_sales',
+    'data_analytics'). Only pass `service_type` ('audit' | 'integration' |
+    'custom_app') when the user is explicit about which engagement type they
+    want; otherwise omit it.
+
+    Returns ideas with rough scope, tech, price, and time; the frontend
+    renders them as cards."""
+    payload = generate_ideas_payload(description, industry=industry, service_type=service_type)
     ideas = [idea.model_dump() for idea in payload.ideas]
     titles = ", ".join(i["title"] for i in ideas)
     content = f"Generated {len(ideas)} tailored AI project ideas: {titles}."
