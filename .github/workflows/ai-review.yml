@@ -1,0 +1,96 @@
+name: ai-review
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  review:
+    if: |
+      github.event.issue.pull_request != null &&
+      (startsWith(github.event.comment.body, '/review-changed') ||
+       startsWith(github.event.comment.body, '/review'))
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Determine review mode
+        id: mode
+        run: |
+          body="${{ github.event.comment.body }}"
+          if [[ "$body" == /review-changed* ]]; then
+            echo "mode=changed" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: React with eyes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          REPO: ${{ github.repository }}
+        run: |
+          curl -sS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/issues/comments/$COMMENT_ID/reactions" \
+            -d '{"content":"eyes"}' > /dev/null
+
+      - name: Get PR head SHA
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          sha=$(curl -sS \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/pulls/$PR_NUMBER" \
+            | python -c "import json,sys; print(json.load(sys.stdin)['head']['sha'])")
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.pr.outputs.sha }}
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.14
+
+      - name: Install dependencies
+        run: uv sync --extra ai-review
+
+      - name: Run AI reviewer
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          REVIEW_MODE: ${{ steps.mode.outputs.mode }}
+        run: uv run python src/scripts/ai_review.py
+
+      - name: React with result
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          REPO: ${{ github.repository }}
+          OUTCOME: ${{ job.status }}
+        run: |
+          if [[ "$OUTCOME" == "success" ]]; then
+            content="+1"
+          else
+            content="-1"
+          fi
+          curl -sS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/issues/comments/$COMMENT_ID/reactions" \
+            -d "{\"content\":\"$content\"}" > /dev/null
