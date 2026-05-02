@@ -30,7 +30,7 @@ export function IdeaCards({ ideas }: Props) {
               <div />
             )}
             {idea.tech.length > 0 ? (
-              <div className="flex flex-wrap gap-1.5 px-6">
+              <div className="flex flex-wrap content-start items-start gap-1.5 px-6">
                 {idea.tech.map((t, j) => (
                   <span
                     key={j}
