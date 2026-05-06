@@ -6,39 +6,43 @@ import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
 import { SuggestionButtons, type SuggestionItem } from "./SuggestionButtons";
 import { ContactModal } from "./ContactModal";
+import { CACHED_ANSWERS } from "@/data/cachedAnswers";
 
 const IDEAS_PROMPT_TEXT =
   "Describe your existing project or any ideas you have in mind to get tailored suggestions";
 
 const INITIAL_SUGGESTIONS: SuggestionItem[] = [
-  { text: "Services & pricing" },
-  { text: "How you work" },
-  { text: "About Neuronetis" },
+  { text: "Services & pricing", cacheKey: "services_and_pricing" },
+  { text: "Process", cacheKey: "process" },
+  { text: "About Neuronetis", cacheKey: "about" },
   { text: "Ideas for my project", action: "ideas-prompt" },
 ];
 
 const TOPIC_SUGGESTIONS: Record<string, string[]> = {
-  services: [
-    "How much does a typical project cost?",
-    "Do you offer ongoing support?",
-    "What industries do you work with?",
+  services_and_pricing: [
+    "How does an Audit work?",
+    "What's included in a build?",
+    "Do you offer retainers?",
+    "How long does it take?",
   ],
   process: [
-    "How long does a project take?",
-    "What does the discovery phase look like?",
-    "How do you handle revisions?",
+    "What happens in discovery?",
+    "How do you measure results?",
+    "Who works on the project?",
+    "What do you need from us?",
   ],
-  "use-cases": [
-    "Can you share a case study?",
-    "What results have your clients seen?",
-    "Do you work with startups?",
+  about: [
+    "What do you build?",
+    "Who do you work with?",
+    "Where are you based?",
+    "How do we get started?",
   ],
 };
 
 const DEFAULT_FOLLOWUPS = [
-  "Tell me more",
+  "What makes a good AI project",
   "What makes you different?",
-  "How can I get started?",
+  "How do we get started?"
 ];
 
 function getSuggestions(
@@ -178,6 +182,57 @@ export function ChatPage() {
     [sessionId, isStreaming]
   );
 
+  const handleCachedAnswer = useCallback(
+    (cacheKey: string, buttonText: string) => {
+      if (isStreaming) return;
+      const entry = CACHED_ANSWERS[cacheKey];
+      if (!entry) return;
+
+      const userMsg: ChatMessage = {
+        id: crypto.randomUUID(),
+        role: "user",
+        content: buttonText,
+      };
+      const assistantId = crypto.randomUUID();
+      const assistantMsg: ChatMessage = {
+        id: assistantId,
+        role: "assistant",
+        content: "",
+      };
+
+      setMessages((prev) => [...prev, userMsg, assistantMsg]);
+      setSuggestions([]);
+      setIsStreaming(true);
+      setStreamingId(assistantId);
+
+      const queue = new TokenQueue((token) => {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantId ? { ...m, content: m.content + token } : m
+          )
+        );
+      });
+      queueRef.current = queue;
+
+      const tokens = entry.answer.match(/\S+\s*|\s+/g) ?? [entry.answer];
+      tokens.forEach((t) => queue.push(t));
+      queue.finish();
+
+      const checkDrained = () => {
+        if (queue.isDrained) {
+          setIsStreaming(false);
+          setStreamingId(null);
+          setSuggestions(entry.followups);
+          queueRef.current = null;
+        } else {
+          setTimeout(checkDrained, 50);
+        }
+      };
+      checkDrained();
+    },
+    [isStreaming]
+  );
+
   const handleIdeasPrompt = useCallback(() => {
     if (isStreaming) return;
     const assistantId = crypto.randomUUID();
@@ -281,7 +336,7 @@ export function ChatPage() {
           searchingTool={searching?.tool ?? null}
           footer={
             !isStreaming && suggestions.length > 0 ? (
-              <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} />
+              <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} onCached={handleCachedAnswer} />
             ) : null
           }
         />
@@ -297,7 +352,7 @@ export function ChatPage() {
       {/* Suggestions + Input */}
       <div className="max-w-4xl mx-auto w-full">
         {!isStreaming && suggestions.length > 0 && messages.length === 0 && (
-          <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} />
+          <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} onCached={handleCachedAnswer} />
         )}
         <ChatInput
           onSend={handleSend}

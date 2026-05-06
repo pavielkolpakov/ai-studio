@@ -3,15 +3,17 @@ import { openCalendlyPopup } from "@/lib/calendly";
 export interface SuggestionItem {
   text: string;
   action?: "send" | "calendly" | "ideas-prompt";
+  cacheKey?: string;
 }
 
 interface Props {
   suggestions: SuggestionItem[];
   onSelect: (message: string) => void;
   onIdeasPrompt: () => void;
+  onCached?: (cacheKey: string, text: string) => void;
 }
 
-export function SuggestionButtons({ suggestions, onSelect, onIdeasPrompt }: Props) {
+export function SuggestionButtons({ suggestions, onSelect, onIdeasPrompt, onCached }: Props) {
   if (suggestions.length === 0) return null;
 
   return (
@@ -19,7 +21,8 @@ export function SuggestionButtons({ suggestions, onSelect, onIdeasPrompt }: Prop
       {suggestions.map((s) => {
         const action = s.action ?? "send";
         const handleClick = () => {
-          if (action === "calendly") openCalendlyPopup();
+          if (s.cacheKey && onCached) onCached(s.cacheKey, s.text);
+          else if (action === "calendly") openCalendlyPopup();
           else if (action === "ideas-prompt") onIdeasPrompt();
           else onSelect(s.text);
         };
