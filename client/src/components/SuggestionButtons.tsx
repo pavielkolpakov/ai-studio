@@ -11,9 +11,10 @@ interface Props {
   onSelect: (message: string) => void;
   onIdeasPrompt: () => void;
   onCached?: (cacheKey: string, text: string) => void;
+  sessionId?: string | null;
 }
 
-export function SuggestionButtons({ suggestions, onSelect, onIdeasPrompt, onCached }: Props) {
+export function SuggestionButtons({ suggestions, onSelect, onIdeasPrompt, onCached, sessionId }: Props) {
   if (suggestions.length === 0) return null;
 
   return (
@@ -22,7 +23,7 @@ export function SuggestionButtons({ suggestions, onSelect, onIdeasPrompt, onCach
         const action = s.action ?? "send";
         const handleClick = () => {
           if (s.cacheKey && onCached) onCached(s.cacheKey, s.text);
-          else if (action === "calendly") openCalendlyPopup();
+          else if (action === "calendly") openCalendlyPopup(sessionId);
           else if (action === "ideas-prompt") onIdeasPrompt();
           else onSelect(s.text);
         };

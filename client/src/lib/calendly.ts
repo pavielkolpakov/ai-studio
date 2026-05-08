@@ -1,7 +1,17 @@
 declare global {
   interface Window {
     Calendly?: {
-      initPopupWidget: (opts: { url: string }) => void;
+      initPopupWidget: (opts: {
+        url: string;
+        utm?: {
+          utmCampaign?: string;
+          utmSource?: string;
+          utmMedium?: string;
+          utmContent?: string;
+          utmTerm?: string;
+        };
+        prefill?: Record<string, unknown>;
+      }) => void;
     };
   }
 }
@@ -32,7 +42,7 @@ function loadScript(): Promise<void> {
   });
 }
 
-export async function openCalendlyPopup(): Promise<void> {
+export async function openCalendlyPopup(sessionId?: string | null): Promise<void> {
   const url = import.meta.env.VITE_CALENDLY_URL;
   if (!url) {
     console.error("VITE_CALENDLY_URL is not set");
@@ -40,5 +50,8 @@ export async function openCalendlyPopup(): Promise<void> {
   }
 
   await loadScript();
-  window.Calendly?.initPopupWidget({ url });
+  window.Calendly?.initPopupWidget({
+    url,
+    ...(sessionId ? { utm: { utmContent: sessionId } } : {}),
+  });
 }

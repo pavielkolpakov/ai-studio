@@ -336,7 +336,7 @@ export function ChatPage() {
           searchingTool={searching?.tool ?? null}
           footer={
             !isStreaming && suggestions.length > 0 ? (
-              <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} onCached={handleCachedAnswer} />
+              <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} onCached={handleCachedAnswer} sessionId={sessionId} />
             ) : null
           }
         />
@@ -352,7 +352,7 @@ export function ChatPage() {
       {/* Suggestions + Input */}
       <div className="max-w-4xl mx-auto w-full">
         {!isStreaming && suggestions.length > 0 && messages.length === 0 && (
-          <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} onCached={handleCachedAnswer} />
+          <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} onCached={handleCachedAnswer} sessionId={sessionId} />
         )}
         <ChatInput
           onSend={handleSend}
