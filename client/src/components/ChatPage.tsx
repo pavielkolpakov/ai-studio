@@ -13,7 +13,7 @@ const IDEAS_PROMPT_TEXT =
 
 const INITIAL_SUGGESTIONS: SuggestionItem[] = [
   { text: "Services & pricing", cacheKey: "services_and_pricing" },
-  { text: "Process", cacheKey: "process" },
+  { text: "What's the process like", cacheKey: "process" },
   { text: "About Neuronetis", cacheKey: "about" },
   { text: "Ideas for my project", action: "ideas-prompt" },
 ];
