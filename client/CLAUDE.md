@@ -18,7 +18,7 @@ Requires backend running on localhost:8000 (CORS configured).
 - `src/components/ContactModal.tsx` — contact form modal with validation, success state + Book a Call upsell
 - `src/api/contact.ts` — `submitContact()` POST to `/api/v1/contact`
 - `src/lib/calendly.ts` — on-demand Calendly SDK loader + popup trigger
-- `src/types/chat.ts` — `ChatMessage`, `SSEEvent` (discriminated union), `CTA`
+- `src/types/chat.ts` — `ChatMessage`, `SSEEvent` (discriminated union), `FollowupPick`, `Idea`
 
 ## SSE Event Format (from backend)
 
@@ -26,7 +26,7 @@ Discriminated by `type`:
 - `{type: "tool_call", tool: "search_knowledge_base", query: "..."}` — agent invoked retrieval; UI swaps "Thinking…" → "Searching knowledge base…"
 - `{type: "token", token: "...", done: false}` — answer token
 - `{type: "ideas", ideas: Idea[]}` — tailored AI project ideas (from `generate_project_ideas` tool); rendered as cards by `IdeaCards`
-- `{type: "done", cta: {...} | null, followups?: FollowupPick[]}` — final event. `followups` is a list of `{id, text, cacheKey?, action?}` picked server-side from a fixed pool by a gpt-4o-mini call. Empty/absent → frontend renders nothing then appends "Book a call" via the <2-fallback rule.
+- `{type: "done", followups?: FollowupPick[]}` — final event. `followups` is a list of `{id, text, cacheKey?, action?}` picked server-side from a fixed pool by a gpt-4o-mini call. Empty/absent → frontend renders nothing then appends "Book a call" via the <2-fallback rule.
 
 ## Rules
 

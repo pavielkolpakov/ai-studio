@@ -1,8 +1,3 @@
-export interface CTA {
-  label: string;
-  url: string;
-}
-
 export interface FollowupPick {
   id: string;
   text: string;
@@ -23,12 +18,11 @@ export type SSEEvent =
   | { type: "token"; token: string; done: false }
   | { type: "tool_call"; tool: string; query?: string }
   | { type: "ideas"; ideas: Idea[] }
-  | { type: "done"; cta: CTA | null; followups?: FollowupPick[] };
+  | { type: "done"; followups?: FollowupPick[] };
 
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
   content: string;
-  cta?: CTA | null;
   ideas?: Idea[];
 }

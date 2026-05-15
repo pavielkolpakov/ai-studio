@@ -9,7 +9,6 @@ from langchain_qdrant import QdrantVectorStore
 
 from app.core.config import settings
 from app.ingestion.vector_store import get_embeddings, get_qdrant_client
-from app.rag.cta import maybe_cta
 from app.rag.followups import pick_followups
 from app.rag.guardrail import GuardrailMiddleware
 from app.rag.ideas import generate_ideas_payload
@@ -32,17 +31,15 @@ def _format_docs(docs) -> str:
     return "\n\n".join(doc.page_content for doc in docs)
 
 
-@tool(response_format="content_and_artifact")
-def search_knowledge_base(query: str) -> tuple[str, dict]:
+@tool
+def search_knowledge_base(query: str) -> str:
     """Search the Neuronetis knowledge base for information about the studio's
     services, process, projects, team, pricing, and FAQ. Call this for any
     factual question about Neuronetis. Rephrase follow-up questions into a
     standalone query using the conversation history before calling."""
     retriever = get_retriever()
     docs = retriever.invoke(query)
-    content = _format_docs(docs)
-    topics = [d.metadata.get("topic", "") for d in docs if d.metadata.get("topic")]
-    return content, {"topics": topics}
+    return _format_docs(docs)
 
 
 @tool(response_format="content_and_artifact")
@@ -106,10 +103,10 @@ async def stream_response(
     Emits:
       - {type: "tool_call", tool, query} when the agent invokes a tool
       - {type: "token", token, done: false} for AI message chunks
-      - {type: "done", cta} final event
+      - {type: "ideas", ideas} when generate_project_ideas tool ran
+      - {type: "done", followups} final event
     """
     messages = list(chat_history) + [HumanMessage(content=question)]
-    topics: set[str] = set()
     emitted_tool_calls: set[str] = set()
     had_ideas = False
     full_answer = ""
@@ -143,15 +140,13 @@ async def stream_response(
                     elif isinstance(msg, ToolMessage):
                         artifact = getattr(msg, "artifact", None)
                         if isinstance(artifact, dict):
-                            topics.update(artifact.get("topics", []))
                             ideas = artifact.get("ideas")
                             if ideas:
                                 had_ideas = True
                                 yield _sse({"type": "ideas", "ideas": ideas})
 
-    cta = maybe_cta(list(topics))
     followups = [] if had_ideas else await pick_followups(question, full_answer)
-    yield _sse({"type": "done", "cta": cta, "followups": followups})
+    yield _sse({"type": "done", "followups": followups})
 
 
 def _sse(payload: dict) -> str:

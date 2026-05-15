@@ -46,6 +46,7 @@ GUARDRAIL_PROMPT = ChatPromptTemplate.from_messages([
         "to ANY of these categories: a company's services, team, about, process, "
         "projects, pricing, FAQ, AI/software consulting, or how AI could help a "
         "business.\n\n"
+        "Also if input is a company description or an existing business model answer YES."
         "Reply with only YES or NO.",
     ),
     ("human", "{input}"),

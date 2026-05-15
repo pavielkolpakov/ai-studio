@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import type { ChatMessage, CTA, FollowupPick, Idea } from "@/types/chat";
+import type { ChatMessage, FollowupPick, Idea } from "@/types/chat";
 import { createSession, sendMessage } from "@/api/chat";
 import { TokenQueue } from "@/lib/tokenQueue";
 import { MessageList } from "./MessageList";
@@ -87,7 +87,6 @@ export function ChatPage() {
       const controller = new AbortController();
       abortRef.current = controller;
 
-      let pendingCta: CTA | null | undefined = null;
       let pendingIdeas: Idea[] | null = null;
       let pendingFollowups: FollowupPick[] | undefined = undefined;
 
@@ -114,7 +113,6 @@ export function ChatPage() {
             } else if (event.type === "token") {
               queue.push(event.token);
             } else if (event.type === "done") {
-              pendingCta = event.cta;
               pendingFollowups = event.followups;
               queue.finish();
 
@@ -124,7 +122,7 @@ export function ChatPage() {
                   setMessages((prev) =>
                     prev.map((m) =>
                       m.id === assistantId
-                        ? { ...m, cta: pendingCta, ideas: pendingIdeas ?? undefined }
+                        ? { ...m, ideas: pendingIdeas ?? undefined }
                         : m
                     )
                   );
