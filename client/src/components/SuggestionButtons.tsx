@@ -4,6 +4,7 @@ export interface SuggestionItem {
   text: string;
   action?: "send" | "calendly" | "ideas-prompt";
   cacheKey?: string;
+  id?: string;
 }
 
 interface Props {
@@ -11,10 +12,11 @@ interface Props {
   onSelect: (message: string) => void;
   onIdeasPrompt: () => void;
   onCached?: (cacheKey: string, text: string) => void;
+  onClicked?: (id: string) => void;
   sessionId?: string | null;
 }
 
-export function SuggestionButtons({ suggestions, onSelect, onIdeasPrompt, onCached, sessionId }: Props) {
+export function SuggestionButtons({ suggestions, onSelect, onIdeasPrompt, onCached, onClicked, sessionId }: Props) {
   if (suggestions.length === 0) return null;
 
   return (
@@ -22,6 +24,7 @@ export function SuggestionButtons({ suggestions, onSelect, onIdeasPrompt, onCach
       {suggestions.map((s) => {
         const action = s.action ?? "send";
         const handleClick = () => {
+          if (s.id && onClicked) onClicked(s.id);
           if (s.cacheKey && onCached) onCached(s.cacheKey, s.text);
           else if (action === "calendly") openCalendlyPopup(sessionId);
           else if (action === "ideas-prompt") onIdeasPrompt();

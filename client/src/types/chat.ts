@@ -3,6 +3,13 @@ export interface CTA {
   url: string;
 }
 
+export interface FollowupPick {
+  id: string;
+  text: string;
+  cacheKey?: string;
+  action?: "send" | "calendly" | "ideas-prompt";
+}
+
 export interface Idea {
   title: string;
   description: string;
@@ -16,7 +23,7 @@ export type SSEEvent =
   | { type: "token"; token: string; done: false }
   | { type: "tool_call"; tool: string; query?: string }
   | { type: "ideas"; ideas: Idea[] }
-  | { type: "done"; cta: CTA | null };
+  | { type: "done"; cta: CTA | null; followups?: FollowupPick[] };
 
 export interface ChatMessage {
   id: string;

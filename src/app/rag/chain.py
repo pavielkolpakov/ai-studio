@@ -10,6 +10,7 @@ from langchain_qdrant import QdrantVectorStore
 from app.core.config import settings
 from app.ingestion.vector_store import get_embeddings, get_qdrant_client
 from app.rag.cta import maybe_cta
+from app.rag.followups import pick_followups
 from app.rag.guardrail import GuardrailMiddleware
 from app.rag.ideas import generate_ideas_payload
 from app.rag.prompts import AGENT_SYSTEM_PROMPT
@@ -110,6 +111,8 @@ async def stream_response(
     messages = list(chat_history) + [HumanMessage(content=question)]
     topics: set[str] = set()
     emitted_tool_calls: set[str] = set()
+    had_ideas = False
+    full_answer = ""
 
     async for mode, data in agent.astream(
         {"messages": messages}, stream_mode=["messages", "updates"]
@@ -122,6 +125,7 @@ async def stream_response(
             if isinstance(chunk, AIMessageChunk):
                 token = chunk.content if isinstance(chunk.content, str) else ""
                 if token:
+                    full_answer += token
                     yield _sse({"type": "token", "token": token, "done": False})
         elif mode == "updates":
             for _node, update in data.items():
@@ -142,10 +146,12 @@ async def stream_response(
                             topics.update(artifact.get("topics", []))
                             ideas = artifact.get("ideas")
                             if ideas:
+                                had_ideas = True
                                 yield _sse({"type": "ideas", "ideas": ideas})
 
     cta = maybe_cta(list(topics))
-    yield _sse({"type": "done", "cta": cta})
+    followups = [] if had_ideas else await pick_followups(question, full_answer)
+    yield _sse({"type": "done", "cta": cta, "followups": followups})
 
 
 def _sse(payload: dict) -> str:
