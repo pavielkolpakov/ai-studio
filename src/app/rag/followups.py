@@ -27,7 +27,8 @@ class _Picks(BaseModel):
 
 
 SYSTEM_PROMPT = """You select follow-up question suggestions for a user chatting with an AI consultancy.
-Given the recent exchange and a pool of candidate questions, pick the 3 IDs that are the most natural next questions for this user.
+Given the recent exchange and a pool of candidate questions, pick the 3 IDs that are the most natural next 
+questions for this user.
 
 Rules:
 - Prefer questions that explore adjacent topics, not what the user just asked.
