@@ -160,7 +160,7 @@ class TestStreamResponse:
         mock_pick.assert_awaited_once_with("q", "answer")
 
     @pytest.mark.asyncio
-    async def test_done_followups_empty_when_ideas_emitted(self):
+    async def test_done_uses_base_followups_when_ideas_emitted(self):
         tool_msg = ToolMessage(
             content="Generated.",
             tool_call_id="i1",
@@ -175,8 +175,11 @@ class TestStreamResponse:
         ) as mock_pick:
             events = [e async for e in stream_response(agent, "q", [])]
 
+        from app.data.followup_pool import resolve_picks
+        from app.rag.chain import IDEAS_MODE_FOLLOWUPS
+
         final = parse(events[-1])
-        assert final == {"type": "done", "followups": []}
+        assert final == {"type": "done", "followups": resolve_picks(IDEAS_MODE_FOLLOWUPS)}
         mock_pick.assert_not_awaited()
 
     @pytest.mark.asyncio
