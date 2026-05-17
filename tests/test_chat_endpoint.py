@@ -22,6 +22,7 @@ def _make_mock_agent(answer: str = "Hello!"):
 
 class TestChatEndpoint:
     @pytest.mark.asyncio
+    @patch("app.rag.chain.pick_followups", new=AsyncMock(return_value=[]))
     @patch("app.api.v1.chat.build_agent")
     @patch("app.api.v1.chat.get_or_create_conversation")
     @patch("app.api.v1.chat.append_message")
@@ -64,6 +65,7 @@ class TestChatEndpoint:
         assert "sources" not in last
 
     @pytest.mark.asyncio
+    @patch("app.rag.chain.pick_followups", new=AsyncMock(return_value=[]))
     @patch("app.api.v1.chat.build_agent")
     @patch("app.api.v1.chat.get_or_create_conversation")
     @patch("app.api.v1.chat.append_message")
