@@ -8,14 +8,14 @@ from langchain_openai import ChatOpenAI
 from langchain_qdrant import QdrantVectorStore
 
 from app.core.config import settings
-from app.ingestion.vector_store import get_embeddings, get_qdrant_client
 from app.data.followup_pool import resolve_picks
+from app.ingestion.vector_store import get_embeddings, get_qdrant_client
 from app.rag.followups import pick_followups
-
-IDEAS_MODE_FOLLOWUPS = ["services_pricing", "process_overview", "about_neuronetis"]
 from app.rag.guardrail import GuardrailMiddleware
 from app.rag.ideas import generate_ideas_payload
 from app.rag.prompts import AGENT_SYSTEM_PROMPT
+
+IDEAS_MODE_FOLLOWUPS = ["services_pricing", "process_overview", "about_neuronetis"]
 
 
 def get_retriever():
