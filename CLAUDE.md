@@ -54,3 +54,4 @@ tests/               # pytest (run from project root)
 - Always use uv not pip
 - Always commit Alembic migration files
 - Always update related CLAUDE.md files after changes. Keep CLAUDE.md files as brief as possible.
+- After changes use ruff and pytest for validation.

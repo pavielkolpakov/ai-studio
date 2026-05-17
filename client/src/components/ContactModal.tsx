@@ -127,7 +127,7 @@ export function ContactModal({ open, onOpenChange, sessionId }: Props) {
             </p>
             <Button
               onClick={() => {
-                openCalendlyPopup();
+                openCalendlyPopup(sessionId);
               }}
               className="cta-gradient-pill w-full border-0 bg-[#2f2f2f] text-foreground hover:brightness-110 cursor-pointer"
             >
@@ -213,7 +213,7 @@ export function ContactModal({ open, onOpenChange, sessionId }: Props) {
 
         <Button
           type="button"
-          onClick={() => openCalendlyPopup()}
+          onClick={() => openCalendlyPopup(sessionId)}
           className="w-full rounded-full border border-border bg-[#2f2f2f] text-foreground hover:bg-accent cursor-pointer transition-colors"
         >
           Book a Call

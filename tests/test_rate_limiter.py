@@ -84,6 +84,7 @@ class TestWindowReset:
 
 class TestIndependentCounters:
     @pytest.mark.asyncio
+    @patch("app.rag.chain.pick_followups", new=AsyncMock(return_value=[]))
     @patch("app.api.v1.chat.build_agent")
     @patch("app.api.v1.chat.get_or_create_conversation")
     @patch("app.api.v1.chat.append_message")
@@ -133,6 +134,7 @@ class TestIndependentCounters:
 
 class TestChatRateLimit:
     @pytest.mark.asyncio
+    @patch("app.rag.chain.pick_followups", new=AsyncMock(return_value=[]))
     @patch("app.api.v1.chat.build_agent")
     @patch("app.api.v1.chat.get_or_create_conversation")
     @patch("app.api.v1.chat.append_message")

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import type { ChatMessage, CTA, Idea } from "@/types/chat";
+import type { ChatMessage, FollowupPick, Idea } from "@/types/chat";
 import { createSession, sendMessage } from "@/api/chat";
 import { TokenQueue } from "@/lib/tokenQueue";
 import { MessageList } from "./MessageList";
@@ -13,59 +13,22 @@ const IDEAS_PROMPT_TEXT =
 
 const INITIAL_SUGGESTIONS: SuggestionItem[] = [
   { text: "Services & pricing", cacheKey: "services_and_pricing" },
-  { text: "Process", cacheKey: "process" },
+  { text: "What's the process like", cacheKey: "process" },
   { text: "About Neuronetis", cacheKey: "about" },
   { text: "Ideas for my project", action: "ideas-prompt" },
 ];
 
-const TOPIC_SUGGESTIONS: Record<string, string[]> = {
-  services_and_pricing: [
-    "How does an Audit work?",
-    "What's included in a build?",
-    "Do you offer retainers?",
-    "How long does it take?",
-  ],
-  process: [
-    "What happens in discovery?",
-    "How do you measure results?",
-    "Who works on the project?",
-    "What do you need from us?",
-  ],
-  about: [
-    "What do you build?",
-    "Who do you work with?",
-    "Where are you based?",
-    "How do we get started?",
-  ],
-};
+const BOOK_A_CALL: SuggestionItem = { id: "book_call", text: "Book a call", action: "calendly" };
 
-const DEFAULT_FOLLOWUPS = [
-  "What makes a good AI project",
-  "What makes you different?",
-  "How do we get started?"
-];
-
-function getSuggestions(
-  cta: CTA | null | undefined,
-  hasIdeas = false
+function applyFollowupRules(
+  picks: FollowupPick[] | undefined,
+  clickedIds: Set<string>
 ): SuggestionItem[] {
-  const items: SuggestionItem[] = [];
-
-  if (cta?.url) {
-    const topic = cta.url.replace("/", "");
-    const texts = topic in TOPIC_SUGGESTIONS ? TOPIC_SUGGESTIONS[topic] : DEFAULT_FOLLOWUPS;
-    items.push(...texts.map((t) => ({ text: t })));
-  } else {
-    items.push(...DEFAULT_FOLLOWUPS.map((t) => ({ text: t })));
-  }
-
-  if (hasIdeas) {
-    items.push({ text: "Book a call to discuss", action: "calendly" });
-  } else if (cta) {
-    items.push({ text: cta.label || "Book a Call", action: "calendly" });
-  }
-
-  return items;
+  const filtered: SuggestionItem[] = (picks ?? [])
+    .filter((p) => !clickedIds.has(p.id))
+    .map((p) => ({ id: p.id, text: p.text, cacheKey: p.cacheKey, action: p.action }));
+  if (filtered.length < 2) filtered.push(BOOK_A_CALL);
+  return filtered;
 }
 
 export function ChatPage() {
@@ -75,6 +38,7 @@ export function ChatPage() {
   const [streamingId, setStreamingId] = useState<string | null>(null);
   const [searching, setSearching] = useState<{ id: string; tool: string } | null>(null);
   const [suggestions, setSuggestions] = useState<SuggestionItem[]>(INITIAL_SUGGESTIONS);
+  const [clickedIds, setClickedIds] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
   const [contactOpen, setContactOpen] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -87,6 +51,15 @@ export function ChatPage() {
     createSession()
       .then(setSessionId)
       .catch(() => setError("Failed to connect. Is the server running?"));
+  }, []);
+
+  const handleClickedId = useCallback((id: string) => {
+    setClickedIds((prev) => {
+      if (prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
   }, []);
 
   const handleSend = useCallback(
@@ -114,8 +87,8 @@ export function ChatPage() {
       const controller = new AbortController();
       abortRef.current = controller;
 
-      let pendingCta: CTA | null | undefined = null;
       let pendingIdeas: Idea[] | null = null;
+      let pendingFollowups: FollowupPick[] | undefined = undefined;
 
       const queue = new TokenQueue((token) => {
         setMessages((prev) =>
@@ -140,7 +113,7 @@ export function ChatPage() {
             } else if (event.type === "token") {
               queue.push(event.token);
             } else if (event.type === "done") {
-              pendingCta = event.cta;
+              pendingFollowups = event.followups;
               queue.finish();
 
               // Wait for queue to drain before showing suggestions
@@ -149,11 +122,11 @@ export function ChatPage() {
                   setMessages((prev) =>
                     prev.map((m) =>
                       m.id === assistantId
-                        ? { ...m, cta: pendingCta, ideas: pendingIdeas ?? undefined }
+                        ? { ...m, ideas: pendingIdeas ?? undefined }
                         : m
                     )
                   );
-                  setSuggestions(getSuggestions(pendingCta, !!pendingIdeas?.length));
+                  setSuggestions(applyFollowupRules(pendingFollowups, clickedIds));
                   setIsStreaming(false);
                   setStreamingId(null);
                   setSearching(null);
@@ -179,7 +152,7 @@ export function ChatPage() {
         queueRef.current = null;
       }
     },
-    [sessionId, isStreaming]
+    [sessionId, isStreaming, clickedIds]
   );
 
   const handleCachedAnswer = useCallback(
@@ -277,20 +250,11 @@ export function ChatPage() {
     queueRef.current?.destroy();
     setMessages((prev) => {
       const last = prev[prev.length - 1];
-      const next =
-        last?.role === "assistant" && last.content === ""
-          ? prev.slice(0, -1)
-          : prev;
-      const lastAssistant = [...next]
-        .reverse()
-        .find((m) => m.role === "assistant" && (m.cta || m.ideas?.length));
-      setSuggestions(
-        lastAssistant
-          ? getSuggestions(lastAssistant.cta, !!lastAssistant.ideas?.length)
-          : INITIAL_SUGGESTIONS
-      );
-      return next;
+      return last?.role === "assistant" && last.content === ""
+        ? prev.slice(0, -1)
+        : prev;
     });
+    setSuggestions([]);
     setSearching(null);
   }, []);
 
@@ -336,7 +300,7 @@ export function ChatPage() {
           searchingTool={searching?.tool ?? null}
           footer={
             !isStreaming && suggestions.length > 0 ? (
-              <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} onCached={handleCachedAnswer} />
+              <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} onCached={handleCachedAnswer} onClicked={handleClickedId} sessionId={sessionId} />
             ) : null
           }
         />
@@ -352,7 +316,7 @@ export function ChatPage() {
       {/* Suggestions + Input */}
       <div className="max-w-4xl mx-auto w-full">
         {!isStreaming && suggestions.length > 0 && messages.length === 0 && (
-          <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} onCached={handleCachedAnswer} />
+          <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} onCached={handleCachedAnswer} onClicked={handleClickedId} sessionId={sessionId} />
         )}
         <ChatInput
           onSend={handleSend}

@@ -9,7 +9,7 @@ from langchain_core.documents import Document
 
 class TestSearchKnowledgeBaseTool:
     @patch("app.rag.chain.get_retriever")
-    def test_returns_content_and_topics_artifact(self, mock_retriever_fn):
+    def test_returns_content(self, mock_retriever_fn):
         retriever = MagicMock()
         retriever.invoke.return_value = [
             Document(
@@ -25,15 +25,13 @@ class TestSearchKnowledgeBaseTool:
 
         from app.rag.chain import search_knowledge_base
 
-        msg = search_knowledge_base.invoke(
+        content = search_knowledge_base.invoke(
             {"type": "tool_call", "id": "1", "name": "search_knowledge_base",
              "args": {"query": "what do you offer?"}}
-        )
-        content, artifact = msg.content, msg.artifact
+        ).content
 
         assert "AI consulting" in content
         assert "iterative" in content
-        assert set(artifact["topics"]) == {"services", "process"}
         retriever.invoke.assert_called_once_with("what do you offer?")
 
     @patch("app.rag.chain.get_retriever")
@@ -44,11 +42,9 @@ class TestSearchKnowledgeBaseTool:
 
         from app.rag.chain import search_knowledge_base
 
-        msg = search_knowledge_base.invoke(
+        content = search_knowledge_base.invoke(
             {"type": "tool_call", "id": "1", "name": "search_knowledge_base",
              "args": {"query": "x"}}
-        )
-        content, artifact = msg.content, msg.artifact
+        ).content
 
         assert content == ""
-        assert artifact["topics"] == []
