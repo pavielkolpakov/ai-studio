@@ -830,25 +830,6 @@ From this, we can immediately identify:
 
 ---
 
-## Matching company type to likely AI opportunities
-
-**SaaS product companies:**
-Most common opportunities: intelligent search within the product, AI-assisted onboarding, automated report or summary generation, AI features that enhance the core value proposition.
-
-**Developer tools companies:**
-Most common opportunities: semantic code search, AI-powered documentation Q&A, automated PR summaries and review suggestions, codebase knowledge assistant.
-
-**Internal tools / enterprise software:**
-Most common opportunities: document processing and extraction, internal knowledge assistant (RAG over company knowledge), workflow automation with AI decision points.
-
-**Software consulting / services companies:**
-Most common opportunities: internal knowledge assistant over past project work, proposal and estimate generation assistance, automated project documentation.
-
-**Data-heavy businesses (analytics, fintech, healthtech):**
-Most common opportunities: natural language querying of databases or reports, anomaly detection, document processing and classification, fine-tuned models for domain-specific tasks.
-
----
-
 ## What makes a good AI project
 
 When we evaluate a proposed AI project, we are looking for:

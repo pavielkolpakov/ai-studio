@@ -40,14 +40,12 @@ class TestRecreateCollection:
         assert vector_config.size == EMBEDDING_DIMENSIONS
         assert vector_config.distance == Distance.COSINE
 
-    def test_creates_payload_indexes_for_topic_service_type_industry(self):
+    def test_creates_payload_index_for_topic(self):
         client = MagicMock()
         client.collection_exists.return_value = False
         recreate_collection(client)
         indexed_fields = {call.kwargs["field_name"] for call in client.create_payload_index.call_args_list}
-        assert "metadata.topic" in indexed_fields
-        assert "metadata.service_type" in indexed_fields
-        assert "metadata.industry" in indexed_fields
+        assert indexed_fields == {"metadata.topic"}
 
     def test_deletes_and_recreates_existing_collection(self, qdrant_client: QdrantClient):
         # Create initial collection

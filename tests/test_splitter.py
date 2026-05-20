@@ -11,7 +11,7 @@ from app.ingestion.splitter import (
     _split_by_h1,
     _split_by_h2,
     load_and_split,
-    load_and_split_templates,
+    load_and_split_catalog,
 )
 
 SAMPLE_MD = """\
@@ -189,157 +189,96 @@ class TestLoadAndSplit:
             assert doc.metadata["header"] == "Big section"
 
 
-SAMPLE_TEMPLATES_MD = """\
-# Neuronetis — Past Project Templates
-
-Intro text that should be ignored.
+SAMPLE_CATALOG_MD = """\
+# Neuronetis Project Catalog
 
 ---
 
-# AI Audits
+## 1. RAG / Internal Knowledge Assistant
 
-Intro about audits.
+Pitch paragraph about RAG systems.
 
-## Example A1: AI Opportunity Audit for a 90-person construction-tech SaaS
+**How it's built:**
+Documents are ingested and embedded.
 
-**Client profile:** B2B SaaS, 90 employees.
+**Who buys this:**
+- SaaS companies with large wikis
+- Customer support teams
 
-**The problem:** Leadership wanted an outside read.
+**Numbers:**
+- Typical project size: $18,000-$35,000
 
-**Outcome:** Roadmap delivered.
+---
 
-**Timeline and Total cost:** 3 weeks. Total: **$8,500**.
+## 2. AI Feature Audit & LLM Readiness Sprint
 
-## Example A2: Implementation review for a fintech
+Pitch about audits.
 
-**Client profile:** Series B fintech.
+**Who buys this:**
+- Series A-C SaaS companies
 
-**Outcome:** Rebuild approved.
+**Numbers:**
+- Typical project size: $5,000-$12,000
 
-**Timeline and Total cost:** 2 weeks. Total: **$5,500**.
+---
 
-# AI Integration
+## 3. Embedded LLM Feature
 
-Intro about integration.
+Pitch paragraph.
 
-## Finance / Fintech
+**Who buys this:**
+- B2B SaaS PMs
 
-### Example I1: AI-powered transaction coding for a corporate spend platform
-
-**Client profile:** Mid-market spend SaaS.
-
-**Outcome:** 87% accuracy.
-
-**Timeline and Total cost:** 8 weeks. Total: **$31,000**.
-
-### Example I2: AI research assistant over SEC filings
-
-**Client profile:** Investment research SaaS.
-
-**Outcome:** 96.8% citation correctness.
-
-**Timeline and Total cost:** 10 weeks. Total: **$38,000**.
-
-## Software Development / DevTools
-
-### Example I6: AI code review
-
-**Client profile:** B2B SaaS, 220 engineers.
-
-**Outcome:** 4.5h time-to-first-review.
-
-**Timeline and Total cost:** 9 weeks. Total: **$34,000**.
-
-# Custom AI Apps
-
-Intro about custom apps.
-
-## Example C1: Incident-response copilot for an observability SaaS
-
-**Client profile:** Observability SaaS.
-
-**Outcome:** 17 min MTTD.
-
-**Timeline and Total cost:** 11 weeks. Total: **$46,000**.
-
-# Closing notes
-
-These should be skipped.
+**Numbers:**
+- Typical project size: $20,000-$40,000
 """
 
 
-class TestLoadAndSplitTemplates:
+class TestLoadAndSplitCatalog:
     @pytest.fixture
     def md_file(self, tmp_path: Path) -> Path:
-        p = tmp_path / "project_templates.md"
-        p.write_text(SAMPLE_TEMPLATES_MD, encoding="utf-8")
+        p = tmp_path / "neuronetis-project-catalog.md"
+        p.write_text(SAMPLE_CATALOG_MD, encoding="utf-8")
         return p
 
-    def test_returns_one_doc_per_case_study(self, md_file: Path):
-        docs = load_and_split_templates(md_file)
-        # 6 case studies in sample: A1, A2, I1, I2, I6, C1
+    def test_one_doc_per_numbered_project(self, md_file: Path):
+        docs = load_and_split_catalog(md_file)
+        assert len(docs) == 3
+
+    def test_header_strips_numbering(self, md_file: Path):
+        docs = load_and_split_catalog(md_file)
         headers = {doc.metadata["header"] for doc in docs}
-        assert any(h.startswith("Example A1") for h in headers)
-        assert any(h.startswith("Example A2") for h in headers)
-        assert any(h.startswith("Example I1") for h in headers)
-        assert any(h.startswith("Example I2") for h in headers)
-        assert any(h.startswith("Example I6") for h in headers)
-        assert any(h.startswith("Example C1") for h in headers)
+        assert "RAG / Internal Knowledge Assistant" in headers
+        assert "AI Feature Audit & LLM Readiness Sprint" in headers
+        assert "Embedded LLM Feature" in headers
+        for h in headers:
+            assert not h[0].isdigit()
 
-    def test_all_docs_have_topic_templates(self, md_file: Path):
-        docs = load_and_split_templates(md_file)
+    def test_metadata_shape(self, md_file: Path):
+        docs = load_and_split_catalog(md_file)
         for doc in docs:
-            assert doc.metadata["topic"] == "templates"
-            assert doc.metadata["source"] == "project_templates.md"
+            assert doc.metadata["topic"] == "projects_catalog"
+            assert doc.metadata["source"] == "neuronetis-project-catalog.md"
+            assert "header" in doc.metadata
+            # No industry/service_type
+            assert "industry" not in doc.metadata
+            assert "service_type" not in doc.metadata
 
-    def test_service_type_inferred_from_h1(self, md_file: Path):
-        docs = load_and_split_templates(md_file)
-        by_header = {d.metadata["header"]: d.metadata for d in docs}
-        a1 = next(m for h, m in by_header.items() if h.startswith("Example A1"))
-        i1 = next(m for h, m in by_header.items() if h.startswith("Example I1"))
-        c1 = next(m for h, m in by_header.items() if h.startswith("Example C1"))
-        assert a1["service_type"] == "audit"
-        assert i1["service_type"] == "integration"
-        assert c1["service_type"] == "custom_app"
+    def test_content_includes_buyer_profile_and_numbers(self, md_file: Path):
+        docs = load_and_split_catalog(md_file)
+        rag = next(d for d in docs if d.metadata["header"].startswith("RAG"))
+        assert "Who buys this" in rag.page_content
+        assert "Customer support teams" in rag.page_content
+        assert "$18,000-$35,000" in rag.page_content
 
-    def test_industry_inferred_from_h2_for_integration(self, md_file: Path):
-        docs = load_and_split_templates(md_file)
-        by_header = {d.metadata["header"]: d.metadata for d in docs}
-        i1 = next(m for h, m in by_header.items() if h.startswith("Example I1"))
-        i2 = next(m for h, m in by_header.items() if h.startswith("Example I2"))
-        i6 = next(m for h, m in by_header.items() if h.startswith("Example I6"))
-        assert i1["industry"] == "fintech"
-        assert i2["industry"] == "fintech"
-        assert i6["industry"] == "devtools"
-
-    def test_audits_and_custom_have_no_industry(self, md_file: Path):
-        docs = load_and_split_templates(md_file)
-        for doc in docs:
-            if doc.metadata["service_type"] in ("audit", "custom_app"):
-                assert doc.metadata.get("industry") is None
-
-    def test_skips_intro_and_closing_sections(self, md_file: Path):
-        docs = load_and_split_templates(md_file)
-        for doc in docs:
-            assert "Closing notes" not in doc.metadata["header"]
-            assert "Past Project Templates" not in doc.metadata["header"]
-
-    def test_case_study_content_intact(self, md_file: Path):
-        docs = load_and_split_templates(md_file)
-        a1 = next(d for d in docs if d.metadata["header"].startswith("Example A1"))
-        # The full case content should be preserved as one chunk
-        assert "Leadership wanted an outside read" in a1.page_content
-        assert "$8,500" in a1.page_content
-
-    def test_real_templates_file(self):
-        real_path = Path(__file__).resolve().parents[1] / "docs" / "project_templates.md"
+    def test_real_catalog_file(self):
+        real_path = (
+            Path(__file__).resolve().parents[1] / "docs" / "neuronetis-project-catalog.md"
+        )
         if not real_path.exists():
-            pytest.skip("docs/project_templates.md not found")
-        docs = load_and_split_templates(real_path)
-        # 22 case studies in the real file (A1-A2, I1-I17, C1-C3)
-        headers = [d.metadata["header"] for d in docs]
-        assert sum(1 for h in headers if h.startswith("Example ")) >= 22
-        service_types = {d.metadata["service_type"] for d in docs}
-        assert service_types == {"audit", "integration", "custom_app"}
-        industries = {d.metadata.get("industry") for d in docs if d.metadata.get("industry")}
-        assert {"fintech", "devtools", "marketing_sales", "data_analytics"} <= industries
+            pytest.skip("docs/neuronetis-project-catalog.md not found")
+        docs = load_and_split_catalog(real_path)
+        assert len(docs) == 12
+        for doc in docs:
+            assert doc.metadata["topic"] == "projects_catalog"
+            assert doc.metadata["source"] == "neuronetis-project-catalog.md"
