@@ -11,7 +11,7 @@ class TestGetCatalogRetriever:
     @patch("app.rag.ideas.QdrantVectorStore")
     @patch("app.rag.ideas.get_embeddings")
     @patch("app.rag.ideas.get_qdrant_client")
-    def test_filters_topic_and_uses_k_2(self, _client, _embed, mock_vs_cls):
+    def test_filters_topic_and_uses_k_3(self, _client, _embed, mock_vs_cls):
         mock_vs = MagicMock()
         mock_vs_cls.return_value = mock_vs
         mock_vs.as_retriever.return_value = MagicMock()
@@ -21,7 +21,7 @@ class TestGetCatalogRetriever:
         get_catalog_retriever()
 
         search_kwargs = mock_vs.as_retriever.call_args[1]["search_kwargs"]
-        assert search_kwargs["k"] == 2
+        assert search_kwargs["k"] == 3
         serialized = search_kwargs["filter"].model_dump_json()
         assert "projects_catalog" in serialized
         assert "topic" in serialized
@@ -42,6 +42,14 @@ class TestGenerateIdeasPayload:
                     tech=["LangChain", "OpenAI"],
                     price_range="$8k-$15k",
                     time_estimate="3-5 weeks",
+                ),
+                Idea(
+                    title="Knowledge Base Assistant",
+                    description="RAG over internal docs.",
+                    deliverables=["Indexer", "Chat UI"],
+                    tech=["Qdrant", "OpenAI"],
+                    price_range="$10k-$20k",
+                    time_estimate="4-6 weeks",
                 ),
             ]
         )
@@ -93,6 +101,14 @@ class TestGenerateProjectIdeasTool:
                     price_range="$5k-$10k",
                     time_estimate="2-4 weeks",
                 ),
+                Idea(
+                    title="Support Copilot",
+                    description="LLM-assisted agent replies.",
+                    deliverables=["Reply suggester", "Eval harness"],
+                    tech=["LangChain"],
+                    price_range="$8k-$15k",
+                    time_estimate="3-5 weeks",
+                ),
             ]
         )
 
@@ -109,7 +125,7 @@ class TestGenerateProjectIdeasTool:
 
         assert isinstance(msg.content, str) and msg.content
         ideas = msg.artifact["ideas"]
-        assert len(ideas) == 1
+        assert len(ideas) == 2
         assert ideas[0]["title"] == "Doc Search"
         mock_gen.assert_called_once_with("fintech startup")
 

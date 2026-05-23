@@ -18,11 +18,15 @@ class Idea(BaseModel):
 
 
 class IdeasPayload(BaseModel):
-    ideas: list[Idea] = Field(description="Between 3 and 5 tailored AI project ideas.")
+    ideas: list[Idea] = Field(
+        description="2 or 3 tailored AI project ideas.",
+        min_length=2,
+        max_length=3,
+    )
 
 
 def get_catalog_retriever():
-    """Qdrant retriever scoped to topic=projects_catalog, k=2."""
+    """Qdrant retriever scoped to topic=projects_catalog, k=3."""
     client = get_qdrant_client()
     embeddings = get_embeddings()
     vector_store = QdrantVectorStore(
@@ -33,12 +37,12 @@ def get_catalog_retriever():
     filter_ = Filter(must=[
         FieldCondition(key="metadata.topic", match=MatchValue(value="projects_catalog")),
     ])
-    return vector_store.as_retriever(search_kwargs={"k": 2, "filter": filter_})
+    return vector_store.as_retriever(search_kwargs={"k": 3, "filter": filter_})
 
 
 def generate_ideas_payload(description: str) -> IdeasPayload:
-    """Retrieve the 2 most relevant catalog projects and ask a structured-output LLM
-    for 3-5 tailored ideas grounded in those projects."""
+    """Retrieve the 3 most relevant catalog projects and ask a structured-output LLM
+    to lightly adapt each one to the user's context (2 or 3 ideas)."""
     retriever = get_catalog_retriever()
     docs = retriever.invoke(description)
     context = "\n\n".join(d.page_content for d in docs)
