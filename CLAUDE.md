@@ -48,6 +48,7 @@ tests/               # pytest (run from project root)
 - **Postgres**: Railway-managed, connected via `DATABASE_URL` env var
 - **Qdrant**: Qdrant Cloud (not Railway), connected via `QDRANT_URL` + `QDRANT_API_KEY`
 - New model changes require a committed Alembic migration to take effect on deploy
+- **Run ingestion against prod**: `cd src && railway run --service ai-studio --environment production -- python -m app.ingestion`. Runs locally but injects prod env (`QDRANT_URL`, `QDRANT_API_KEY`, `OPENAI_API_KEY`) so it writes to prod Qdrant Cloud. Don't SSH into the container - `docs/` is not copied into the image.
 
 ## Rules
 

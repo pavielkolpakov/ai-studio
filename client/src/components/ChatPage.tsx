@@ -9,7 +9,7 @@ import { ContactModal } from "./ContactModal";
 import { CACHED_ANSWERS } from "@/data/cachedAnswers";
 
 const IDEAS_PROMPT_TEXT =
-  "Describe your existing project or any ideas you have in mind to get tailored suggestions";
+  "Tell us about your company to get tailored AI project ideas. Useful to include: what your product does in a sentence or two, who your users are, what data you have (kind, rough volume, where it lives), what your users complain about most, what your support team gets asked most often, what your internal team does manually that they wish was automated, and any AI features your competitors have shipped.";
 
 const INITIAL_SUGGESTIONS: SuggestionItem[] = [
   { text: "Services & pricing", cacheKey: "services_and_pricing" },
