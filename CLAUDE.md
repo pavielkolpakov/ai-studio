@@ -26,7 +26,7 @@ src/
     middleware/      # logger_middleware.py
   migrations/        # Alembic (run from src/)
   .env               # Config (not committed)
-docs/RAG.md          # Source content for ingestion (55KB, 10 sections)
+docs/RAG.md          # Source content for ingestion (9 sections)
 tests/               # pytest (run from project root)
 ```
 
@@ -40,7 +40,7 @@ tests/               # pytest (run from project root)
 - **LangChain**: 1.0 LTS (not 0.3)
 - **Qdrant**: Qdrant Cloud in prod; local Docker instance for dev (port 6333)
 - **Ingestion**: single Qdrant collection, wipe-and-reload, 800 token chunks / 100 overlap, top-k=4
-- **Topic tags**: about, services, technical, use-cases, process, faq, projects, templates (case studies; also tagged with `service_type` + `industry`)
+- **Topic tags**: about, services, technical, use-cases, process, faq (RAG.md), projects_catalog (neuronetis-project-catalog.md, one chunk per numbered project; used by idea-generation retrieval, k=3)
 
 ## Deployment (Railway)
 

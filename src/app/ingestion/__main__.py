@@ -4,19 +4,19 @@ import time
 from collections import Counter
 from pathlib import Path
 
-from app.ingestion.splitter import load_and_split, load_and_split_templates
+from app.ingestion.splitter import load_and_split, load_and_split_catalog
 from app.ingestion.vector_store import get_embeddings, get_qdrant_client, load_documents
 
 DOCS_DIR = Path(__file__).resolve().parents[3] / "docs"
 RAG_PATH = DOCS_DIR / "RAG.md"
-TEMPLATES_PATH = DOCS_DIR / "project_templates.md"
+CATALOG_PATH = DOCS_DIR / "neuronetis-project-catalog.md"
 
 
 def main() -> None:
-    print(f"Loading documents from {RAG_PATH} and {TEMPLATES_PATH}")
+    print(f"Loading documents from {RAG_PATH} and {CATALOG_PATH}")
     start = time.perf_counter()
 
-    documents = load_and_split(RAG_PATH) + load_and_split_templates(TEMPLATES_PATH)
+    documents = load_and_split(RAG_PATH) + load_and_split_catalog(CATALOG_PATH)
 
     topic_counts = Counter(doc.metadata["topic"] for doc in documents)
     print("\nChunks by topic:")

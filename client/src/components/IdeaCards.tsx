@@ -8,8 +8,10 @@ interface Props {
 export function IdeaCards({ ideas }: Props) {
   if (!ideas.length) return null;
 
+  const lgCols = ideas.length >= 3 ? "lg:grid-cols-3" : "lg:grid-cols-2";
+
   return (
-    <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3 md:grid-rows-[auto_auto_auto_auto] md:[&>*]:row-span-4 md:[&>*]:grid md:[&>*]:grid-rows-subgrid">
+    <div className={`mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 ${lgCols} md:grid-rows-[auto_auto_auto_auto] md:[&>*]:row-span-4 md:[&>*]:grid md:[&>*]:grid-rows-subgrid`}>
       {ideas.map((idea, i) => (
           <Card
             key={i}

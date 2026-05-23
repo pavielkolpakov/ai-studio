@@ -10,22 +10,23 @@ from app.rag.prompts import IDEAS_GENERATION_PROMPT
 
 class Idea(BaseModel):
     title: str = Field(description="Short, punchy name of the AI project idea.")
-    description: str = Field(description="1–2 sentence scope of the idea.")
-    deliverables: list[str] = Field(description="3–5 concrete deliverable bullets.")
+    description: str = Field(description="1-2 sentence scope of the idea.")
+    deliverables: list[str] = Field(description="3-5 concrete deliverable bullets.")
     tech: list[str] = Field(description="Key technologies / frameworks involved.")
-    price_range: str = Field(description="Rough price range, e.g. '$8k–$15k'.")
-    time_estimate: str = Field(description="Rough time estimate, e.g. '3–5 weeks'.")
+    price_range: str = Field(description="Rough price range, e.g. '$8k-$15k'.")
+    time_estimate: str = Field(description="Rough time estimate, e.g. '3-5 weeks'.")
 
 
 class IdeasPayload(BaseModel):
-    ideas: list[Idea] = Field(description="Between 3 and 5 tailored AI project ideas.")
+    ideas: list[Idea] = Field(
+        description="2 or 3 tailored AI project ideas.",
+        min_length=2,
+        max_length=3,
+    )
 
 
-def get_templates_retriever(
-    industry: str | None = None,
-    service_type: str | None = None,
-):
-    """Qdrant retriever scoped to topic=templates with optional industry/service_type filters."""
+def get_catalog_retriever():
+    """Qdrant retriever scoped to topic=projects_catalog, k=3."""
     client = get_qdrant_client()
     embeddings = get_embeddings()
     vector_store = QdrantVectorStore(
@@ -33,41 +34,17 @@ def get_templates_retriever(
         collection_name=settings.QDRANT_COLLECTION,
         embedding=embeddings,
     )
-    must = [FieldCondition(key="metadata.topic", match=MatchValue(value="templates"))]
-    if industry:
-        must.append(FieldCondition(key="metadata.industry", match=MatchValue(value=industry)))
-    if service_type:
-        must.append(FieldCondition(key="metadata.service_type", match=MatchValue(value=service_type)))
-    return vector_store.as_retriever(search_kwargs={"k": 4, "filter": Filter(must=must)})
+    filter_ = Filter(must=[
+        FieldCondition(key="metadata.topic", match=MatchValue(value="projects_catalog")),
+    ])
+    return vector_store.as_retriever(search_kwargs={"k": 3, "filter": filter_})
 
 
-def generate_ideas_payload(
-    description: str,
-    industry: str | None = None,
-    service_type: str | None = None,
-) -> IdeasPayload:
-    """Retrieve relevant case-study templates and ask a structured-output LLM for 3–5 tailored ideas.
-
-    Filter fallback: industry + service_type → industry only → no filters.
-    """
-    docs: list = []
-    # Try with both filters, then drop service_type, then drop industry.
-    filter_tries = [
-        {"industry": industry, "service_type": service_type},
-        {"industry": industry, "service_type": None},
-        {"industry": None, "service_type": None},
-    ]
-    seen: set[tuple[str | None, str | None]] = set()
-    for kwargs in filter_tries:
-        key = (kwargs["industry"], kwargs["service_type"])
-        if key in seen:
-            continue
-        seen.add(key)
-        retriever = get_templates_retriever(**kwargs)
-        docs = retriever.invoke(description)
-        if docs:
-            break
-
+def generate_ideas_payload(description: str) -> IdeasPayload:
+    """Retrieve the 3 most relevant catalog projects and ask a structured-output LLM
+    to lightly adapt each one to the user's context (2 or 3 ideas)."""
+    retriever = get_catalog_retriever()
+    docs = retriever.invoke(description)
     context = "\n\n".join(d.page_content for d in docs)
 
     llm = ChatOpenAI(

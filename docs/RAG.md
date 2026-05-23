@@ -1,32 +1,30 @@
-# AI Studio — Knowledge Base Documents
-
-10 documents ready to ingest into your RAG system.
+# Neuronetis — Knowledge Base
 
 ---
 
 # What We Do and Who We Are
 
-## Studio overview
+## Studio Overview
 
 We are an AI engineering studio that builds production-grade AI systems for IT companies and software product teams. We specialize in integrating artificial intelligence directly into existing software products and building new AI-native applications from the ground up.
 
-We are not a general software agency. We focus exclusively on AI engineering — retrieval-augmented generation (RAG), semantic search, LLM integration, fine-tuning, and AI-powered application development. This focus means our team works with these systems every day, which translates to faster delivery, fewer surprises, and better architectural decisions for our clients.
+We are not a general software agency. We focus exclusively on AI engineering — retrieval-augmented generation (RAG), LLM integration into products, agentic workflow automation, voice AI, MCP integrations, model fine-tuning, evals infrastructure, and AI-native application development. This focus means our team works with these systems every day, which translates to faster delivery, fewer surprises, and better architectural decisions for our clients.
 
-## Who we work with
+## Who We Work With
 
 Our clients are typically:
-- IT product companies (50–500 employees) that have an existing SaaS product and want to add AI capabilities to stay competitive
-- Software development companies that need an AI subcontractor they can engage on a project basis for their own clients
-- Scale-ups and growth-stage companies sitting on large proprietary datasets (documents, support tickets, logs, product data) who need to make that data intelligent and queryable
-- AI-first startups with a funded idea but no in-house ML or AI engineering capability, who need to ship fast
+- B2B SaaS companies (50–500 employees) with an existing product that needs AI capabilities to stay competitive
+- Software development agencies that need an AI subcontractor they can engage on a project basis for their own clients
+- Scale-ups and growth-stage companies sitting on large proprietary datasets — documents, support tickets, logs, product data — who need to make that data intelligent and queryable
+- AI-first startups with a funded idea but no in-house ML or AI engineering capability who need to ship fast
 
-We work best with clients who have a technical team internally — a CTO, VP of Engineering, or technical lead who understands software architecture. We don't replace your team; we extend it with deep AI expertise.
+We work best with clients who have a technical point of contact internally — a CTO, VP of Engineering, or technical lead who understands software architecture. We don't replace your team; we extend it with deep AI expertise.
 
-## What we are not
+## What We Are Not
 
 We do not build generic chatbots powered by a system prompt. We do not resell OpenAI wrappers. We do not take on projects where the client wants AI for the sake of AI with no clear use case. Every engagement starts with understanding your actual problem, and we will tell you honestly if AI is not the right solution for it.
 
-## Our values as a studio
+## Our Values as a Studio
 
 **We don't lock you in.** All code we write is yours. We document everything as if we'll never speak again. Your team should be able to maintain and extend everything we build.
 
@@ -36,166 +34,92 @@ We do not build generic chatbots powered by a system prompt. We do not resell Op
 
 **We take on 3–4 projects per quarter.** We deliberately limit capacity so every client gets senior-level attention throughout the engagement, not a junior developer handed a spec.
 
-## Our location and setup
+## Our Location and Setup
 
-We are a distributed studio. Our lead engineers are based in Isreal, US and Eastern Europe with client delivery experience across the EU, Israel, and North America. We work in European and overlap-friendly time zones and are fluent in English for all technical communication.
+We are a distributed studio. Our lead engineers are based in Israel, the US, and Eastern Europe, with client delivery experience across the EU, Israel, and North America. We work in European and overlap-friendly time zones and are fluent in English for all technical communication.
 
-## Our team
+## Our Team
 
 We are organized around three specialized teams that cover the full delivery stack:
 
-- **AI / Backend team** — responsible for AI engineering work (RAG pipelines, LLM integration, fine-tuning, agents) as well as the backend services and APIs that wrap them. This is the core of every project we deliver.
+- **AI / Backend team** — responsible for AI engineering work (RAG pipelines, LLM integration, fine-tuning, agents, evals) as well as the backend services and APIs that wrap them. This is the core of every project we deliver.
 - **Frontend / Mobile team** — builds the client-facing layer when a project requires it: web applications, admin interfaces, embedded chat widgets, and mobile apps.
 - **DevOps team** — handles infrastructure, CI/CD pipelines, cloud deployments, observability, and production reliability across all our engagements.
 
 Each project is staffed with senior engineers from the relevant teams, scaled to match the scope of the work.
 
-## Our technology stack
-
-We have a default stack we are most productive with, refined across many projects. We are not dogmatic about it — if a client has an existing project on different technologies, we will discuss the best way to integrate with their setup during the discovery phase.
-
-**Backend:**
-- **Python** with **FastAPI** — our primary choice for AI services, RAG pipelines, and most backend work
-- **Go** — for performance-critical services and high-throughput components
-- **TypeScript** (Node.js) — for backend work that benefits from a shared language with the frontend or for specific ecosystem fit
-
-**Frontend and mobile:**
-- **React** for web applications
-- **React Native** for mobile (iOS and Android from a shared codebase)
-
-**Hosting and infrastructure:**
-- **AWS** and **Azure** for production cloud deployments, especially for clients with enterprise compliance requirements
-- **Vercel** for frontend deployments
-- **Railway** for fast-moving projects, prototypes, and lighter backend workloads
-
-**Databases and data layer:**
-- **PostgreSQL** as our default relational database
-- **Supabase** when we need Postgres plus auth, storage, and realtime out of the box
-- **MongoDB** for document-oriented workloads
-- **Qdrant** and **FAISS** for vector storage and semantic search
-- **Redis** for caching, queues, and session storage
-
-If a client comes to us with an existing codebase using a different stack — Django, Ruby on Rails, .NET, Java, Vue, Angular, GCP, or anything else — we are happy to work within their environment. We discuss the integration approach during discovery and adapt our delivery accordingly.
-
 ---
 
 # Our Services
 
-We offer four core service types. Each is a fixed-scope engagement with a defined deliverable, timeline, and starting price. All projects begin with a 1-week discovery phase.
+We offer a range of AI engineering services. Every engagement is a fixed-scope project with a defined deliverable, timeline, and price. All projects over $5,000 begin with a paid 1-week discovery phase.
 
----
+Our full project catalog covers 12 service types across every major AI engineering use case — from quick RAG MVPs and AI feature audits to production agentic platforms, voice agents, and enterprise compliance systems. If you describe your business or product, we can identify which projects are most relevant to your situation.
 
-## 1. AI Feature Integration
+**Service categories:**
+- RAG and knowledge assistant systems
+- AI feature integration into existing SaaS products
+- Customer support automation and deflection agents
+- MCP server and agent-ready API layer development
+- Internal workflow and ops automation agents
+- AI evals and observability infrastructure
+- Model fine-tuning for domain-specific tasks
+- Voice AI agents for business operations
+- Enterprise knowledge and compliance AI platforms
+- AI-augmented developer tooling and code review agents
+- AI feature audits and LLM readiness sprints
+- Full AI-native product builds
 
-**What it is:** We embed AI capabilities into your existing product — adding intelligence to features that currently operate without it. This could mean adding semantic search to replace keyword search, integrating an LLM-powered assistant into your product's UI, building an AI-driven recommendation engine, or automating a workflow that currently requires manual human judgment.
+**Typical engagement sizes:**
+- Quick wins: $5,000–$25,000 / 2–6 weeks
+- Mid-size builds: $25,000–$100,000 / 4–12 weeks
+- Larger end-to-end builds: $100,000–$400,000 / 3–6+ months
 
-**Who it's for:** Product companies with a working SaaS or internal tool that wants to feel smarter. Your core product is built; you need AI layered in without a full rewrite.
-
-**What we deliver:** Production-ready AI features integrated into your existing codebase, with full documentation, test coverage, and a handover session for your team.
-
-**Typical stack:** FastAPI or integration with your existing backend, OpenAI / Anthropic APIs, LangChain or direct API calls, your existing database extended with pgvector or a separate Qdrant collection.
-
-**Timeline:** 3–6 weeks depending on scope.
-
-**Starting from:** $5,000. Typical engagements run $8,000–$15,000.
-
----
-
-## 2. RAG Systems and Knowledge Pipelines
-
-**What it is:** We build retrieval-augmented generation systems that let your users (or your team) query your internal knowledge intelligently. This means natural language questions answered accurately from your actual data — documents, wikis, support tickets, product manuals, codebases, databases.
-
-**Who it's for:** Companies with large unstructured or semi-structured internal data that is currently hard to search, summarize, or reason over. Common examples: a SaaS company with thousands of support tickets, a professional services firm with years of reports and documents, a developer tools company that wants users to query their documentation conversationally.
-
-**What we deliver:** A complete RAG pipeline — document ingestion, chunking, embedding, vector storage, retrieval logic, reranking, and a generation layer with LLM — plus an API your frontend can consume and a basic admin interface for managing the knowledge base.
-
-**Typical stack:** FastAPI, LangChain or LlamaIndex, OpenAI embeddings (text-embedding-3-small or large), Qdrant or pgvector, GPT-4o or Claude for generation, async ingestion worker.
-
-**Timeline:** 4–8 weeks.
-
-**Starting from:** $8,000. Typical engagements run $12,000–$25,000.
-
----
-
-## 3. Custom AI Application Development
-
-**What it is:** We design and build a new AI-native application from scratch. This is for clients who have an AI product idea — a tool, platform, or internal system — and need a team to architect and build it end to end.
-
-**Who it's for:** Startups with seed or Series A funding and an AI product concept. Companies that want to build an internal AI tool that doesn't exist yet. Teams that have tried to scope this internally but lack the ML/AI architecture experience to start confidently.
-
-**What we deliver:** A fully functional production application — backend (FastAPI), AI layer (RAG, agents, fine-tuned models, or a combination), data layer (relational + vector), and frontend if required. Includes infrastructure setup, CI/CD, documentation, and a 30-day post-launch support window.
-
-**Timeline:** 6–16 weeks depending on complexity.
-
-**Starting from:** $15,000. Typical engagements run $20,000–$50,000.
-
----
-
-## 4. Model Fine-Tuning and Custom Model Development
-
-**What it is:** When off-the-shelf models don't perform well enough on your specific domain, we fine-tune or train models on your data. This produces a model that understands your terminology, your product, your edge cases — and performs significantly better than a prompted general model on your specific task.
-
-**Who it's for:** Companies with a specific, well-defined task where general LLMs underperform. Examples: a legal tech company that needs accurate clause classification, a medical software company that needs clinical note summarization, a developer tools company that needs code completion in a proprietary language or framework, a fintech that needs named entity extraction on financial documents.
-
-**What we deliver:** Fine-tuned model weights (LoRA adapters or full fine-tune depending on requirements), evaluation pipeline with benchmark results before and after, model serving setup (vLLM, HuggingFace Inference Endpoints, or custom), and documentation.
-
-**Typical stack:** HuggingFace Transformers, PEFT/LoRA, Weights & Biases for experiment tracking, vLLM or TGI for serving, Python training pipeline.
-
-**Timeline:** 4–10 weeks including data preparation, training runs, and evaluation.
-
-**Starting from:** $10,000. Typical engagements run $15,000–$40,000.
-
----
-
-## Add-on: Monthly Retainer
-
-After completing a project, many clients engage us on a monthly retainer for ongoing work: expanding the system, improving retrieval quality, adding new data sources, running experiments, or simply having senior AI engineering available on demand.
-
-**Retainer pricing:** $1,500–$3,000/month depending on scope and hours. Minimum 3-month commitment.
+**Retainer:** After completing a project, many clients engage us on a monthly retainer for ongoing improvement, new data sources, additional features, or senior AI engineering on demand. Retainers start at $3,000/month.
 
 ---
 
 # How RAG Works — A Technical Explanation
 
-## What is RAG?
+## What Is RAG?
 
 Retrieval-Augmented Generation (RAG) is an architecture that combines a retrieval system with a large language model (LLM) to produce answers grounded in a specific knowledge base. Instead of relying solely on what the LLM learned during training, a RAG system first fetches relevant documents from your data at query time, then passes those documents to the LLM as context for generating an answer.
 
 The result: an AI system that answers questions accurately from your specific data, stays up to date as your data changes, and doesn't hallucinate facts it doesn't know — because every answer is anchored to retrieved source documents.
 
-## Why RAG instead of just prompting an LLM?
+## Why RAG Instead of Just Prompting an LLM?
 
-A plain LLM (even GPT-4) has no knowledge of your internal data. It cannot answer questions about your product documentation, your support history, your internal processes, or your proprietary knowledge. You could put some of this in a system prompt, but the context window has limits — you cannot stuff 50,000 documents into a prompt.
+A plain LLM — even GPT-4 — has no knowledge of your internal data. It cannot answer questions about your product documentation, your support history, your internal processes, or your proprietary knowledge. You could put some of this in a system prompt, but the context window has limits — you cannot stuff 50,000 documents into a prompt.
 
 RAG solves this by making retrieval dynamic: it finds the most relevant documents for each specific query and only passes those to the LLM. This means your knowledge base can be arbitrarily large.
 
-## The RAG pipeline — step by step
+## The RAG Pipeline — Step by Step
 
 **Ingestion phase (happens offline, on a schedule, or on document upload):**
 
-1. **Document loading** — your source data is loaded from wherever it lives: PDFs, Word docs, Notion, Confluence, databases, S3, APIs. We write custom loaders for each source.
+1. **Document loading** — source data is loaded from wherever it lives: PDFs, Word docs, Notion, Confluence, databases, S3, APIs. We write custom loaders for each source.
 
 2. **Chunking** — documents are split into smaller pieces (chunks). Chunk size and strategy matter significantly: too large and retrieval is imprecise; too small and individual chunks lack context. We typically use recursive character splitting with 512–1024 token chunks and meaningful overlap (100–200 tokens).
 
-3. **Embedding** — each chunk is converted into a vector (a list of numbers that encodes semantic meaning) using an embedding model. We typically use OpenAI's text-embedding-3-small or text-embedding-3-large depending on quality requirements and cost constraints.
+3. **Embedding** — each chunk is converted into a vector using an embedding model. We typically use OpenAI's text-embedding-3-small or text-embedding-3-large depending on quality requirements and cost.
 
-4. **Vector storage** — vectors are stored in a vector database alongside the original chunk text and metadata. We use Qdrant for most production systems or pgvector (Postgres extension) for simpler use cases.
+4. **Vector storage** — vectors are stored in a vector database alongside the original chunk text and metadata. We use Qdrant for most production systems or pgvector for simpler use cases.
 
 **Query phase (happens in real time, per user query):**
 
 5. **Query embedding** — the user's question is converted to a vector using the same embedding model used during ingestion.
 
-6. **Similarity search** — the vector DB finds the top-K chunks whose vectors are most semantically similar to the query vector. This is the "retrieval" step.
+6. **Similarity search** — the vector database finds the top-K chunks whose vectors are most semantically similar to the query vector.
 
-7. **Reranking (optional but recommended)** — a cross-encoder reranker (e.g., Cohere Rerank or a local model) re-scores the top-K results for relevance. This significantly improves precision in production systems.
+7. **Reranking (optional but recommended)** — a cross-encoder reranker re-scores the top-K results for relevance. This significantly improves precision in production systems.
 
-8. **Context construction** — retrieved chunks are assembled into a context block, with source metadata attached (document name, page, section).
+8. **Context construction** — retrieved chunks are assembled into a context block with source metadata attached (document name, page, section).
 
-9. **Generation** — the LLM receives: a system prompt defining its role and behavior, the assembled context, and the user's query. It generates a grounded answer, citing the sources.
+9. **Generation** — the LLM receives a system prompt, the assembled context, and the user's query. It generates a grounded answer, citing the sources.
 
 10. **Response delivery** — the answer is streamed back to the user with source citations displayed.
 
-## What makes a RAG system production-quality?
+## What Makes a RAG System Production-Quality?
 
 Most RAG demos are toy systems that work on clean data with simple queries. Production RAG requires:
 
@@ -206,7 +130,7 @@ Most RAG demos are toy systems that work on clean data with simple queries. Prod
 - **Evaluation pipeline:** an automated way to measure retrieval precision and generation quality as you iterate
 - **Graceful fallbacks:** handling queries outside the knowledge base scope without hallucinating
 
-## When is RAG the right choice?
+## When Is RAG the Right Choice?
 
 RAG is the right architecture when:
 - You have a large, dynamic knowledge base that changes over time
@@ -225,103 +149,60 @@ RAG is NOT the right choice when:
 
 One of the most common questions we get from technical clients is: "Should we fine-tune a model, use RAG, or just write a better system prompt?" The answer depends on your specific use case, data characteristics, latency requirements, and budget. Here is a practical decision framework.
 
----
-
 ## Option 1: Prompt Engineering (No Training, No Retrieval)
 
 **What it is:** You use a general-purpose LLM (GPT-4o, Claude, Mistral) as-is, with a carefully crafted system prompt and few-shot examples in the prompt.
 
 **When it works well:**
 - Your use case requires general reasoning, writing, summarization, or classification on diverse input
-- Your knowledge base is small enough to fit in the context window (roughly under 100KB of text)
-- You need to ship quickly and iterate rapidly
-- The task doesn't require highly specialized domain vocabulary or proprietary knowledge
+- Your knowledge is small enough to fit in the context window (a few thousand tokens)
+- You need to ship fast and iterate on behavior without retraining
+- The task doesn't require deep domain-specific terminology or format consistency
 
-**When it falls short:**
-- Knowledge base is too large for the context window
-- You need up-to-date information (training cutoff applies)
-- Latency from large context is unacceptable
-- You need high accuracy on very specific domain terminology or formats
+**When it breaks down:**
+- Your knowledge base is larger than the context window
+- You need consistent output format across thousands of generations
+- The model doesn't know your proprietary terminology or internal product specifics
+- Cost becomes prohibitive when stuffing large context on every query
 
-**Cost profile:** Pay per token at inference time. Cheap for light usage, expensive at scale with large contexts.
-
----
+**Typical cost to implement:** Hours to days. No infrastructure beyond an API key.
 
 ## Option 2: RAG (Retrieval-Augmented Generation)
 
-**What it is:** A retrieval system fetches relevant chunks from your knowledge base at query time and passes them to the LLM as context. The LLM itself is not modified.
+**What it is:** A retrieval layer finds the most relevant documents from your knowledge base at query time, then passes them as context to the LLM for generation.
 
 **When it works well:**
-- You have a large, dynamic knowledge base (documents, tickets, wikis, product data)
-- Your data changes frequently and you need answers to stay current
-- You need source citations and grounded, verifiable answers
-- You want to add AI to existing data without a training pipeline
-- You need to deploy quickly — RAG systems can be built in weeks
+- You have a large, dynamic knowledge base that changes frequently
+- You need answers grounded in specific, citable sources
+- The task requires looking up specific facts, policies, or content from your data
+- You can't fine-tune (proprietary API model, no training data, too expensive)
 
-**When it falls short:**
-- The LLM needs to deeply understand domain-specific reasoning patterns, not just retrieve facts
-- Your queries require synthesizing across very large amounts of retrieved context simultaneously
-- You need extreme latency (retrieval adds round-trip time)
-- Your domain vocabulary is so specialized the LLM misunderstands retrieved content
+**When it breaks down:**
+- The task requires generating consistent structured output at high volume (fine-tuning is cheaper per inference)
+- Your domain vocabulary is so specialized that general embeddings produce poor retrieval
+- Latency is extremely critical
 
-**Cost profile:** Embedding costs at ingestion (cheap), vector DB hosting (low), LLM inference per query. Scales well.
-
----
+**Typical cost to implement:** $12,000–$100,000 depending on scale, integrations, and complexity.
 
 ## Option 3: Fine-Tuning
 
-**What it is:** A pre-trained model is further trained on your domain-specific dataset. The model's weights are updated to internalize your terminology, formats, reasoning patterns, and knowledge.
+**What it is:** You train additional parameters on top of a base model using your domain-specific data. The result is a model that "knows" your terminology, output format, and domain patterns intrinsically.
 
 **When it works well:**
-- You have a specific, well-defined task with consistent input/output format
-- General models consistently make errors on your domain despite good prompting
-- You have a substantial labeled dataset (typically 500–10,000+ examples for good results)
-- You need the model to internalize a proprietary style, tone, or output structure
-- Latency is critical and you need a smaller, faster model that performs like a larger one on your task
-- You want to reduce inference costs by using a smaller fine-tuned model instead of GPT-4
+- You have a high-volume, specific task with consistent input/output patterns
+- Output format consistency is critical (structured extraction, specific JSON schemas)
+- Your domain vocabulary is so specialized that prompting a general model produces poor results
+- Inference cost at scale makes hosted API costs prohibitive
+- Data privacy requires a model that runs entirely on your infrastructure
 
-**Examples where fine-tuning clearly wins:**
-- Legal clause classification with proprietary taxonomy
-- Medical note summarization in a specific clinical format
-- Code completion for an internal DSL or proprietary framework
-- Customer support responses that match an exact brand voice and product knowledge
-- Named entity extraction with domain-specific entity types
+**When it breaks down:**
+- You don't have enough labeled training data (typically need 500+ high-quality examples minimum)
+- Your task is diverse and general-purpose
+- You need the knowledge base to be updated frequently (fine-tuning requires retraining)
 
-**When it falls short:**
-- Your data changes frequently (retraining is expensive and slow)
-- You don't have enough labeled examples
-- The task requires up-to-date external knowledge (fine-tuning is a snapshot in time)
-- You need source citations — fine-tuned models don't cite sources
+**Typical cost to implement:** $25,000–$70,000 for dataset preparation, training runs, evaluation, and deployment.
 
-**Cost profile:** Training compute cost (one-time, significant), plus model hosting. Expensive upfront, cheap per inference.
-
----
-
-## Combined Approaches
-
-In practice, the best production systems often combine approaches:
-
-**RAG + fine-tuning:** Fine-tune the LLM on your domain so it understands your terminology and output format, then use RAG to supply current knowledge at inference time. This gives you both deep domain understanding and up-to-date retrieval.
-
-**RAG + prompt engineering:** Iterate quickly with pure RAG + prompting. Once you identify patterns where the LLM consistently fails despite good retrieval, those are candidates for fine-tuning.
-
----
-
-## Quick Decision Table
-
-| Situation | Recommended approach |
-|---|---|
-| Small, static knowledge base | Prompting with context stuffing |
-| Large or dynamic knowledge base | RAG |
-| Consistent structured task, domain-specific | Fine-tuning |
-| Need source citations | RAG |
-| Need to reduce inference cost at scale | Fine-tuning (smaller model) |
-| Specialized vocabulary + large KB | RAG + fine-tuning combined |
-| Fastest path to working demo | RAG or prompting |
-
----
-
-## How we help you decide
+## How We Help You Choose
 
 When a client comes to us with an AI use case, we start with a 1-week discovery engagement that includes: mapping your data sources, defining the task precisely, running quick experiments with prompting and retrieval on a subset of your data, and delivering a written technical recommendation with rationale. This means you don't commit to a full build before knowing what the right architecture is.
 
@@ -329,11 +210,9 @@ When a client comes to us with an AI use case, we start with a 1-week discovery 
 
 # AI Use Cases for SaaS and IT Companies
 
-This document covers the most impactful and proven AI use cases for software product companies and IT organizations. For each, we describe the problem it solves, how it works architecturally, and what a typical implementation looks like.
+This document covers the most impactful and proven AI use cases for software product companies and IT organizations. For each use case we describe the problem it solves, how it works architecturally, and what success looks like.
 
----
-
-## 1. Intelligent documentation and knowledge base search
+## 1. Intelligent Documentation and Knowledge Base Search
 
 **The problem:** Users can't find answers in your docs. Support tickets pile up for questions that are already answered somewhere. Internal teams waste time searching wikis.
 
@@ -347,7 +226,7 @@ This document covers the most impactful and proven AI use cases for software pro
 
 ---
 
-## 2. AI-powered customer support triage and response
+## 2. AI-Powered Customer Support Triage and Response
 
 **The problem:** Your support team spends 60–70% of their time on repetitive tickets. Response times are slow. Tier-1 agents are answering the same 50 questions over and over.
 
@@ -361,9 +240,9 @@ This document covers the most impactful and proven AI use cases for software pro
 
 ---
 
-## 3. Semantic search over internal data
+## 3. Semantic Search Over Internal Data
 
-**The problem:** Your product (or your internal tools) uses keyword search. Users can't find things unless they use the exact right words. Synonyms, paraphrases, and conceptual searches return nothing.
+**The problem:** Your product or internal tools use keyword search. Users can't find things unless they use the exact right words. Synonyms, paraphrases, and conceptual searches return nothing.
 
 **The AI solution:** Replace or augment keyword search with vector-based semantic search that understands meaning, not just exact matches.
 
@@ -375,53 +254,67 @@ This document covers the most impactful and proven AI use cases for software pro
 
 ---
 
-## 4. AI-assisted code review and development tooling
+## 4. Agentic Workflow and Operations Automation
 
-**The problem:** Code reviews are slow. Junior developers repeat the same mistakes. Internal tools and frameworks are underdocumented, slowing onboarding.
+**The problem:** Your ops team handles high-volume repetitive tasks — lead routing, contract review, document extraction, report generation — that are too variable for traditional automation but too repetitive to justify skilled human time.
 
-**The AI solution:** An LLM integrated into your development workflow — code review suggestions, automated PR summaries, codebase Q&A ("how does our authentication system work?"), documentation generation.
+**The AI solution:** An agentic workflow that reads unstructured inputs, applies LLM-powered classification or extraction, takes actions across your systems, and escalates low-confidence cases to humans.
 
-**Impact:** Faster PR cycles. Better knowledge transfer. Reduced onboarding time for new engineers.
+**Impact:** 40–60% reduction in manual processing time within 90 days. ROI typically visible within the first 60 days.
 
-**Typical implementation:** RAG over your codebase (chunked by function/class), CI integration for PR summaries, Slack or IDE integration for codebase Q&A.
+**Typical implementation:** Process mapping, agent architecture connecting CRM/ERP/email/Slack via API, LLM layer for decision-making, human-in-the-loop checkpoints, monitoring dashboard.
 
-**Best fit:** Engineering-heavy companies, developer tools companies, any team with a large codebase and growing team.
-
----
-
-## 5. Automated report and content generation
-
-**The problem:** Your team generates repetitive reports, summaries, or content manually. Analysts spend hours formatting and writing what could be generated from structured data.
-
-**The AI solution:** An LLM pipeline that takes structured data as input and generates formatted reports, summaries, or first drafts automatically.
-
-**Impact:** Hours of analyst/writer time saved per week. Faster reporting cycles. Consistent formatting and tone.
-
-**Typical implementation:** Data pipeline from your source systems (database, BI tool, spreadsheets), structured prompt templates, LLM generation, output to your preferred format (PDF, Notion, email, Slack).
-
-**Best fit:** Analytics platforms, marketing tools, financial software, any company with regular reporting workflows.
+**Best fit:** RevOps, Sales Ops, Finance Ops, Legal Ops teams at companies that have recently scaled headcount to handle repeatable cognitive work.
 
 ---
 
-## 6. Intelligent onboarding and user activation
+## 5. Embedded AI Copilot in a SaaS Product
 
-**The problem:** New users don't activate because they can't figure out how to get value from your product quickly enough. Generic onboarding flows don't match individual user contexts.
+**The problem:** Competitors are shipping AI features. Your product feels dated. Users are asking why you don't have AI yet.
 
-**The AI solution:** An AI layer that personalizes the onboarding experience — asks a few questions about the user's goal, then guides them to the specific features and setup steps most relevant to their situation.
+**The AI solution:** A purpose-built AI feature embedded directly into your product — an in-app assistant, AI-powered search, smart draft generator, or intelligent autofill — that makes your product's core job noticeably better.
 
-**Impact:** Higher activation rates. Reduced time-to-value. Lower early churn.
+**Impact:** Competitive positioning. Reduced churn from users who would otherwise switch to AI-native competitors.
 
-**Typical implementation:** Conversational onboarding UI, LLM with RAG over your feature documentation and user journey data, dynamic checklist generation, integration with your product analytics.
+**Typical implementation:** Feature scoping, prompt architecture, FastAPI integration, RAG layer if the feature needs to reference proprietary data, React UI component, eval harness, observability hooks.
 
-**Best fit:** SaaS products with complex feature sets, developer tools, B2B platforms.
+**Best fit:** B2B SaaS PMs and VPs of Engineering at Series A–D companies with "add AI" on the roadmap.
 
 ---
 
-## 7. Data extraction and document processing
+## 6. AI-Assisted Code Review and Developer Tooling
+
+**The problem:** Code reviews are slow. Junior developers repeat the same mistakes. Internal frameworks and architectural decisions aren't documented, slowing onboarding and causing inconsistent implementation across teams.
+
+**The AI solution:** An LLM agent integrated into your development workflow that performs automated code review, flags issues against your internal patterns, generates PR summaries, and answers questions about your codebase.
+
+**Impact:** 20–40% reduction in time-to-merge for standard PRs. Reduced onboarding time. Fewer repeated architectural mistakes in new code.
+
+**Typical implementation:** Codebase indexing via embeddings, agent with tool-calling for file reads and linting, GitHub/GitLab webhook integration for automated PR review, feedback loop for engineer accept/reject training.
+
+**Best fit:** Engineering teams of 10–100 developers; dev agencies with multiple client codebases; companies with significant technical debt.
+
+---
+
+## 7. Voice AI Agent
+
+**The problem:** High-volume inbound calls for predictable use cases — appointment scheduling, tier-1 support, lead qualification — are consuming expensive human time around the clock.
+
+**The AI solution:** A custom voice AI agent that handles these calls end-to-end, integrates with your CRM and booking systems, and transfers to a human with full context when needed.
+
+**Impact:** 60–75% of calls fully resolved without human involvement. Cost per call reduced 10–30x vs. human agent.
+
+**Typical implementation:** Vapi or Retell for voice pipeline, conversation flow design, CRM/calendar integration, warm transfer logic, post-call transcript and outcome logging.
+
+**Best fit:** Healthcare clinics, real estate agencies, SaaS support teams, financial services with routine inquiry volume.
+
+---
+
+## 8. Data Extraction and Document Processing
 
 **The problem:** Your business receives unstructured documents — contracts, invoices, forms, emails — and staff manually extract information from them into your systems.
 
-**The AI solution:** An LLM-powered extraction pipeline that reads unstructured documents and outputs structured data — to your database, CRM, or ERP — automatically.
+**The AI solution:** An LLM-powered extraction pipeline that reads unstructured documents and outputs structured data to your database, CRM, or ERP automatically.
 
 **Impact:** Near-elimination of manual data entry. Faster processing. Fewer errors.
 
@@ -431,25 +324,9 @@ This document covers the most impactful and proven AI use cases for software pro
 
 ---
 
-## 8. AI features for competitive differentiation
-
-**The problem:** Competitors are shipping AI features. Your product feels dated. Users are asking why you don't have AI yet.
-
-**The AI solution:** A targeted AI feature that directly enhances your product's core value proposition — not AI for the sake of AI, but AI that makes the thing your product does notably better.
-
-**Impact:** Competitive positioning. Reduced churn from users who would otherwise switch to AI-native competitors.
-
-**Approach:** We start with your product's core job-to-be-done, then identify exactly where AI adds the most leverage — usually one of the above categories applied specifically to your use case.
-
----
-
 # How We Work — Our Engagement Process
 
-This document explains exactly how a project with us unfolds — from first contact to final handover. Understanding our process helps clients evaluate fit before committing and sets expectations for a smooth engagement.
-
----
-
-## Phase 0: Technical Scoping Call (Free, 30 minutes)
+## Phase 0: Technical Scoping Call (Free, 30 Minutes)
 
 Before any engagement begins, we do a 30-minute technical scoping call. This is not a sales call. We ask you to describe your use case, your current stack, your data situation, and what a successful outcome looks like. We tell you honestly whether your use case is a good fit for our services, roughly what approach we'd recommend, and what the engagement would look like.
 
@@ -479,7 +356,7 @@ Every project over $5,000 begins with a paid 1-week discovery phase ($800–$1,5
 - A revised, accurate project timeline and fixed price for the build phase
 - Optionally: a proof-of-concept prototype demonstrating the core AI functionality works on your data
 
-Discovery de-risks the build for both sides. It ensures we're building exactly what you need, and it means no surprises in scope or timeline during the build.
+Discovery de-risks the build for both sides. It ensures we're building exactly what you need, with no surprises in scope or timeline during the build.
 
 ---
 
@@ -509,7 +386,7 @@ At the end of every project, we run a structured handover process:
 
 **Handover session:** A 90-minute video session with your technical team walking through the architecture, the codebase, the deployment setup, and how to operate the system day-to-day.
 
-**Runbook:** A written runbook covering: how to monitor the system, common issues and how to fix them, how to add new data sources, how to update or replace the LLM.
+**Runbook:** A written runbook covering how to monitor the system, common issues and how to fix them, how to add new data sources, and how to update or replace the LLM.
 
 **30-day support window:** After handover, we provide 30 days of async support via Slack for bugs, questions, and minor adjustments. This is included in all project prices.
 
@@ -522,9 +399,9 @@ Many clients continue working with us on a monthly retainer after the initial pr
 - Adding new data sources to an existing RAG system
 - Building additional AI features on top of the initial system
 - Model fine-tuning experiments to improve task-specific performance
-- General AI engineering support on demand
+- General senior AI engineering support on demand
 
-Retainers start at $1,500/month for 20 hours/month and scale from there.
+Retainers start at $3,000/month.
 
 ---
 
@@ -542,255 +419,79 @@ We deliberately limit our active projects to 3–4 at a time so we can give this
 
 # Our Technology Stack
 
-We are opinionated about tools. We use technologies we have deployed in production and understand deeply — not whatever is newest or most hyped. Here is our standard stack and the reasoning behind each choice.
-
----
+We are opinionated about tools. We use technologies we have deployed in production and understand deeply — not whatever is newest or most hyped.
 
 ## Backend Framework: FastAPI (Python)
 
 We build all AI backends in FastAPI. Python is the lingua franca of AI/ML engineering — all major model libraries, embedding tools, and LLM frameworks are Python-first. FastAPI gives us high performance (async by default), automatic OpenAPI documentation, strong typing with Pydantic, and a clean pattern for streaming responses via Server-Sent Events.
 
-We do not use Node.js or Go for AI backends. When a client's existing backend is in another language, we build the AI service as a separate FastAPI microservice with a clean API contract, and their existing backend calls ours.
-
----
+When a client's existing backend is in another language, we build the AI service as a separate FastAPI microservice with a clean API contract, and their existing backend calls ours.
 
 ## Vector Databases
 
-**Qdrant** — our default for most production RAG systems. Qdrant is purpose-built for vector search, supports filtering, payload storage, and hybrid search (dense + sparse) natively. It is fast, well-maintained, and can be self-hosted on a modest VPS for most use cases. We have extensive production experience with Qdrant's Python client and REST API.
+**Qdrant** — our default for most production RAG systems. Purpose-built for vector search, supports filtering, payload storage, and hybrid search (dense + sparse) natively. Fast, well-maintained, and can be self-hosted.
 
-**pgvector** — our choice when the client already runs PostgreSQL and wants to minimize infrastructure complexity. pgvector turns your existing Postgres database into a vector store. Performance is lower than Qdrant at large scale but entirely sufficient for knowledge bases under ~1 million vectors. Works well for smaller-scale RAG systems where simplicity is valued over raw performance.
+**pgvector** — our choice when the client already runs PostgreSQL and wants to minimize infrastructure complexity. Entirely sufficient for knowledge bases under ~1 million vectors.
 
-**Pinecone** — we use Pinecone when a client specifically requires a fully managed, serverless vector database with no infrastructure overhead. Slightly higher cost than self-hosted Qdrant, but zero operational burden.
-
----
+**Pinecone** — when a client requires a fully managed, serverless vector database with no infrastructure overhead.
 
 ## Embedding Models
 
-**OpenAI text-embedding-3-small** — our default for most use cases. Excellent quality-to-cost ratio, 1536 dimensions, supports dimension reduction. Adequate for the vast majority of production RAG systems.
+**OpenAI text-embedding-3-small** — our default for most use cases. Excellent quality-to-cost ratio, adequate for the vast majority of production RAG systems.
 
-**OpenAI text-embedding-3-large** — when retrieval quality is critical and cost is secondary. 3072 dimensions, meaningfully better on complex domains.
+**OpenAI text-embedding-3-large** — when retrieval quality is critical and cost is secondary.
 
-**Local embedding models (e5-large, bge-m3, nomic-embed)** — when a client has data privacy requirements and cannot send data to OpenAI's API, we deploy local embedding models. Also useful for reducing ongoing embedding costs at very high ingestion volumes.
-
----
+**Local embedding models (e5-large, bge-m3, nomic-embed)** — when a client has data privacy requirements and cannot send data to external APIs.
 
 ## LLM Providers
 
-**OpenAI GPT-4o** — our default generation model. Best overall performance, reliable API, strong instruction following, good at structured output generation (JSON mode). We use this for most production systems.
+**OpenAI GPT-4o** — our default generation model. Best overall performance, reliable API, strong instruction following.
 
-**Anthropic Claude (Haiku / Sonnet / Opus)** — preferred for tasks requiring long context windows, nuanced reasoning, or handling of very long documents. Claude's 200k context window is useful in specific RAG patterns where we want to pass more retrieved context.
+**Anthropic Claude (Haiku / Sonnet / Opus)** — preferred for long context windows, nuanced reasoning, and handling of very long documents.
 
-**Mistral / LLaMA (self-hosted via vLLM)** — when data privacy is a hard requirement and the client cannot send data to external APIs, we deploy open-source models on client infrastructure. We use vLLM for high-throughput serving, llama.cpp for lighter single-server deployments.
-
----
+**Mistral / LLaMA (self-hosted via vLLM)** — when data privacy is a hard requirement and the client cannot send data to external APIs.
 
 ## RAG Frameworks
 
-**LangChain** — we use LangChain's document loaders, text splitters, and retrieval chains. We do not use LangChain for complex agent orchestration — we find direct API calls more maintainable for production systems.
+**LangChain** — we use LangChain's document loaders, text splitters, and retrieval chains.
 
-**LlamaIndex** — preferred for complex document hierarchies, multi-document reasoning, and structured data integration. LlamaIndex's index types (VectorStoreIndex, KnowledgeGraphIndex, SQLIndex) give us more flexibility for complex retrieval patterns.
+**LlamaIndex** — preferred for complex document hierarchies, multi-document reasoning, and structured data integration.
 
 **Direct API** — for simpler systems, we skip frameworks entirely and call the OpenAI / Qdrant APIs directly. Less abstraction, more control, easier debugging.
 
----
-
 ## Fine-Tuning Stack
 
-**HuggingFace Transformers** — the foundation for all our fine-tuning work. Access to thousands of base models, well-maintained training loops, integration with the broader HuggingFace ecosystem.
+**HuggingFace Transformers + PEFT / LoRA** — for all fine-tuning work. LoRA fine-tunes a small number of additional parameters rather than updating all model weights, dramatically reducing compute cost and training time.
 
-**PEFT / LoRA** — for most fine-tuning work, we use Low-Rank Adaptation (LoRA) via the PEFT library. LoRA fine-tunes a small number of additional parameters rather than updating all model weights, dramatically reducing compute cost and training time while maintaining most of the performance gain of full fine-tuning.
+**Weights & Biases** — experiment tracking for all training runs.
 
-**Weights & Biases** — experiment tracking for all training runs. We log loss curves, evaluation metrics, hyperparameter configurations, and model artifacts. This gives clients full visibility into training experiments and lets us compare approaches systematically.
+**vLLM** — our preferred serving framework for open-source models in production.
 
-**vLLM** — our preferred serving framework for open-source models in production. Handles batching, KV cache optimization, and high-throughput inference efficiently.
+## Observability and Evals
 
----
+**LangSmith / Langfuse / Arize** — for production tracing, prompt monitoring, and regression detection.
+
+**Custom eval harnesses** — golden test sets, LLM-as-judge metrics, and CI/CD eval gates for all production AI systems.
 
 ## Infrastructure
 
-**Docker + Docker Compose** — all services are containerized. Makes deployment environment-agnostic and ensures reproducibility.
+**Docker + Docker Compose** — all services are containerized.
 
-**AWS / GCP / Hetzner** — we are cloud-agnostic. For cost-sensitive clients, we often use Hetzner (European VPS provider) for GPU workloads at 60–70% lower cost than AWS/GCP equivalents. For clients with existing cloud infrastructure, we deploy alongside their existing setup.
+**AWS / Azure** — for production cloud deployments, especially for clients with enterprise compliance requirements.
 
-**Railway / Render** — for lighter deployments, staging environments, and smaller-scale productions where managed infrastructure is preferred over raw VPS.
-
----
+**Railway / Render** — for lighter deployments, staging environments, and smaller-scale productions.
 
 ## What We Integrate With
 
-We have integration experience with: Notion, Confluence, Google Drive, SharePoint, Zendesk, Intercom, Freshdesk, Jira, GitHub/GitLab, Slack, HubSpot, Salesforce, PostgreSQL, MySQL, MongoDB, Elasticsearch, S3-compatible object storage, and REST/GraphQL APIs.
-
-If your data lives somewhere, we can almost certainly get it into a RAG pipeline.
-
----
-
-# Frequently Asked Questions
-
-## About working with us
-
-**How long does a typical project take?**
-It depends on scope. A focused AI feature integration (adding semantic search to an existing product, for example) typically takes 3–6 weeks including discovery. A full RAG system over a large knowledge base takes 4–8 weeks. A custom AI application built from scratch takes 6–16 weeks. We give a precise timeline after discovery, not before — the 1-week discovery phase is specifically designed to produce an accurate estimate.
-
-**Do you work with our existing codebase, or do you rewrite things?**
-We integrate with your existing stack. We do not propose rewrites. Our AI systems are built as services or modules that connect to your existing architecture via clean API contracts. Your team maintains ownership of the rest of your product.
-
-**Can our engineering team maintain the system after you're done?**
-Yes, and this is a core design principle for us. We document everything as if we'll never speak again after handover. We run a thorough 90-minute handover session with your technical team. Every system we build has a detailed runbook, clean commented code, and a 30-day support window after delivery. We have had clients with no prior AI/ML experience successfully maintain and extend our systems.
-
-**Do you work with small teams or early-stage companies?**
-Yes. Many of our clients are startups with engineering teams of 2–10 people. Early-stage companies actually benefit from working with a specialized studio rather than trying to hire an AI engineer full-time before they've validated the use case. We can deliver a production system faster and at lower total cost than a 6-month hire.
-
-**What if we're not sure what we need?**
-Start with a scoping call. We will ask you about your problem and your data and tell you honestly what approach makes sense, how long it would take, and roughly what it would cost. If you're very uncertain, our discovery engagement is specifically designed to answer the "what should we build?" question before committing to a full project.
-
----
-
-## About data and privacy
-
-**Do you need access to our sensitive data?**
-For RAG systems, yes — we need to ingest your data. We work under NDA from day one, and we have standard data processing agreements for clients with regulatory requirements (GDPR, HIPAA-adjacent). For model fine-tuning, we need a dataset of examples; we can design the data pipeline to minimize our exposure to raw sensitive data.
-
-**Can you build systems that keep all data on our infrastructure?**
-Yes. We have built fully on-premise and private cloud deployments using self-hosted embedding models (e.g., bge-m3, e5-large) and self-hosted LLMs (LLaMA 3, Mistral, Qwen) served via vLLM. No data leaves your infrastructure. This adds complexity and cost but is entirely feasible and something we have production experience with.
-
-**We're in the EU — do you handle GDPR considerations?**
-We are familiar with GDPR requirements and design systems with data minimization and retention controls in mind. We are not lawyers and cannot give legal advice, but we can implement the technical controls your legal/compliance team specifies.
-
----
-
-## About pricing and contracts
-
-**Why do you charge for discovery?**
-Because a free discovery is not a real discovery. When discovery is free, there is pressure to skip straight to a proposal with a number. When it is paid, we both commit to doing it properly — running experiments on your actual data, writing a real technical spec, giving you an honest assessment. Discovery fees are $800–$1,500 and are deducted from the total project cost if you proceed.
-
-**Do you do fixed-price or time-and-materials?**
-We prefer fixed-price engagements scoped precisely after discovery. This gives you budget certainty. We use time-and-materials only for retainer work after an initial fixed-scope project.
-
-**What payment terms do you use?**
-Standard terms: 30% upfront, 40% at midpoint milestone, 30% at delivery. For projects over $20,000 we can discuss milestone-based structures.
-
-**Do you sign NDAs?**
-Yes, before any technical discussion of client data or systems. We have a standard mutual NDA we can turn around in 24 hours.
-
----
-
-## About AI and expectations
-
-**Can you guarantee the AI will be accurate?**
-No one can guarantee 100% accuracy from an LLM-based system. What we can do: design for high precision through careful retrieval architecture, implement evaluation pipelines that measure accuracy before launch, add confidence scoring and human-in-the-loop for low-confidence outputs, and iterate on quality after launch. We will tell you upfront what accuracy level is realistic for your use case and what it would take to achieve it.
-
-**Will the system hallucinate?**
-A well-built RAG system is specifically designed to minimize hallucination by grounding every answer in retrieved sources. It is not zero — the LLM can still misread or miscombine retrieved context. This is why we implement source citations (the user can verify), confidence scoring, and graceful fallback behavior for out-of-scope queries. We also build evaluation sets to measure and track hallucination rate during development.
-
-**How do you handle queries that are outside the knowledge base?**
-We design explicit fallback behavior. When retrieval confidence is low, the system says so: "I don't have specific information about that in my knowledge base" — rather than generating a confident-sounding wrong answer. Honest uncertainty is better than silent hallucination.
-
-**What happens when OpenAI changes their models or pricing?**
-We build systems that are as model-agnostic as reasonable. The LLM is typically behind a configuration variable, not hardcoded. If you want to switch from GPT-4o to Claude or a self-hosted model, the change is a configuration update plus testing — not a rewrite.
-
----
-
-# Example Projects and Typical Engagements
-
-These examples describe the kinds of projects we build — the problems, the approach, and the outcomes. They are representative of typical engagements rather than specific client case studies.
-
----
-
-## Example 1: RAG over a SaaS Product's Support Knowledge Base
-
-**Client profile:** A B2B SaaS company with 8,000 customers, a support team of 12, and approximately 120,000 historical support tickets plus a 400-page knowledge base.
-
-**The problem:** Tier-1 support agents were spending 65% of their time answering questions already answered in the knowledge base or in prior tickets. Response time averaged 6 hours. New agents took 3 months to get fully productive.
-
-**What we built:** A RAG system ingesting all support tickets (filtered to resolved, high-quality examples) and the knowledge base. A FastAPI backend with hybrid search (dense + BM25), Qdrant for vector storage, and GPT-4o for response generation. An agent-facing interface integrated into their Zendesk workflow: when a new ticket arrived, the system automatically retrieved the 5 most relevant prior resolutions and generated a draft response. Agents reviewed and sent — or ignored and wrote their own.
-
-**Technical details:** 
-- Ingestion pipeline processing 120k tickets with deduplication and quality filtering (keeping ~45k high-quality examples)
-- Chunking by ticket thread with metadata: product area, resolution type, customer tier
-- Hybrid search with Qdrant's sparse+dense integration
-- Reranking with Cohere Rerank before generation
-- Confidence scoring: responses above 0.85 confidence flagged as "auto-resolvable" for agent review
-- Integration with Zendesk via webhook
-
-**Outcome:** Average response time dropped from 6 hours to 45 minutes. Tier-1 agents reported spending 40% less time on repetitive queries. New agent ramp time reduced from 3 months to 6 weeks.
-
-**Timeline:** 1 week discovery + 6 weeks build. Total: $18,000.
-
----
-
-## Example 2: Semantic Search for a Developer Tools Product
-
-**Client profile:** A developer tools company offering a platform for API testing and documentation. Their existing search used Elasticsearch keyword matching.
-
-**The problem:** Users couldn't find the right endpoint, parameter, or example unless they knew the exact terminology used in the documentation. Searches like "how do I authenticate" returned nothing useful because the docs used "authorization" and "OAuth."
-
-**What we built:** A semantic search layer over their product documentation and API reference. pgvector on their existing Postgres database (they wanted no new infrastructure). OpenAI embeddings for all documentation chunks. A hybrid search combining their existing Elasticsearch BM25 scores with our semantic similarity scores, weighted and merged via Reciprocal Rank Fusion (RRF).
-
-**Technical details:**
-- Incremental embedding pipeline triggered on documentation updates via webhook
-- Chunking strategy customized for API reference format (endpoint + description + parameters + examples kept together)
-- Hybrid search: BM25 score from Elasticsearch + vector similarity from pgvector, merged with RRF
-- Query expansion using LLM to generate synonyms and alternative phrasings before retrieval
-- Sub-100ms p95 latency on 500k+ chunks
-
-**Outcome:** Search success rate (users clicking a result) improved from 52% to 81%. "No results" occurrences dropped by 74%. Users reported finding what they needed faster in post-launch survey.
-
-**Timeline:** 1 week discovery + 4 weeks build. Total: $12,000.
-
----
-
-## Example 3: Fine-Tuned Classification Model for Legal Document Processing
-
-**Client profile:** A legal tech company processing commercial contracts for enterprise clients. Their team was manually reviewing contracts to classify clause types and flag non-standard terms.
-
-**The problem:** General LLMs performed poorly on their specific clause taxonomy (60+ proprietary clause types). Prompting GPT-4 with the taxonomy achieved ~71% accuracy on their evaluation set — not production-viable.
-
-**What we built:** A fine-tuned classifier based on a Mistral 7B base model, trained on 4,200 labeled contract examples (clauses + clause type labels). We used LoRA (Low-Rank Adaptation) for parameter-efficient fine-tuning. Deployed via vLLM on a client-managed GPU instance.
-
-**Technical details:**
-- Dataset: 4,200 examples across 64 clause types, balanced via augmentation for underrepresented types
-- Base model: Mistral 7B Instruct
-- Fine-tuning: LoRA with rank 16, alpha 32, targeting attention and MLP layers. 3 epochs, AdamW optimizer, cosine LR schedule
-- Evaluation: held-out test set of 800 examples + adversarial set of edge cases
-- Serving: vLLM on a single A100 40GB instance, batch inference for document processing pipeline
-
-**Outcome:** Classification accuracy improved from 71% (GPT-4 with prompting) to 94.3% on the evaluation set. Processing time per contract reduced from 45 minutes (manual) to 8 minutes (AI-assisted with human review of flagged low-confidence items). The model runs entirely on the client's infrastructure — no data sent to external APIs.
-
-**Timeline:** 1 week discovery + 7 weeks (including data pipeline, training experiments, evaluation). Total: $28,000.
-
----
-
-## Example 4: Internal Knowledge Assistant for a Software Consulting Company
-
-**Client profile:** A 60-person software consulting company with 8 years of project history — proposals, post-mortems, technical specs, process documents — spread across Google Drive, Confluence, and Notion.
-
-**The problem:** Senior consultants re-solved the same problems every engagement. New consultants couldn't easily find relevant past work. Proposal writing took too long because writers couldn't quickly find relevant case studies and prior estimates.
-
-**What we built:** An internal knowledge assistant — a chat interface over all company knowledge sources. Multi-source ingestion from Google Drive, Confluence, and Notion with automatic sync. RAG pipeline with metadata filtering (filter by document type, project type, industry, year). A web app accessible to all employees.
-
-**Technical details:**
-- Multi-source connectors: Google Drive API, Confluence REST API, Notion API — with incremental sync every 4 hours
-- Document processing: OCR for scanned PDFs, table extraction, handling of mixed-format documents
-- Hierarchical chunking: document-level summaries + section-level chunks for improved retrieval
-- Metadata schema: document type, project industry, client size, year, author
-- Filtering UI: before asking a question, users can filter by document type and time range
-- Access control: integration with company SSO so users only see documents they have permission to access
-
-**Outcome:** Senior consultants reported finding relevant prior work in 5 minutes rather than 30–45. Proposal win rate improved (attributed partly to better-matched case studies). Onboarding time for new consultants reduced.
-
-**Timeline:** 1 week discovery + 8 weeks build. Total: $22,000.
+We have integration experience with: Notion, Confluence, Google Drive, SharePoint, Zendesk, Intercom, Freshdesk, Jira, GitHub/GitLab, Slack, HubSpot, Salesforce, PostgreSQL, MySQL, MongoDB, Elasticsearch, S3-compatible object storage, and REST/GraphQL APIs. We also build MCP servers to make client SaaS products accessible to AI agents and tools.
 
 ---
 
 # How to Think About AI Opportunities for Your Company
 
-This document is designed to help you — or our AI assistant — identify the most promising AI integration opportunities for a specific software product or IT company. It describes how we evaluate a company's situation and generate concrete, actionable project ideas.
+This document is designed to help identify the most promising AI integration opportunities for a specific software product or IT company. It describes how we evaluate a company's situation and generate concrete, actionable project ideas.
 
----
-
-## The four questions we ask about any company
-
-When a new client comes to us with a vague sense that "we should do something with AI," we ask four questions that quickly surface the highest-value opportunities:
+## The Four Questions We Ask About Any Company
 
 **1. Where does your team spend time on repetitive cognitive work?**
 Any task a human does repeatedly that involves reading, classifying, summarizing, extracting, or drafting based on existing information is a candidate for AI automation. Support ticket responses, document review, report generation, data entry from unstructured sources, code review comments.
@@ -799,19 +500,15 @@ Any task a human does repeatedly that involves reading, classifying, summarizing
 If your product has a search function that users complain about — or if users repeatedly ask support questions that are answered somewhere in your documentation — that is a RAG opportunity.
 
 **3. Where does your product use rules or logic that could be learned from data?**
-Classification, ranking, recommendation, anomaly detection, scoring — if you have rules a human wrote and data those rules apply to, a machine learning model can probably do it better.
+Classification, ranking, recommendation, anomaly detection, scoring — if you have rules a human wrote and data those rules apply to, a model can probably do it better and at a fraction of the cost.
 
 **4. Where would your product feel meaningfully smarter with AI?**
-Not AI for the sake of AI — but what capability, if you had it, would users notice and value? What would make your product clearly better than a competitor's? What feature request do you hear repeatedly that is essentially asking for intelligence?
+Not AI for the sake of AI — but what capability, if you had it, would users notice and value? What would make your product clearly better than a competitor's?
 
----
-
-## How to describe your company to get useful AI ideas
-
-The more specific you are about your company and product, the more specific and useful the AI project ideas we can generate. Here is what helps most:
+## How to Describe Your Company to Get Useful AI Ideas
 
 **Tell us:**
-- What your product does in one or two sentences (the core job it does for users)
+- What your product does in one or two sentences
 - Who your users are (developers? ops teams? end consumers? internal employees?)
 - What data you have — not just what kind, but roughly how much and in what form
 - What your users complain about or struggle with most
@@ -828,42 +525,17 @@ From this, we can immediately identify:
 - An AI assistant for project status queries against live project data
 - Automated project template generation based on project type and parameters
 
----
+## What Makes a Good AI Project
 
-## Matching company type to likely AI opportunities
+**Clear problem:** We can articulate exactly what problem the AI solves and for whom.
 
-**SaaS product companies:**
-Most common opportunities: intelligent search within the product, AI-assisted onboarding, automated report or summary generation, AI features that enhance the core value proposition.
+**Available data:** The AI has something to work with. For RAG: a knowledge base, documents, or history. For fine-tuning: labeled examples. For predictive models: historical outcomes.
 
-**Developer tools companies:**
-Most common opportunities: semantic code search, AI-powered documentation Q&A, automated PR summaries and review suggestions, codebase knowledge assistant.
+**Measurable outcome:** We can define what success looks like in numbers — ticket deflection rate, search success rate, accuracy on a held-out test set, time saved per task.
 
-**Internal tools / enterprise software:**
-Most common opportunities: document processing and extraction, internal knowledge assistant (RAG over company knowledge), workflow automation with AI decision points.
+**Proportionate scope:** The project size matches the value it delivers.
 
-**Software consulting / services companies:**
-Most common opportunities: internal knowledge assistant over past project work, proposal and estimate generation assistance, automated project documentation.
-
-**Data-heavy businesses (analytics, fintech, healthtech):**
-Most common opportunities: natural language querying of databases or reports, anomaly detection, document processing and classification, fine-tuned models for domain-specific tasks.
-
----
-
-## What makes a good AI project
-
-When we evaluate a proposed AI project, we are looking for:
-
-**Clear problem:** We can articulate exactly what problem the AI solves and for whom. "Make our product smarter" is not a problem. "Users can't find the right documentation article for their question, leading to 300 support tickets/week" is a problem.
-
-**Available data:** The AI has something to work with. For RAG: a knowledge base, documents, or history. For fine-tuning: labeled examples. For predictive models: historical outcomes. The question "what data do you have?" is always the second question we ask.
-
-**Measurable outcome:** We can define what success looks like in numbers — ticket deflection rate, search success rate, accuracy on a held-out test set, time saved per task. Projects without measurable outcomes are impossible to evaluate and hard to justify.
-
-**Proportionate scope:** The project size matches the value it delivers. A $25,000 RAG system that deflects 40% of support tickets is excellent ROI for a company spending $20,000/month on support. The same system for a company with 3 support tickets per day is not.
-
----
-
-## Red flags — when AI is not the right answer
+## Red Flags — When AI Is Not the Right Answer
 
 We will tell you if AI is not the right tool for your problem:
 - If your search problem is really a content quality problem (bad docs), AI won't fix it
@@ -872,3 +544,76 @@ We will tell you if AI is not the right tool for your problem:
 - If the accuracy requirement is 100% (legal liability, financial transactions, safety-critical), current AI systems are not ready — build the human-in-the-loop carefully
 - If your real problem is unclear requirements or team misalignment, AI is not a substitute for clarity
 
+---
+
+# Frequently Asked Questions
+
+## About Working With Us
+
+**How long does a typical project take?**
+It depends on scope. An AI feature audit takes 1–2 weeks. A focused feature integration or RAG MVP typically takes 3–6 weeks including discovery. A full production RAG system takes 6–10 weeks. An agentic platform or end-to-end product build takes 3–6+ months. We give a precise timeline after discovery, not before.
+
+**Do you work with our existing codebase, or do you rewrite things?**
+We integrate with your existing stack. We do not propose rewrites. Our AI systems are built as services or modules that connect to your existing architecture via clean API contracts. Your team maintains ownership of the rest of your product.
+
+**Can our engineering team maintain the system after you're done?**
+Yes, and this is a core design principle for us. We document everything as if we'll never speak again after handover. We run a thorough 90-minute handover session with your technical team. Every system we build has a detailed runbook, clean commented code, and a 30-day support window after delivery. We have had clients with no prior AI/ML experience successfully maintain and extend our systems.
+
+**Do you work with small teams or early-stage companies?**
+Yes. Many of our clients are startups with engineering teams of 2–10 people. Early-stage companies actually benefit from working with a specialized studio rather than trying to hire an AI engineer full-time before they've validated the use case. We can deliver a production system faster and at lower total cost than a 6-month hire.
+
+**What if we're not sure what we need?**
+Start with a scoping call. We will ask you about your problem and your data and tell you honestly what approach makes sense, how long it would take, and roughly what it would cost. If you're very uncertain, our discovery engagement is specifically designed to answer the "what should we build?" question before committing to a full project.
+
+**Why should we hire you instead of building an in-house AI team?**
+Hiring a senior AI engineer in the US currently costs $180,000–$280,000/year in base salary alone. Add recruiter fees (15–25% of first-year salary), 3–6 months of hiring time, 2–4 months of onboarding before real productivity, and the very real risk of a bad hire — the total cost of a single wrong AI engineering hire can exceed $300,000–$400,000 when you factor in severance, re-hiring, and lost time. And one person can't cover the full stack: you typically need AI/ML expertise, backend engineering, infrastructure/DevOps, and frontend — four different skill sets.
+
+With Neuronetis, you get immediate access to a senior team across all of those disciplines, on a fixed-price project with a defined deliverable, zero onboarding time, and no long-term headcount commitment. If the project doesn't work out, you haven't hired someone. Most of our clients get their first production AI system shipped in 4–8 weeks — a timeline that's simply not achievable when you're still posting a job description.
+
+---
+
+## About Data and Privacy
+
+**Do you need access to our sensitive data?**
+For RAG systems, yes — we need to ingest your data. We work under NDA from day one, and we have standard data processing agreements for clients with regulatory requirements (GDPR, HIPAA-adjacent). For model fine-tuning, we need a dataset of examples; we can design the data pipeline to minimize our exposure to raw sensitive data.
+
+**Can you build systems that keep all data on our infrastructure?**
+Yes. We have built fully on-premise and private cloud deployments using self-hosted embedding models (e.g., bge-m3, e5-large) and self-hosted LLMs (LLaMA 3, Mistral, Qwen) served via vLLM. No data leaves your infrastructure. This adds complexity and cost but is entirely feasible.
+
+**We're in the EU — do you handle GDPR considerations?**
+We are familiar with GDPR requirements and design systems with data minimization and retention controls in mind. We are not lawyers and cannot give legal advice, but we can implement the technical controls your legal/compliance team specifies.
+
+---
+
+## About Pricing and Contracts
+
+**Why do you charge for discovery?**
+Because a free discovery is not a real discovery. When discovery is free, there is pressure to skip straight to a proposal with a number. When it is paid, we both commit to doing it properly — running experiments on your actual data, writing a real technical spec, giving you an honest assessment. Discovery fees are $800–$1,500 and are deducted from the total project cost if you proceed.
+
+**Do you do fixed-price or time-and-materials?**
+We prefer fixed-price engagements scoped precisely after discovery. This gives you budget certainty. We use time-and-materials only for retainer work after an initial fixed-scope project.
+
+**What payment terms do you use?**
+Standard terms: 30% upfront, 40% at midpoint milestone, 30% at delivery. For projects over $20,000 we can discuss milestone-based structures.
+
+**Do you sign NDAs?**
+Yes, before any technical discussion of client data or systems. We have a standard mutual NDA we can turn around in 24 hours.
+
+---
+
+## About AI and Expectations
+
+**Can you guarantee the AI will be accurate?**
+No one can guarantee 100% accuracy from an LLM-based system. What we can do: design for high precision through careful retrieval architecture, implement evaluation pipelines that measure accuracy before launch, add confidence scoring and human-in-the-loop for low-confidence outputs, and iterate on quality after launch. We will tell you upfront what accuracy level is realistic for your use case.
+
+**Will the system hallucinate?**
+A well-built RAG system is specifically designed to minimize hallucination by grounding every answer in retrieved sources. It is not zero — the LLM can still misread or miscombine retrieved context. This is why we implement source citations, confidence scoring, and graceful fallback behavior for out-of-scope queries. We also build evaluation sets to measure and track hallucination rate during development.
+
+**How do you handle queries that are outside the knowledge base?**
+We design explicit fallback behavior. When retrieval confidence is low, the system says so rather than generating a confident-sounding wrong answer. Honest uncertainty is better than silent hallucination.
+
+**What happens when OpenAI changes their models or pricing?**
+We build systems that are as model-agnostic as reasonable. The LLM is typically behind a configuration variable, not hardcoded. If you want to switch from GPT-4o to Claude or a self-hosted model, the change is a configuration update plus testing — not a rewrite.
+
+**How do you make sure the AI keeps working correctly over time?**
+Every production system we build includes an eval harness — a set of test cases that run automatically to catch regressions before they reach users. We also set up production observability (LangSmith or Langfuse) so you can monitor answer quality, latency, and cost in real time. This is what separates a system that degrades silently from one you can trust over time.
