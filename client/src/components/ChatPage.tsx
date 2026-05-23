@@ -22,12 +22,15 @@ const BOOK_A_CALL: SuggestionItem = { id: "book_call", text: "Book a call", acti
 
 function applyFollowupRules(
   picks: FollowupPick[] | undefined,
-  clickedIds: Set<string>
+  clickedIds: Set<string>,
+  forceBookCall = false
 ): SuggestionItem[] {
   const filtered: SuggestionItem[] = (picks ?? [])
     .filter((p) => !clickedIds.has(p.id))
     .map((p) => ({ id: p.id, text: p.text, cacheKey: p.cacheKey, action: p.action }));
-  if (filtered.length < 2) filtered.push(BOOK_A_CALL);
+  const hasBookCall = filtered.some((s) => s.action === "calendly");
+  if (forceBookCall && !hasBookCall) filtered.push(BOOK_A_CALL);
+  else if (filtered.length < 2 && !hasBookCall) filtered.push(BOOK_A_CALL);
   return filtered;
 }
 
@@ -126,7 +129,7 @@ export function ChatPage() {
                         : m
                     )
                   );
-                  setSuggestions(applyFollowupRules(pendingFollowups, clickedIds));
+                  setSuggestions(applyFollowupRules(pendingFollowups, clickedIds, pendingIdeas !== null));
                   setIsStreaming(false);
                   setStreamingId(null);
                   setSearching(null);
