@@ -174,8 +174,8 @@ class TestLoadAndSplit:
             pytest.skip("docs/RAG.md not found")
         docs = load_and_split(real_path)
         topics = {doc.metadata["topic"] for doc in docs}
-        assert topics == {"about", "services", "technical", "use-cases", "process", "faq", "projects"}
-        assert len(docs) > 50  # sanity check — we expect ~99
+        assert topics == {"about", "services", "technical", "use-cases", "process", "faq"}
+        assert len(docs) > 30
 
     def test_long_section_gets_recursively_split(self, tmp_path: Path):
         long_content = "This is a sentence. " * 200  # ~4000 chars

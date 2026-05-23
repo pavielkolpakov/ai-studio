@@ -13,7 +13,6 @@ TOPIC_MAP: dict[str, str] = {
     "How We Work — Our Engagement Process": "process",
     "Our Technology Stack": "technical",
     "Frequently Asked Questions": "faq",
-    "Example Projects and Typical Engagements": "projects",
     "How to Think About AI Opportunities for Your Company": "use-cases",
 }
 
