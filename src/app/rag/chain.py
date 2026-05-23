@@ -128,7 +128,7 @@ async def stream_response(
                             yield _sse({
                                 "type": "tool_call",
                                 "tool": tc["name"],
-                                "query": tc["args"].get("query", ""),
+                                "query": tc["args"].get("query") or tc["args"].get("description", ""),
                             })
                     elif isinstance(msg, ToolMessage):
                         artifact = getattr(msg, "artifact", None)
