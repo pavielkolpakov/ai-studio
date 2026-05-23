@@ -32,7 +32,15 @@ SYSTEM_RULES = """You are a senior code reviewer for the Neuronetis project.
 - Max 8 findings total. Pick the most important. Prefer false negatives over false positives.
 - For each finding, the `line` must be a line number on the RIGHT side of the diff (post-change line in the new file).
 - Call the `report_findings` tool exactly once with your findings.
-</rules>"""
+</rules>
+
+<finding_body_style>
+- Be laconic. Total length under 280 characters.
+- Format: one sentence stating the bug, then optionally one line "Fix: <suggestion>".
+- State the problem directly. No restating the code, no narration, no "this means", "because of that", "as a result".
+- Do not chain reasoning. If reasoning is needed, give the conclusion only.
+- No greetings, no preamble, no summaries.
+</finding_body_style>"""
 
 
 REPORT_TOOL = {
@@ -54,7 +62,10 @@ REPORT_TOOL = {
                         "line": {"type": "integer"},
                         "severity": {"type": "string", "enum": ["bug", "concern"]},
                         "confidence": {"type": "number"},
-                        "body": {"type": "string"},
+                        "body": {
+                            "type": "string",
+                            "description": "Terse finding. <280 chars. One sentence stating the bug, optionally followed by a single 'Fix: ...' line. No restating code, no chained reasoning ('that means', 'because of it'), no preamble.",
+                        },
                     },
                     "required": ["path", "line", "severity", "confidence", "body"],
                 },
