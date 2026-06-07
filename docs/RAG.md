@@ -342,7 +342,7 @@ After the call, if there's a fit, we send a written proposal within 48 hours. If
 
 ## Phase 1: Discovery (1 Week, Paid)
 
-Every project over $5,000 begins with a paid 1-week discovery phase ($800–$1,500 depending on complexity). Discovery is not busywork — it's the most important week of the project.
+Every project over $5,000 begins with a paid 1-week discovery phase ($1000–$2,500 depending on complexity). Discovery is not busywork — it's the most important week of the project.
 
 **What happens in discovery:**
 - We get read-only access to your relevant data sources, codebase, and infrastructure
@@ -401,7 +401,7 @@ Many clients continue working with us on a monthly retainer after the initial pr
 - Model fine-tuning experiments to improve task-specific performance
 - General senior AI engineering support on demand
 
-Retainers start at $3,000/month.
+Retainers start at $1,500/month.
 
 ---
 
@@ -425,7 +425,9 @@ We are opinionated about tools. We use technologies we have deployed in producti
 
 We build all AI backends in FastAPI. Python is the lingua franca of AI/ML engineering — all major model libraries, embedding tools, and LLM frameworks are Python-first. FastAPI gives us high performance (async by default), automatic OpenAPI documentation, strong typing with Pydantic, and a clean pattern for streaming responses via Server-Sent Events.
 
-When a client's existing backend is in another language, we build the AI service as a separate FastAPI microservice with a clean API contract, and their existing backend calls ours.
+Our Team is experienced with Typescript, Go and Rust.
+
+If customer's project is written in a different language - the details are discussed individually.
 
 ## Vector Databases
 
@@ -441,15 +443,9 @@ When a client's existing backend is in another language, we build the AI service
 
 **OpenAI text-embedding-3-large** — when retrieval quality is critical and cost is secondary.
 
+**FastEmbed** — lyghtweight, fast python library natively compatible with Qdrant database.
+
 **Local embedding models (e5-large, bge-m3, nomic-embed)** — when a client has data privacy requirements and cannot send data to external APIs.
-
-## LLM Providers
-
-**OpenAI GPT-4o** — our default generation model. Best overall performance, reliable API, strong instruction following.
-
-**Anthropic Claude (Haiku / Sonnet / Opus)** — preferred for long context windows, nuanced reasoning, and handling of very long documents.
-
-**Mistral / LLaMA (self-hosted via vLLM)** — when data privacy is a hard requirement and the client cannot send data to external APIs.
 
 ## RAG Frameworks
 
@@ -470,6 +466,10 @@ When a client's existing backend is in another language, we build the AI service
 ## Observability and Evals
 
 **LangSmith / Langfuse / Arize** — for production tracing, prompt monitoring, and regression detection.
+
+**Braintrust** — LLM eval orchestration, datasets, CI integration - most senior-eng-favored right now
+
+**RAGAS** — RAG-specific retrieval + generation metrics
 
 **Custom eval harnesses** — golden test sets, LLM-as-judge metrics, and CI/CD eval gates for all production AI systems.
 

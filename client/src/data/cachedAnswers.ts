@@ -18,12 +18,12 @@ Our work covers 12 service types across the AI stack: RAG and knowledge assistan
 Data inventory, prompt audits, cost analysis, and small RAG prototypes to identify the best opportunities for AI in your product and get a clear roadmap for next steps.
 
 **Quick engagements - $5,000-$25,000 / 2-6 weeks**
-AIRAG MVPs ($18-35k), evals harness setup ($15-30k).
+AIRAG MVPs, evals harness setup.
 
 **Mid-size builds - $25,000-$100,000 / 4-12 weeks**
-Embedded LLM features ($20-40k), MCP servers ($40-90k), workflow automation agents ($30-80k), voice AI agents ($30-80k), code review agents ($25-60k), fine-tuning ($25-70k), production-grade RAG ($50-100k), support deflection copilots ($60-100k).
+Embedded LLM features, MCP servers, workflow automation agents, voice AI agents, code review agents, fine-tuning, production-grade RAG, support deflection copilots.
 
-**Larger end-to-end builds - $100,000-$400,000 / 3-6+ months**
+**Larger end-to-end builds - $50,000+ / 3-6+ months**
 Enterprise knowledge and compliance platforms, full AI-native product builds.
 
 **Retainer** - after a project ships, many clients continue on a monthly retainer for ongoing improvement, new data sources, and senior AI engineering on demand. Starts at $3,000/month.
@@ -43,7 +43,7 @@ Want to tell us about your product? We can point to which of these is closest to
 **Phase 0 - Technical scoping call (free, 30 minutes)**
 Not a sales call. You describe your use case, stack, and data. We tell you honestly whether AI is the right fit and roughly what the engagement would look like. If we're not the right team, we say so - and often suggest who would be.
 
-**Phase 1 - Discovery (1 week, paid $800-$1,500)**
+**Phase 1 - Discovery (1 week, paid $1000-$2,500)**
 Every project over $5,000 starts here. We get read-only access to your data, run experiments on a real subset, interview your technical lead and end users, and deliver a written technical spec with architecture, risks, timeline, and a fixed price for the build. The fee is deducted from the project total if you proceed.
 
 **Phase 2 - Build**
@@ -67,7 +67,7 @@ Anything specific about the process you'd like to know more about?`,
   show_example_projects: {
     answer: `Three projects that show the range of what we build - an audit, an integration, and a custom platform.
 
-**AI Feature Audit - Construction-tech SaaS (2 weeks, $9,500)**
+**AI Feature Audit - Construction-tech SaaS (2 weeks, $5,000)**
 A 90-person construction-tech SaaS knew they "should do something with AI" but had five competing internal ideas and no clear winner. We ran a 2-week audit: data inventory across 18 candidate sources, 12 user interviews, prompt and cost audit of two existing AI features they'd shipped, and a small RAG prototype on a 200-document slice. Two ideas leadership was excited about ("predict project delays," "AI sales assistant") were rejected with reasoning - one lacked data, the other solved a problem users didn't have. Final deliverable: a prioritized 90-day roadmap with effort/impact estimates. The top recommendation became a $32k build.
 
 **Embedded AI Research Assistant over SEC Filings - Investment-research SaaS (9 weeks, $42,000)**
@@ -99,10 +99,10 @@ Not a sales call. You describe your use case, your current stack, your data situ
 If there's a fit, we send a written proposal covering scope, approach, timeline, and price. No pressure - take the time you need to review it internally.
 
 **3. Discovery (1 week, paid)**
-Every project over $5,000 starts with a paid 1-week discovery ($800-$1,500, deducted from the project total if you proceed). We get read-only access to your data, run experiments on a real subset, interview your technical lead and end users, and deliver a written technical spec with a fixed price for the build. Paid discovery is deliberate - it forces both sides to do it properly rather than rush to a number.
+Every project over $5,000 starts with a paid 1-week discovery ($1000-$2,500, deducted from the project total if you proceed). We get read-only access to your data, run experiments on a real subset, interview your technical lead and end users, and deliver a written technical spec with a fixed price for the build. Paid discovery is deliberate - it forces both sides to do it properly rather than rush to a number.
 
 **4. Build, handover, optional retainer**
-Once the spec is signed off, we build. You see daily commits, a staging environment within two weeks, and weekly updates. At the end you get full code ownership, a 90-minute handover session, a runbook, and a 30-day support window. Many clients continue on a monthly retainer ($3,000+/month) afterward.
+Once the spec is signed off, we build. You see daily commits, a staging environment within two weeks, and weekly updates. At the end you get full code ownership, a 90-minute handover session, a runbook, and a 30-day support window. Many clients continue on a monthly retainer ($1,500+/month) afterward.
 
 The fastest way to start: tell us what you're working on. We can usually tell you within a single call whether AI is the right tool for it and what scope makes sense.`,
     followups: [
@@ -124,7 +124,7 @@ B2B SaaS companies (50-500 employees), software agencies that need an AI subcont
 Three specialized teams covering the full delivery stack - AI/Backend (RAG, LLM integration, fine-tuning, agents, evals, plus the APIs that wrap them), Frontend/Mobile (web apps, admin interfaces, embedded chat, mobile), and DevOps (infrastructure, CI/CD, observability, production reliability). Every project is staffed with senior engineers from the relevant teams.
 
 **How we're set up:**
-Distributed studio with lead engineers in Israel, the US, and Eastern Europe, working in European and overlap-friendly time zones. We deliberately take on 3-4 projects per quarter so every client gets senior-level attention - no juniors handed a spec.
+Distributed studio with lead engineers in Israel and Europe, working in European and overlap-friendly time zones. We deliberately take on 3-4 projects per quarter so every client gets senior-level attention - no juniors handed a spec.
 
 **What we're not:**
 A general software agency. We focus exclusively on AI engineering. If your problem doesn't call for AI, we'll tell you.
