@@ -5,9 +5,16 @@ interface Props {
   onStop: () => void;
   disabled?: boolean;
   isStreaming?: boolean;
+  placeholder?: string;
 }
 
-export function ChatInput({ onSend, onStop, disabled, isStreaming }: Props) {
+export function ChatInput({
+  onSend,
+  onStop,
+  disabled,
+  isStreaming,
+  placeholder = "Ask about Neuronetis...",
+}: Props) {
   const [value, setValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -38,56 +45,56 @@ export function ChatInput({ onSend, onStop, disabled, isStreaming }: Props) {
   };
 
   return (
-    <div className="px-4 pb-4 pt-2">
-      <div className="relative flex items-end rounded-2xl bg-[#2f2f2f] px-4 py-4">
-        <textarea
-          ref={textareaRef}
-          value={value}
-          onChange={(e) => {
-            setValue(e.target.value);
-            handleInput();
-          }}
-          onKeyDown={handleKeyDown}
-          placeholder="Ask about Neuronetis..."
-          disabled={disabled}
-          rows={1}
-          className="flex-1 resize-none bg-transparent text-base sm:text-sm leading-6 min-h-[36px] text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-50 self-center"
-        />
-        {isStreaming ? (
-          <button
-            onClick={onStop}
-            className="cursor-pointer ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white transition-colors hover:bg-white/80"
+    <div className="relative flex items-end gap-4 rounded-[14px] border border-hairline-strong bg-surface-raised p-1.5 pl-[22px]">
+      <textarea
+        ref={textareaRef}
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          handleInput();
+        }}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder}
+        disabled={disabled}
+        rows={1}
+        className="min-h-[36px] flex-1 resize-none self-center bg-transparent py-1 text-base leading-6 text-foreground placeholder:text-dim-text focus:outline-none disabled:opacity-50"
+      />
+      {isStreaming ? (
+        <button
+          onClick={onStop}
+          aria-label="Stop generating"
+          className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-[9px] bg-[#F4F4F5] transition-colors hover:bg-white"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="#0B0B0C"
+            className="h-5 w-5"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="#212121"
-              className="h-5 w-5"
-            >
-              <rect x="6" y="6" width="12" height="12" rx="2" />
-            </svg>
-          </button>
-        ) : (
-          <button
-            onClick={handleSend}
-            disabled={disabled || !value.trim()}
-            className="disabled:cursor-default cursor-pointer ml-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white transition-colors hover:bg-white/80 disabled:opacity-30 disabled:hover:bg-white"
+            <rect x="6" y="6" width="12" height="12" rx="2" />
+          </svg>
+        </button>
+      ) : (
+        <button
+          onClick={handleSend}
+          disabled={disabled || !value.trim()}
+          aria-label="Send message"
+          className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-[9px] bg-[#F4F4F5] transition-colors hover:bg-white disabled:cursor-default disabled:opacity-30 disabled:hover:bg-[#F4F4F5]"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#0B0B0C"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-[18px] w-[18px]"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#212121"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
-            >
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </button>
-        )}
-      </div>
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </button>
+      )}
     </div>
   );
 }

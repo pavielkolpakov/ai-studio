@@ -14,6 +14,8 @@ cd src && uvicorn app.main:app --reload
 
 ```
 client/              # React frontend (Vite + Tailwind + shadcn/ui)
+                     #   marketing site (/work /pricing /about) + chat assistant on /
+                     #   see client/CLAUDE.md for routing + design tokens
 src/
   app/
     api/v1/          # Routes: chat.py, health.py

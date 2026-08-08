@@ -20,7 +20,7 @@ export function MessageBubble({ message, isStreaming, searchingTool }: Props) {
   if (isUser) {
     return (
       <div className="flex justify-end mb-4">
-        <div className="max-w-[80%] rounded-2xl bg-[#2f2f2f] px-4 py-3 text-foreground">
+        <div className="max-w-[80%] rounded-[14px] border border-hairline bg-surface-raised px-4 py-3 text-foreground">
           <p className="text-sm whitespace-pre-wrap">{message.content}</p>
         </div>
       </div>

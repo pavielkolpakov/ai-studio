@@ -261,73 +261,105 @@ export function ChatPage() {
     setSearching(null);
   }, []);
 
-  return (
-    <div className="flex flex-col h-dvh">
-      {/* Header */}
-      <header className="border-b border-border px-4 py-3 shrink-0">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <h1 className="text-lg font-semibold">Neuronetis</h1>
-          <button
-            onClick={() => setContactOpen(true)}
-            className="cursor-pointer rounded-full border border-border px-4 py-1.5 text-sm text-foreground hover:bg-accent transition-colors"
-          >
-            Contact Us
-          </button>
-        </div>
-      </header>
-
-      <ContactModal
-        open={contactOpen}
-        onOpenChange={setContactOpen}
+  const chips =
+    !isStreaming && suggestions.length > 0 ? (
+      <SuggestionButtons
+        suggestions={suggestions}
+        onSelect={handleSend}
+        onIdeasPrompt={handleIdeasPrompt}
+        onCached={handleCachedAnswer}
+        onClicked={handleClickedId}
         sessionId={sessionId}
       />
+    ) : null;
 
-      {/* Messages */}
+  const errorLine = error ? (
+    <div className="px-4 py-2 text-center text-sm text-destructive">{error}</div>
+  ) : null;
+
+  return (
+    <>
+      <ContactModal open={contactOpen} onOpenChange={setContactOpen} sessionId={sessionId} />
+
       {messages.length === 0 ? (
-        <div className="flex-1 flex flex-col items-center px-4 py-14 text-center">
-          <h2 className="text-3xl font-bold mb-3">
-            Production AI for IT companies
-          </h2>
-          <p className="text-l text-muted-foreground max-w-lg">
-            AI Audits · Agents integrations · Software Development services.
-          </p>
-          <p className="py-2 text-l text-muted-foreground max-w-lg">
-            Use this tool to ask about our services, see how we work or get a custom recommendation for your company.
-          </p>
+        /* Hero — the assistant is the entry point to the site */
+        <div className="relative flex min-h-[calc(100dvh-73px)] items-center justify-center">
+          <div className="pointer-events-none absolute inset-0 overflow-hidden select-none">
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(ellipse 880px 460px at 50% 34%, rgba(163,179,201,0.11), transparent 70%)",
+              }}
+            />
+            <img
+              src="/logo-mark.png"
+              alt=""
+              className="absolute top-1/2 left-1/2 h-[760px] w-auto max-w-none -translate-x-1/2 -translate-y-[52%] opacity-[0.055] blur-[2px]"
+              style={{
+                maskImage:
+                  "radial-gradient(ellipse 58% 56% at 50% 46%, #000 0%, rgba(0,0,0,0.55) 55%, transparent 78%)",
+                WebkitMaskImage:
+                  "radial-gradient(ellipse 58% 56% at 50% 46%, #000 0%, rgba(0,0,0,0.55) 55%, transparent 78%)",
+              }}
+            />
+            <div
+              className="absolute inset-x-0 bottom-0 h-60"
+              style={{
+                background: "linear-gradient(180deg, rgba(11,11,12,0) 0%, #0B0B0C 92%)",
+              }}
+            />
+          </div>
+
+          <div className="relative w-full max-w-[1200px] px-5 py-16 sm:px-10">
+            <div className="mx-auto mb-0 max-w-[780px] text-center">
+              <div className="eyebrow mb-[26px]">AI engineering studio · Israel &amp; Europe</div>
+              <h1 className="mb-[22px] font-heading text-[42px] leading-[1.03] font-semibold tracking-[-0.03em] text-balance sm:text-[54px] lg:text-[66px]">
+                Production AI, shipped by engineers who own it
+              </h1>
+              <p className="mx-auto mb-11 max-w-[720px] text-[19px] leading-[1.55] text-pretty text-muted-foreground">
+                RAG, agents, LLM features and evals infrastructure — built into your existing
+                product, not bolted on. We take 3–4 projects a quarter so every one gets senior
+                attention.
+              </p>
+            </div>
+
+            <div className="mx-auto max-w-[820px]">
+              <ChatInput
+                onSend={handleSend}
+                onStop={handleStop}
+                disabled={!sessionId}
+                isStreaming={isStreaming}
+                placeholder="Describe what you're building…"
+              />
+              {errorLine}
+              <div className="mt-[18px]">{chips}</div>
+              <div className="mt-[22px] text-center font-mono text-[11.5px] tracking-[0.04em] text-dim-text">
+                Scoped from our real delivery history — no form, no discovery call required
+              </div>
+            </div>
+          </div>
         </div>
       ) : (
-        <MessageList
-          messages={messages}
-          streamingId={streamingId}
-          searchingId={searching?.id ?? null}
-          searchingTool={searching?.tool ?? null}
-          footer={
-            !isStreaming && suggestions.length > 0 ? (
-              <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} onCached={handleCachedAnswer} onClicked={handleClickedId} sessionId={sessionId} />
-            ) : null
-          }
-        />
-      )}
-
-      {/* Error */}
-      {error && (
-        <div className="px-4 py-2 text-sm text-destructive text-center">
-          {error}
+        <div className="flex h-[calc(100dvh-73px)] flex-col">
+          <MessageList
+            messages={messages}
+            streamingId={streamingId}
+            searchingId={searching?.id ?? null}
+            searchingTool={searching?.tool ?? null}
+            footer={chips}
+          />
+          {errorLine}
+          <div className="mx-auto w-full max-w-[820px] px-5 pt-2 pb-5 sm:px-10">
+            <ChatInput
+              onSend={handleSend}
+              onStop={handleStop}
+              disabled={!sessionId}
+              isStreaming={isStreaming}
+            />
+          </div>
         </div>
       )}
-
-      {/* Suggestions + Input */}
-      <div className="max-w-4xl mx-auto w-full">
-        {!isStreaming && suggestions.length > 0 && messages.length === 0 && (
-          <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} onCached={handleCachedAnswer} onClicked={handleClickedId} sessionId={sessionId} />
-        )}
-        <ChatInput
-          onSend={handleSend}
-          onStop={handleStop}
-          disabled={!sessionId}
-          isStreaming={isStreaming}
-        />
-      </div>
-    </div>
+    </>
   );
 }

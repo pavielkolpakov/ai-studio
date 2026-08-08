@@ -20,7 +20,7 @@ export function SuggestionButtons({ suggestions, onSelect, onIdeasPrompt, onCach
   if (suggestions.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap gap-2 justify-center px-4 pb-2">
+    <div className="flex flex-wrap justify-center gap-2.5">
       {suggestions.map((s) => {
         const action = s.action ?? "send";
         const handleClick = () => {
@@ -36,8 +36,8 @@ export function SuggestionButtons({ suggestions, onSelect, onIdeasPrompt, onCach
             onClick={handleClick}
             className={
               action === "calendly"
-                ? "cta-gradient-pill cursor-pointer px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm text-foreground transition-colors hover:brightness-110"
-                : "cursor-pointer rounded-full border border-border bg-[#2f2f2f] px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm text-foreground hover:bg-[#3a3a3a] transition-colors"
+                ? "btn-primary cursor-pointer px-4 py-[9px] text-[13.5px]"
+                : "cursor-pointer rounded-lg border border-white/[0.11] bg-surface px-4 py-[9px] text-[13.5px] text-body-text transition-colors hover:border-white/30 hover:text-foreground"
             }
           >
             {s.text}

@@ -10,10 +10,37 @@ cd client && npm run dev   # localhost:3000
 
 Requires backend running on localhost:8000 (CORS configured).
 
+## Routing
+
+`react-router-dom` (`src/App.tsx`). `SiteLayout` wraps all routes with header + footer; `BookCta` renders on every route except `/`.
+
+- `/` → `HomePage` → `ChatPage`. The hero **is** the assistant: its input bar is the real `ChatInput`, its chips the real `SuggestionButtons`. Sending swaps the hero for the message thread.
+- `/work`, `/pricing`, `/about` — marketing pages, layout only; copy lives in `src/data/site.ts`.
+
+**Deploy requirement:** these are client-side routes. The static host must rewrite unknown paths to `index.html` (e.g. Netlify `_redirects`, Vercel `rewrites`, Caddy `try_files`), or `/work` 404s on direct load. No such config is in the repo yet.
+
+## Design System
+
+Ported from the "Neuronetis Site" Claude Design project. Tokens in `src/index.css`:
+
+- Fonts: `font-heading` (Space Grotesk, all headings), `font-sans` (IBM Plex Sans, body), `font-mono` (JetBrains Mono, eyebrows/labels/metrics)
+- Surfaces: `bg-background` #0B0B0C, `bg-surface` #101012 (cards), `bg-surface-raised` #121214 (input, panels), `bg-surface-sunken` #08080A (image slots)
+- Text: `text-foreground` → `text-body-text` → `text-muted-foreground` → `text-dim-text` → `text-faint-text`
+- Accent: `text-steel` #A3B3C9 (eyebrows, checkmarks, rules) — the only non-neutral colour
+- Borders: `border-hairline` (white/8%), `border-hairline-strong` (white/14%)
+- Helper classes: `.eyebrow` (mono uppercase label), `.btn-primary` (solid white CTA)
+
+`src/components/site/ImagePlaceholder.tsx` stands in for the design's `<image-slot>` — replace with real art on Work/About.
+
 ## Key Files
 
 - `src/api/chat.ts` — `createSession()` + `sendMessage()` (SSE via ReadableStream)
-- `src/components/ChatPage.tsx` — main page, all state logic (session, messages, streaming, suggestions)
+- `src/components/ChatPage.tsx` — home page: hero (empty state) + message thread, all chat state logic (session, messages, streaming, suggestions)
+- `src/data/site.ts` — all marketing copy (catalog, plans, phases, stack, FAQs, team)
+
+## Marketing Copy Rule
+
+`src/data/site.ts` is transcribed from `docs/vault/` — the same notes the chat assistant reads — and each export carries a comment naming its source note. **Never add a price, timeline, metric or claim the vault doesn't state**; edit the vault note first, then mirror it here, or the page and the assistant will contradict each other. Third-party benchmarks (e.g. "30–60% fewer tickets") must keep their attribution in the label — they are not our own client results. The vault contains no case studies or team names, so `PEOPLE` and the `ImagePlaceholder` slots stay placeholders until real assets exist.
 - `src/components/SuggestionButtons.tsx` — dynamic chips. Three sources: `INITIAL_SUGGESTIONS` (pre-message, hardcoded in ChatPage), `CACHED_ANSWERS[key].followups` (cached responses), backend `done.followups` (freeform LLM responses). Clicked ids tracked in a session-scoped `Set<string>` in ChatPage state and filtered out of incoming picks. If <2 remain after filter, "Book a call" is appended.
 - `src/components/ContactModal.tsx` — contact form modal with validation, success state + Book a Call upsell
 - `src/api/contact.ts` — `submitContact()` POST to `/api/v1/contact`

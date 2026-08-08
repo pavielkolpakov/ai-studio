@@ -129,7 +129,7 @@ export function ContactModal({ open, onOpenChange, sessionId }: Props) {
               onClick={() => {
                 openCalendlyPopup(sessionId);
               }}
-              className="cta-gradient-pill w-full border-0 bg-[#2f2f2f] text-foreground hover:brightness-110 cursor-pointer"
+              className="btn-primary w-full cursor-pointer border-0"
             >
               Book a Call
             </Button>
