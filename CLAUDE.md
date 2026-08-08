@@ -1,13 +1,12 @@
 # Neuronetis
 
-AI-powered business chat (FastAPI + LangChain + Qdrant + Postgres + React).
+AI-powered business chat (FastAPI + LangChain + Postgres + React). Knowledge is served as plain text from a markdown vault — no embeddings/vector DB.
 
 ## Quick Start
 
 ```bash
 docker compose up -d
 cd src && alembic upgrade head              # Run migrations
-cd src && python -m app.ingestion           # Ingest RAG.md into Qdrant
 cd src && uvicorn app.main:app --reload
 ```
 
@@ -20,13 +19,14 @@ src/
     api/v1/          # Routes: chat.py, health.py
     core/            # config.py, setup.py, db/
     crud/            # crud_conversations.py
-    ingestion/       # splitter.py, vector_store.py, __main__.py
+    rag/             # agent chain, tools, ideas, guardrail, prompts
+    vault/           # loader.py — reads docs/vault/ notes at runtime
     models/          # conversation.py (SQLAlchemy)
     schemas/         # chat.py (Pydantic)
     middleware/      # logger_middleware.py
   migrations/        # Alembic (run from src/)
   .env               # Config (not committed)
-docs/RAG.md          # Source content for ingestion (9 sections)
+docs/vault/          # Knowledge base: markdown notes + generated index.md (served as text)
 tests/               # pytest (run from project root)
 ```
 
@@ -38,17 +38,15 @@ tests/               # pytest (run from project root)
 - **Alembic**: run from `src/`; migration files in `src/migrations/versions/` — always commit them
 - **Python**: 3.14, venv at `.venv/`
 - **LangChain**: 1.0 LTS (not 0.3)
-- **Qdrant**: Qdrant Cloud in prod; local Docker instance for dev (port 6333)
-- **Ingestion**: single Qdrant collection, wipe-and-reload, 800 token chunks / 100 overlap, top-k=4
-- **Topic tags**: about, services, technical, use-cases, process, faq (RAG.md), projects_catalog (neuronetis-project-catalog.md, one chunk per numbered project; used by idea-generation retrieval, k=3)
+- **Knowledge base**: `docs/vault/` Obsidian vault. `index.md` (routing table: each note's `read_when`) is injected into the agent system prompt; the agent reads individual notes on demand via the `read_knowledge_base` tool. No chunking, embeddings, or vector store. See `src/app/vault/loader.py`.
+- **Idea generation**: separate two-step LLM mechanism over `docs/vault/projects/` — gpt-4o-mini selects 2-3 project notes, then a structured-output call adapts them. No retrieval. See `src/app/rag/ideas.py`.
 
 ## Deployment (Railway)
 
-- **Dockerfile**: multi-stage build, runs `alembic upgrade head` then `uvicorn` on startup
+- **Dockerfile**: multi-stage build; copies `src/` and `docs/vault/` (vault is read at runtime), runs `alembic upgrade head` then `uvicorn` on startup
 - **Postgres**: Railway-managed, connected via `DATABASE_URL` env var
-- **Qdrant**: Qdrant Cloud (not Railway), connected via `QDRANT_URL` + `QDRANT_API_KEY`
 - New model changes require a committed Alembic migration to take effect on deploy
-- **Run ingestion against prod**: `cd src && railway run --service ai-studio --environment production -- python -m app.ingestion`. Runs locally but injects prod env (`QDRANT_URL`, `QDRANT_API_KEY`, `OPENAI_API_KEY`) so it writes to prod Qdrant Cloud. Don't SSH into the container - `docs/` is not copied into the image.
+- Editing knowledge base content = edit `docs/vault/` notes and commit; changes take effect on next deploy (no ingestion step). Keep `docs/vault/index.md` in sync with note `read_when` frontmatter.
 
 ## Rules
 

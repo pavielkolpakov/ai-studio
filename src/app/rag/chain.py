@@ -5,44 +5,25 @@ from langchain.agents import create_agent
 from langchain_core.messages import AIMessage, AIMessageChunk, BaseMessage, HumanMessage, ToolMessage
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
-from langchain_qdrant import QdrantVectorStore
 
 from app.core.config import settings
 from app.data.followup_pool import resolve_picks
-from app.ingestion.vector_store import get_embeddings, get_qdrant_client
 from app.rag.followups import pick_followups
 from app.rag.guardrail import GuardrailMiddleware
 from app.rag.ideas import generate_ideas_payload
 from app.rag.prompts import AGENT_SYSTEM_PROMPT
+from app.vault.loader import load_index, read_notes
 
 IDEAS_MODE_FOLLOWUPS = ["services_pricing", "process_overview", "about_neuronetis"]
 
 
-def get_retriever():
-    """Create a Qdrant-backed retriever with k=4."""
-    client = get_qdrant_client()
-    embeddings = get_embeddings()
-    vector_store = QdrantVectorStore(
-        client=client,
-        collection_name=settings.QDRANT_COLLECTION,
-        embedding=embeddings,
-    )
-    return vector_store.as_retriever(search_kwargs={"k": 4})
-
-
-def _format_docs(docs) -> str:
-    return "\n\n".join(doc.page_content for doc in docs)
-
-
 @tool
-def search_knowledge_base(query: str) -> str:
-    """Search the Neuronetis knowledge base for information about the studio's
-    services, process, projects, team, pricing, and FAQ. Call this for any
-    factual question about Neuronetis. Rephrase follow-up questions into a
-    standalone query using the conversation history before calling."""
-    retriever = get_retriever()
-    docs = retriever.invoke(query)
-    return _format_docs(docs)
+def read_knowledge_base(names: list[str]) -> str:
+    """Read one or more Neuronetis knowledge-base notes by name (e.g.
+    ['services/pricing']). Note names and when to read each are listed in the
+    Knowledge Base Index in your system prompt. Pass every note whose 'Read when'
+    matches the user's question."""
+    return read_notes(names)
 
 
 @tool(response_format="content_and_artifact")
@@ -69,8 +50,8 @@ def build_agent():
     )
     return create_agent(
         model=llm,
-        tools=[search_knowledge_base, generate_project_ideas],
-        system_prompt=AGENT_SYSTEM_PROMPT,
+        tools=[read_knowledge_base, generate_project_ideas],
+        system_prompt=AGENT_SYSTEM_PROMPT.replace("{index}", load_index()),
         middleware=[GuardrailMiddleware()],
     )
 
@@ -125,10 +106,16 @@ async def stream_response(
                             if tc["id"] in emitted_tool_calls:
                                 continue
                             emitted_tool_calls.add(tc["id"])
+                            names = tc["args"].get("names")
+                            query = (
+                                ", ".join(names)
+                                if isinstance(names, list)
+                                else tc["args"].get("description", "")
+                            )
                             yield _sse({
                                 "type": "tool_call",
                                 "tool": tc["name"],
-                                "query": tc["args"].get("query") or tc["args"].get("description", ""),
+                                "query": query,
                             })
                     elif isinstance(msg, ToolMessage):
                         artifact = getattr(msg, "artifact", None)

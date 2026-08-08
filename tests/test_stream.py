@@ -55,8 +55,9 @@ class TestStreamResponse:
         ai_with_tool = AIMessage(
             content="",
             tool_calls=[
-                {"id": "t1", "name": "search_knowledge_base",
-                 "args": {"query": "pricing"}, "type": "tool_call"}
+                {"id": "t1", "name": "read_knowledge_base",
+                 "args": {"names": ["services/pricing", "process/discovery"]},
+                 "type": "tool_call"}
             ],
         )
         items = [
@@ -70,8 +71,8 @@ class TestStreamResponse:
         assert len(tool_events) == 1
         assert tool_events[0] == {
             "type": "tool_call",
-            "tool": "search_knowledge_base",
-            "query": "pricing",
+            "tool": "read_knowledge_base",
+            "query": "services/pricing, process/discovery",
         }
 
     @pytest.mark.asyncio
@@ -130,8 +131,8 @@ class TestStreamResponse:
     async def test_deduplicates_tool_call_events(self):
         ai_with_tool = AIMessage(
             content="",
-            tool_calls=[{"id": "t1", "name": "search_knowledge_base",
-                         "args": {"query": "x"}, "type": "tool_call"}],
+            tool_calls=[{"id": "t1", "name": "read_knowledge_base",
+                         "args": {"names": ["services/pricing"]}, "type": "tool_call"}],
         )
         items = [
             ("updates", {"model": {"messages": [ai_with_tool]}}),

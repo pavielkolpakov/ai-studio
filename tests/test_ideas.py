@@ -4,33 +4,66 @@ from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from langchain_core.documents import Document
+
+def _note(name, title, body="body text"):
+    from app.vault.loader import Note
+
+    return Note(name=name, title=title, read_when=f"when {title}", body=body)
 
 
-class TestGetCatalogRetriever:
-    @patch("app.rag.ideas.QdrantVectorStore")
-    @patch("app.rag.ideas.get_embeddings")
-    @patch("app.rag.ideas.get_qdrant_client")
-    def test_filters_topic_and_uses_k_3(self, _client, _embed, mock_vs_cls):
-        mock_vs = MagicMock()
-        mock_vs_cls.return_value = mock_vs
-        mock_vs.as_retriever.return_value = MagicMock()
+class TestSelectProjects:
+    @patch("app.rag.ideas.ChatOpenAI")
+    @patch("app.rag.ideas.project_notes")
+    def test_returns_selected_notes(self, mock_project_notes, mock_llm_cls):
+        notes = [
+            _note("projects/01-rag", "RAG Assistant"),
+            _note("projects/04-support", "Support Copilot"),
+            _note("projects/06-workflow", "Workflow Automation"),
+        ]
+        mock_project_notes.return_value = notes
 
-        from app.rag.ideas import get_catalog_retriever
+        from app.rag.ideas import ProjectSelection
 
-        get_catalog_retriever()
+        structured = MagicMock()
+        structured.invoke.return_value = ProjectSelection(
+            names=["projects/04-support", "projects/06-workflow"]
+        )
+        llm = MagicMock()
+        llm.with_structured_output.return_value = structured
+        mock_llm_cls.return_value = llm
 
-        search_kwargs = mock_vs.as_retriever.call_args[1]["search_kwargs"]
-        assert search_kwargs["k"] == 3
-        serialized = search_kwargs["filter"].model_dump_json()
-        assert "projects_catalog" in serialized
-        assert "topic" in serialized
-        assert "industry" not in serialized
-        assert "service_type" not in serialized
+        from app.rag.ideas import select_projects
+
+        result = select_projects("I run a support team")
+
+        assert [n.name for n in result] == ["projects/04-support", "projects/06-workflow"]
+        prompt = str(structured.invoke.call_args[0][0])
+        assert "support team" in prompt
+        assert "projects/01-rag" in prompt  # full catalog offered as menu
+
+    @patch("app.rag.ideas.ChatOpenAI")
+    @patch("app.rag.ideas.project_notes")
+    def test_falls_back_when_selection_unknown(self, mock_project_notes, mock_llm_cls):
+        notes = [_note(f"projects/0{i}-p", f"P{i}") for i in range(1, 5)]
+        mock_project_notes.return_value = notes
+
+        from app.rag.ideas import ProjectSelection
+
+        structured = MagicMock()
+        structured.invoke.return_value = ProjectSelection(names=["nope/x", "nope/y"])
+        llm = MagicMock()
+        llm.with_structured_output.return_value = structured
+        mock_llm_cls.return_value = llm
+
+        from app.rag.ideas import select_projects
+
+        result = select_projects("something")
+
+        assert [n.name for n in result] == [n.name for n in notes[:3]]
 
 
 class TestGenerateIdeasPayload:
-    def _mock_llm(self, mock_llm_cls):
+    def _mock_adapt_llm(self, mock_llm_cls):
         from app.rag.ideas import Idea, IdeasPayload
 
         payload = IdeasPayload(
@@ -47,7 +80,7 @@ class TestGenerateIdeasPayload:
                     title="Knowledge Base Assistant",
                     description="RAG over internal docs.",
                     deliverables=["Indexer", "Chat UI"],
-                    tech=["Qdrant", "OpenAI"],
+                    tech=["OpenAI"],
                     price_range="$10k-$20k",
                     time_estimate="4-6 weeks",
                 ),
@@ -62,28 +95,22 @@ class TestGenerateIdeasPayload:
         return payload, structured_llm
 
     @patch("app.rag.ideas.ChatOpenAI")
-    @patch("app.rag.ideas.get_catalog_retriever")
-    def test_single_retrieval_call_no_fallback(self, mock_retriever_fn, mock_llm_cls):
-        retriever = MagicMock()
-        retriever.invoke.return_value = [
-            Document(
-                page_content="RAG project catalog entry",
-                metadata={"topic": "projects_catalog"},
-            ),
+    @patch("app.rag.ideas.select_projects")
+    def test_uses_selected_project_bodies(self, mock_select, mock_llm_cls):
+        mock_select.return_value = [
+            _note("projects/04-support", "Support Copilot", body="Support catalog entry"),
         ]
-        mock_retriever_fn.return_value = retriever
-        payload, structured_llm = self._mock_llm(mock_llm_cls)
+        payload, structured_llm = self._mock_adapt_llm(mock_llm_cls)
 
         from app.rag.ideas import generate_ideas_payload
 
         result = generate_ideas_payload("I run a B2B SaaS support team")
 
         assert result is payload
-        mock_retriever_fn.assert_called_once_with()
-        retriever.invoke.assert_called_once_with("I run a B2B SaaS support team")
+        mock_select.assert_called_once_with("I run a B2B SaaS support team")
         prompt_text = str(structured_llm.invoke.call_args[0][0])
         assert "B2B SaaS support team" in prompt_text
-        assert "RAG project catalog entry" in prompt_text
+        assert "Support catalog entry" in prompt_text
 
 
 class TestGenerateProjectIdeasTool:
@@ -97,7 +124,7 @@ class TestGenerateProjectIdeasTool:
                     title="Doc Search",
                     description="Semantic search over PDFs.",
                     deliverables=["Indexer", "Search UI"],
-                    tech=["Qdrant"],
+                    tech=["OpenAI"],
                     price_range="$5k-$10k",
                     time_estimate="2-4 weeks",
                 ),
@@ -129,7 +156,6 @@ class TestGenerateProjectIdeasTool:
         assert ideas[0]["title"] == "Doc Search"
         mock_gen.assert_called_once_with("fintech startup")
 
-        # Tool schema should not accept industry/service_type
         schema = generate_project_ideas.args_schema.model_json_schema()
         properties = schema.get("properties", {})
         assert "description" in properties

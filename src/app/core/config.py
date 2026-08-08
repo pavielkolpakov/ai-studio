@@ -33,15 +33,8 @@ class PostgresSettings(BaseSettings):
         )
 
 
-class QdrantSettings(BaseSettings):
-    QDRANT_URL: str = "http://localhost:6333"
-    QDRANT_API_KEY: str = ""
-    QDRANT_COLLECTION: str = "neuronetis"
-
-
 class OpenAISettings(BaseSettings):
     OPENAI_API_KEY: str = ""
-    OPENAI_EMBEDDING_MODEL: str = "text-embedding-3-small"
     OPENAI_CHAT_MODEL: str = "gpt-4o"
 
 
@@ -57,7 +50,6 @@ class CORSSettings(BaseSettings):
 class Settings(
     AppSettings,
     PostgresSettings,
-    QdrantSettings,
     OpenAISettings,
     ResendSettings,
     CORSSettings,
