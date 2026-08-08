@@ -16,6 +16,11 @@ from app.vault.loader import load_index, read_notes
 
 IDEAS_MODE_FOLLOWUPS = ["services_pricing", "process_overview", "about_neuronetis"]
 
+# Follow-up suggestion chips are switched off while company info lives on the
+# marketing pages rather than in chat. Flip to True to restore them; the picker
+# and the pool below are unchanged.
+FOLLOWUPS_ENABLED = False
+
 
 @tool
 def read_knowledge_base(names: list[str]) -> str:
@@ -125,11 +130,12 @@ async def stream_response(
                                 had_ideas = True
                                 yield _sse({"type": "ideas", "ideas": ideas})
 
-    followups = (
-        resolve_picks(IDEAS_MODE_FOLLOWUPS)
-        if had_ideas
-        else await pick_followups(question, full_answer)
-    )
+    if not FOLLOWUPS_ENABLED:
+        followups: list[dict] = []
+    elif had_ideas:
+        followups = resolve_picks(IDEAS_MODE_FOLLOWUPS)
+    else:
+        followups = await pick_followups(question, full_answer)
     yield _sse({"type": "done", "followups": followups})
 
 

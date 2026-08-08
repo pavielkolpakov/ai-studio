@@ -42,6 +42,7 @@ tests/               # pytest (run from project root)
 - **LangChain**: 1.0 LTS (not 0.3)
 - **Knowledge base**: `docs/vault/` Obsidian vault. `index.md` (routing table: each note's `read_when`) is injected into the agent system prompt; the agent reads individual notes on demand via the `read_knowledge_base` tool. No chunking, embeddings, or vector store. See `src/app/vault/loader.py`.
 - **Idea generation**: separate two-step LLM mechanism over `docs/vault/projects/` — gpt-4o-mini selects 2-3 project notes, then a structured-output call adapts them. No retrieval. See `src/app/rag/ideas.py`.
+- **Turn routing**: every user turn is classified `BUSINESS` / `ON_TOPIC` / `OFF_TOPIC` by `GuardrailMiddleware`. `BUSINESS` forces the `generate_project_ideas` tool; `ON_TOPIC` is normal knowledge-base Q&A (this is how follow-ups about generated ideas stay grounded); `OFF_TOPIC` gets a canned rejection. Follow-up suggestion chips are disabled via `FOLLOWUPS_ENABLED` in `src/app/rag/chain.py`. See `src/app/rag/CLAUDE.md`.
 
 ## Deployment (Railway)
 
