@@ -9,7 +9,7 @@ interface Props {
 }
 
 const INDICATOR_COPY: Record<string, string> = {
-  search_knowledge_base: "Searching knowledge base...",
+  read_knowledge_base: "Searching knowledge base...",
   generate_project_ideas: "Generating ideas...",
 };
 

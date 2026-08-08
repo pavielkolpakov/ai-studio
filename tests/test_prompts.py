@@ -16,7 +16,10 @@ class TestAgentSystemPrompt:
         assert "we" in txt or "our" in txt
 
     def test_instructs_tool_use(self):
-        assert "search_knowledge_base" in AGENT_SYSTEM_PROMPT
+        assert "read_knowledge_base" in AGENT_SYSTEM_PROMPT
+
+    def test_has_index_placeholder(self):
+        assert "{index}" in AGENT_SYSTEM_PROMPT
 
 
 class TestGuardrailPrompt:

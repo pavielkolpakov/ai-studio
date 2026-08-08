@@ -23,7 +23,7 @@ Requires backend running on localhost:8000 (CORS configured).
 ## SSE Event Format (from backend)
 
 Discriminated by `type`:
-- `{type: "tool_call", tool: "search_knowledge_base", query: "..."}` — agent invoked retrieval; UI swaps "Thinking…" → "Searching knowledge base…"
+- `{type: "tool_call", tool: "read_knowledge_base", query: "..."}` — agent read KB notes (`query` is the joined note names); UI swaps "Thinking…" → "Searching knowledge base…"
 - `{type: "token", token: "...", done: false}` — answer token
 - `{type: "ideas", ideas: Idea[]}` — tailored AI project ideas (from `generate_project_ideas` tool); rendered as cards by `IdeaCards`
 - `{type: "done", followups?: FollowupPick[]}` — final event. `followups` is a list of `{id, text, cacheKey?, action?}` picked server-side from a fixed pool by a gpt-4o-mini call. Empty/absent → frontend renders nothing then appends "Book a call" via the <2-fallback rule.

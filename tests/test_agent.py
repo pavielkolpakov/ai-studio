@@ -7,9 +7,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 class TestBuildAgent:
     @patch("app.rag.chain.ChatOpenAI")
-    @patch("app.rag.chain.get_retriever")
-    def test_returns_compiled_agent(self, mock_retriever_fn, mock_llm_cls):
-        mock_retriever_fn.return_value = MagicMock()
+    def test_returns_compiled_agent(self, mock_llm_cls):
         mock_llm_cls.return_value = MagicMock()
 
         from app.rag.chain import build_agent
@@ -31,4 +29,17 @@ class TestBuildAgent:
 
         tools = mock_create_agent.call_args[1]["tools"]
         names = {t.name for t in tools}
-        assert names == {"search_knowledge_base", "generate_project_ideas"}
+        assert names == {"read_knowledge_base", "generate_project_ideas"}
+
+    @patch("app.rag.chain.create_agent")
+    @patch("app.rag.chain.ChatOpenAI")
+    def test_injects_index_into_system_prompt(self, mock_llm_cls, mock_create_agent):
+        mock_llm_cls.return_value = MagicMock()
+
+        from app.rag.chain import build_agent
+
+        build_agent()
+
+        system_prompt = mock_create_agent.call_args[1]["system_prompt"]
+        assert "{index}" not in system_prompt  # placeholder was filled
+        assert "## " in system_prompt  # index sections present

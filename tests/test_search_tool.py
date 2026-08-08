@@ -1,50 +1,34 @@
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from langchain_core.documents import Document
 
+class TestReadKnowledgeBaseTool:
+    @patch("app.rag.chain.read_notes")
+    def test_returns_content(self, mock_read_notes):
+        mock_read_notes.return_value = "# Pricing\n\nOur pricing is fixed."
 
-class TestSearchKnowledgeBaseTool:
-    @patch("app.rag.chain.get_retriever")
-    def test_returns_content(self, mock_retriever_fn):
-        retriever = MagicMock()
-        retriever.invoke.return_value = [
-            Document(
-                page_content="We offer AI consulting.",
-                metadata={"source": "RAG.md", "header": "Services", "topic": "services"},
-            ),
-            Document(
-                page_content="Our process is iterative.",
-                metadata={"source": "RAG.md", "header": "Process", "topic": "process"},
-            ),
-        ]
-        mock_retriever_fn.return_value = retriever
+        from app.rag.chain import read_knowledge_base
 
-        from app.rag.chain import search_knowledge_base
-
-        content = search_knowledge_base.invoke(
-            {"type": "tool_call", "id": "1", "name": "search_knowledge_base",
-             "args": {"query": "what do you offer?"}}
+        content = read_knowledge_base.invoke(
+            {"type": "tool_call", "id": "1", "name": "read_knowledge_base",
+             "args": {"names": ["services/pricing"]}}
         ).content
 
-        assert "AI consulting" in content
-        assert "iterative" in content
-        retriever.invoke.assert_called_once_with("what do you offer?")
+        assert "Pricing" in content
+        mock_read_notes.assert_called_once_with(["services/pricing"])
 
-    @patch("app.rag.chain.get_retriever")
-    def test_empty_results(self, mock_retriever_fn):
-        retriever = MagicMock()
-        retriever.invoke.return_value = []
-        mock_retriever_fn.return_value = retriever
+    @patch("app.rag.chain.read_notes")
+    def test_passes_multiple_names(self, mock_read_notes):
+        mock_read_notes.return_value = "body"
 
-        from app.rag.chain import search_knowledge_base
+        from app.rag.chain import read_knowledge_base
 
-        content = search_knowledge_base.invoke(
-            {"type": "tool_call", "id": "1", "name": "search_knowledge_base",
-             "args": {"query": "x"}}
-        ).content
+        read_knowledge_base.invoke(
+            {"type": "tool_call", "id": "1", "name": "read_knowledge_base",
+             "args": {"names": ["services/pricing", "process/discovery"]}}
+        )
 
-        assert content == ""
+        mock_read_notes.assert_called_once_with(["services/pricing", "process/discovery"])

@@ -1,11 +1,11 @@
 from langchain_openai import ChatOpenAI
-from langchain_qdrant import QdrantVectorStore
 from pydantic import BaseModel, Field
-from qdrant_client.models import FieldCondition, Filter, MatchValue
 
 from app.core.config import settings
-from app.ingestion.vector_store import get_embeddings, get_qdrant_client
-from app.rag.prompts import IDEAS_GENERATION_PROMPT
+from app.rag.prompts import IDEAS_GENERATION_PROMPT, IDEAS_SELECTION_PROMPT
+from app.vault.loader import Note, project_notes
+
+SELECT_MODEL = "gpt-4o-mini"
 
 
 class Idea(BaseModel):
@@ -25,27 +25,34 @@ class IdeasPayload(BaseModel):
     )
 
 
-def get_catalog_retriever():
-    """Qdrant retriever scoped to topic=projects_catalog, k=3."""
-    client = get_qdrant_client()
-    embeddings = get_embeddings()
-    vector_store = QdrantVectorStore(
-        client=client,
-        collection_name=settings.QDRANT_COLLECTION,
-        embedding=embeddings,
+class ProjectSelection(BaseModel):
+    names: list[str] = Field(
+        description="2 or 3 project names copied verbatim from the catalog.",
+        min_length=2,
+        max_length=3,
     )
-    filter_ = Filter(must=[
-        FieldCondition(key="metadata.topic", match=MatchValue(value="projects_catalog")),
-    ])
-    return vector_store.as_retriever(search_kwargs={"k": 3, "filter": filter_})
+
+
+def select_projects(description: str) -> list[Note]:
+    """Ask a cheap LLM to pick the 2-3 best-fitting project notes for the description."""
+    notes = project_notes()
+    by_name = {note.name: note for note in notes}
+    menu = "\n".join(f"- {note.name}: {note.title} — {note.read_when}" for note in notes)
+
+    llm = ChatOpenAI(model=SELECT_MODEL, api_key=settings.OPENAI_API_KEY, streaming=False)
+    structured_llm = llm.with_structured_output(ProjectSelection)
+    prompt = IDEAS_SELECTION_PROMPT.format(description=description, menu=menu)
+    selection = structured_llm.invoke(prompt)
+
+    selected = [by_name[name] for name in selection.names if name in by_name]
+    return selected or notes[:3]
 
 
 def generate_ideas_payload(description: str) -> IdeasPayload:
-    """Retrieve the 3 most relevant catalog projects and ask a structured-output LLM
-    to lightly adapt each one to the user's context (2 or 3 ideas)."""
-    retriever = get_catalog_retriever()
-    docs = retriever.invoke(description)
-    context = "\n\n".join(d.page_content for d in docs)
+    """Select the most relevant project notes, then ask a structured-output LLM to
+    lightly adapt each to the user's context (2 or 3 ideas)."""
+    selected = select_projects(description)
+    context = "\n\n".join(f"{note.title}\n\n{note.body}" for note in selected)
 
     llm = ChatOpenAI(
         model=settings.OPENAI_CHAT_MODEL,
