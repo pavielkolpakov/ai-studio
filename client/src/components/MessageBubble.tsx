@@ -34,7 +34,8 @@ export function MessageBubble({ message, isStreaming, searchingTool }: Props) {
       </div>
       {message.ideas && message.ideas.length > 0 && <IdeaCards ideas={message.ideas} />}
       {isStreaming && !message.content && (
-        <span className="inline-block text-sm text-muted-foreground animate-pulse">
+        <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+          <img src="/NN-loading-transparent.png" alt="" className="h-5 w-5" />
           {indicatorText}
         </span>
       )}
