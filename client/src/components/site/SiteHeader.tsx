@@ -2,14 +2,13 @@ import { Link, NavLink } from "react-router-dom";
 import { openCalendlyPopup } from "@/lib/calendly";
 
 const NAV = [
-  { to: "/work", label: "Work" },
   { to: "/pricing", label: "Pricing" },
   { to: "/about", label: "About" },
 ];
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-hairline bg-background/85 backdrop-blur-[14px]">
+    <header className="sticky top-0 z-50 bg-background">
       <div className="mx-auto flex h-[72px] max-w-[1200px] items-center justify-between gap-6 px-5 sm:px-10">
         <Link to="/" className="flex items-center gap-3">
           <span className="font-heading text-[18px] font-semibold tracking-[0.01em]">
@@ -23,11 +22,7 @@ export function SiteHeader() {
               <NavLink
                 key={item.to}
                 to={item.to}
-                className={({ isActive }) =>
-                  `rounded-lg px-3.5 py-2 text-sm transition-colors hover:bg-white/5 ${
-                    isActive ? "text-foreground" : "text-muted-foreground"
-                  }`
-                }
+                className="rounded-lg px-3.5 py-2 text-sm text-foreground underline-offset-4 transition-colors hover:underline"
               >
                 {item.label}
               </NavLink>

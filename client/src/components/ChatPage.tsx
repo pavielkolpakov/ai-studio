@@ -285,13 +285,6 @@ export function ChatPage() {
         /* Hero — the assistant is the entry point to the site */
         <div className="relative flex min-h-[calc(100dvh-73px)] items-center justify-center">
           <div className="pointer-events-none absolute inset-0 overflow-hidden select-none">
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(ellipse 880px 460px at 50% 34%, rgba(163,179,201,0.11), transparent 70%)",
-              }}
-            />
             <img
               src="/logo-mark.png"
               alt=""
@@ -313,14 +306,16 @@ export function ChatPage() {
 
           <div className="relative w-full max-w-[1200px] px-5 py-16 sm:px-10">
             <div className="mx-auto mb-0 max-w-[780px] text-center">
-              <div className="eyebrow mb-[26px]">AI engineering studio · Israel &amp; Europe</div>
+              <div className="eyebrow mb-[26px]">AI engineering studio · Israel &amp; US</div>
               <h1 className="mb-[22px] font-heading text-[42px] leading-[1.03] font-semibold tracking-[-0.03em] text-balance sm:text-[54px] lg:text-[66px]">
-                Production AI, shipped by engineers who own it
+                What could{" "}
+                <span className="text-gold-gradient">AI</span>
+                {" "}do for your{" "}
+                <span className="text-gold-gradient">business</span>
+                ?
               </h1>
               <p className="mx-auto mb-11 max-w-[720px] text-[19px] leading-[1.55] text-pretty text-muted-foreground">
-                RAG, agents, LLM features and evals infrastructure — built into your existing
-                product, not bolted on. We take 3–4 projects a quarter so every one gets senior
-                attention.
+                Describe your project or company and get concrete AI feature ideas with scope, tech stack and honest estimates.
               </p>
             </div>
 

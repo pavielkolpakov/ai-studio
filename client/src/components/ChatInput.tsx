@@ -45,7 +45,27 @@ export function ChatInput({
   };
 
   return (
-    <div className="relative flex items-end gap-4 rounded-[14px] border border-hairline-strong bg-surface-raised p-1.5 pl-[22px]">
+    <div className="chat-input-shell relative flex items-end gap-4 rounded-[14px] p-1.5">
+      <button
+        type="button"
+        disabled
+        aria-label="Add attachment (coming soon)"
+        title="Attachments — coming soon"
+        className="flex size-11 shrink-0 cursor-not-allowed items-center justify-center rounded-[9px] text-dim-text opacity-40"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-[18px] w-[18px]"
+        >
+          <path d="M12 5v14M5 12h14" />
+        </svg>
+      </button>
       <textarea
         ref={textareaRef}
         value={value}
@@ -57,7 +77,7 @@ export function ChatInput({
         placeholder={placeholder}
         disabled={disabled}
         rows={1}
-        className="min-h-[36px] flex-1 resize-none self-center bg-transparent py-1 text-base leading-6 text-foreground placeholder:text-dim-text focus:outline-none disabled:opacity-50"
+        className="min-h-[44px] flex-1 resize-none self-center bg-transparent py-[10px] text-base leading-6 text-foreground placeholder:text-dim-text focus:outline-none disabled:opacity-50"
       />
       {isStreaming ? (
         <button
@@ -79,13 +99,18 @@ export function ChatInput({
           onClick={handleSend}
           disabled={disabled || !value.trim()}
           aria-label="Send message"
-          className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-[9px] bg-[#F4F4F5] transition-colors hover:bg-white disabled:cursor-default disabled:opacity-30 disabled:hover:bg-[#F4F4F5]"
+          aria-hidden={disabled || !value.trim()}
+          className={`btn-send flex h-11 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-[9px] transition-all duration-200 ease-out ${
+            disabled || !value.trim()
+              ? "pointer-events-none -ml-4 w-0 translate-x-2 opacity-0"
+              : "w-11 translate-x-0 opacity-100"
+          }`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#0B0B0C"
+            stroke="currentColor"
             strokeWidth={2}
             strokeLinecap="round"
             strokeLinejoin="round"
