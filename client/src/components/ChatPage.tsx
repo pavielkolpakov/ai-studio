@@ -7,6 +7,7 @@ import { ChatInput } from "./ChatInput";
 import { SuggestionButtons, type SuggestionItem } from "./SuggestionButtons";
 import { ContactModal } from "./ContactModal";
 import { CACHED_ANSWERS } from "@/data/cachedAnswers";
+import { openCalendlyPopup } from "@/lib/calendly";
 
 const IDEAS_PROMPT_TEXT =
   "Tell us about your company to get tailored AI project ideas. Useful to include: what your product does in a sentence or two, who your users are, what data you have (kind, rough volume, where it lives), what your users complain about most, what your support team gets asked most often, what your internal team does manually that they wish was automated, and any AI features your competitors have shipped.";
@@ -23,14 +24,15 @@ const BOOK_A_CALL: SuggestionItem = { id: "book_call", text: "Book a call", acti
 function applyFollowupRules(
   picks: FollowupPick[] | undefined,
   clickedIds: Set<string>,
-  forceBookCall = false
+  hasIdeas = false
 ): SuggestionItem[] {
   const filtered: SuggestionItem[] = (picks ?? [])
     .filter((p) => !clickedIds.has(p.id))
     .map((p) => ({ id: p.id, text: p.text, cacheKey: p.cacheKey, action: p.action }));
+  // When idea cards are shown, the audit CTA block below them is the only CTA
+  if (hasIdeas) return filtered.filter((s) => s.action !== "calendly");
   const hasBookCall = filtered.some((s) => s.action === "calendly");
-  if (forceBookCall && !hasBookCall) filtered.push(BOOK_A_CALL);
-  else if (filtered.length < 2 && !hasBookCall) filtered.push(BOOK_A_CALL);
+  if (filtered.length < 2 && !hasBookCall) filtered.push(BOOK_A_CALL);
   return filtered;
 }
 
@@ -261,6 +263,12 @@ export function ChatPage() {
     setSearching(null);
   }, []);
 
+  const focusScanner = useCallback(() => {
+    const el = document.getElementById("scanner");
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    el?.querySelector("textarea")?.focus({ preventScroll: true });
+  }, []);
+
   const chips =
     !isStreaming && suggestions.length > 0 ? (
       <SuggestionButtons
@@ -305,21 +313,37 @@ export function ChatPage() {
           </div>
 
           <div className="relative w-full max-w-[1200px] px-5 py-16 sm:px-10">
-            <div className="mx-auto mb-0 max-w-[780px] text-center">
+            <div className="mx-auto mb-12 max-w-[780px] text-center">
               <div className="eyebrow mb-[26px]">AI engineering studio · Israel &amp; US</div>
               <h1 className="mb-[22px] font-heading text-[42px] leading-[1.03] font-semibold tracking-[-0.03em] text-balance sm:text-[54px] lg:text-[66px]">
-                What could{" "}
-                <span className="text-gold-gradient">AI</span>
-                {" "}do for your{" "}
-                <span className="text-gold-gradient">business</span>
-                ?
+                Find where{" "}
+                <span className="text-gold-gradient">AI creates value</span>
+                . Then{" "}
+                <span className="text-gold-gradient">build it</span>
+                .
               </h1>
-              <p className="mx-auto mb-11 max-w-[720px] text-[19px] leading-[1.55] text-pretty text-muted-foreground">
-                Describe your project or company and get concrete AI feature ideas with scope, tech stack and honest estimates.
+              <p className="mx-auto mb-9 max-w-[720px] text-[19px] leading-[1.55] text-pretty text-muted-foreground">
+                Neuronetis helps software companies identify high-value AI opportunities,
+                validate them, and build production systems that integrate with their products
+                and workflows.
               </p>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <button
+                  onClick={focusScanner}
+                  className="btn-primary cursor-pointer px-6 py-[13px] text-[15px]"
+                >
+                  Run the AI Opportunity Scanner
+                </button>
+                <button
+                  onClick={() => openCalendlyPopup()}
+                  className="cursor-pointer rounded-lg border border-white/[0.18] px-6 py-[13px] text-[15px] font-medium text-foreground transition-colors hover:border-white/45 hover:text-white"
+                >
+                  Talk to an AI Engineer
+                </button>
+              </div>
             </div>
 
-            <div className="mx-auto max-w-[820px]">
+            <div id="scanner" className="mx-auto max-w-[820px] scroll-mt-24">
               <ChatInput
                 onSend={handleSend}
                 onStop={handleStop}
@@ -328,9 +352,10 @@ export function ChatPage() {
                 placeholder="Describe what you're building…"
               />
               {errorLine}
-              <div className="mt-[18px]">{chips}</div>
               <div className="mt-[22px] text-center font-mono text-[11.5px] tracking-[0.04em] text-dim-text">
-                Scoped from our real delivery history — no form, no discovery call required
+                Describe your company, product, workflow, or project. You'll get tailored
+                opportunities based on our library of real projects and templates — not a
+                generic idea generator.
               </div>
             </div>
           </div>

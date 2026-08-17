@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { CONTACT_EMAIL, LINKEDIN_URL, LOCATIONS } from "@/data/site";
 
 const LINK_CLASS = "text-[13.5px] text-muted-foreground transition-colors hover:text-white";
@@ -14,9 +13,6 @@ export function SiteFooter() {
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-x-[22px] gap-y-2">
-          <Link to="/work" className={LINK_CLASS}>Work</Link>
-          <Link to="/pricing" className={LINK_CLASS}>Pricing</Link>
-          <Link to="/about" className={LINK_CLASS}>About</Link>
           <a href={`mailto:${CONTACT_EMAIL}`} className={LINK_CLASS}>{CONTACT_EMAIL}</a>
           <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className={LINK_CLASS}>
             LinkedIn

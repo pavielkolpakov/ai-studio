@@ -1,5 +1,4 @@
-import { ABOUT_STATS, TEAMS, VALUES, FITS, NON_FITS, PEOPLE } from "@/data/site";
-import { ImagePlaceholder } from "@/components/site/ImagePlaceholder";
+import { ABOUT_STATS, TEAMS, VALUES, FITS, NON_FITS } from "@/data/site";
 
 export function AboutPage() {
   return (
@@ -112,13 +111,14 @@ export function AboutPage() {
             </p>
           </div>
         </div>
-        <ImagePlaceholder
-          label="Team photo, or a shot of the workspace"
-          className="h-[420px] rounded-[14px]"
+        <img
+          src="/office-view-graded.jpg"
+          alt="The Neuronetis workspace"
+          className="h-[420px] w-full rounded-[14px] border border-hairline object-cover"
         />
       </div>
 
-      <section>
+      {/* <section>
         <h2 className="mb-7 font-heading text-[32px] leading-[1.15] font-semibold tracking-[-0.026em]">
           The people you'd actually work with
         </h2>
@@ -139,11 +139,7 @@ export function AboutPage() {
             </div>
           ))}
         </div>
-        <div className="mt-4 text-[13px] text-dim-text">
-          Placeholder — the vault has no names or photos. Replace with real people and GitHub links;
-          this is the single highest-trust block on the site.
-        </div>
-      </section>
+      </section> */}
     </div>
   );
 }

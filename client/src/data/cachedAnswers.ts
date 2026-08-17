@@ -8,29 +8,20 @@ export interface CachedAnswer
 
 export const CACHED_ANSWERS: Record<string, CachedAnswer> = {
   services_and_pricing: {
-    answer: `We're an AI engineering studio. Every engagement is fixed-scope with a defined deliverable, timeline, and price - no hourly billing, no surprise overruns.
+    answer: `We're an AI engineering studio. Our work is organized around three stages rather than a service catalog:
 
-Our work covers 12 service types across the AI stack: RAG and knowledge assistants, AI feature integration into existing SaaS, customer support automation, MCP servers, ops automation agents, evals and observability, model fine-tuning, voice AI, enterprise compliance platforms, code review agents, AI feature audits, and full AI-native product builds.
+**AI Audit**
+We examine where AI can create measurable value across your product, operations, workflows, data, and existing AI systems. The output is a prioritized opportunity map and roadmap based on your actual situation - not a generic list of AI ideas. Priced by scope, and free for selected strategic companies.
 
-**Typical engagement sizes:**
+**AI Implementation**
+Once an opportunity is validated, we design and build the production system: AI features embedded in your existing product, AI-native features built from scratch, workflow automation, agents and MCP integrations, RAG and knowledge systems, voice AI, evaluation and observability infrastructure. Every implementation is custom-scoped after the requirements are understood - fixed-price where the scope is clear enough to support it.
 
-**AI Audits - $2,000-$12,000 / 1-2 weeks**
-Data inventory, prompt audits, cost analysis, and small RAG prototypes to identify the best opportunities for AI in your product and get a clear roadmap for next steps.
+**AI Optimization**
+For AI systems already in production: quality, cost, latency, reliability, evaluation, observability, architecture. An ongoing engineering engagement where it's appropriate.
 
-**Quick engagements - $5,000-$25,000 / 2-6 weeks**
-AIRAG MVPs, evals harness setup.
+We don't publish package prices. Implementation scope varies substantially with your systems, data, integrations, and quality requirements - a number quoted before we understand your problem would be a guess. You pay for outcomes and defined work, not a list of hours or technologies.
 
-**Mid-size builds - $25,000-$100,000 / 4-12 weeks**
-Embedded LLM features, MCP servers, workflow automation agents, voice AI agents, code review agents, fine-tuning, production-grade RAG, support deflection copilots.
-
-**Larger end-to-end builds - $50,000+ / 3-6+ months**
-Enterprise knowledge and compliance platforms, full AI-native product builds.
-
-**Retainer** - after a project ships, many clients continue on a monthly retainer for ongoing improvement, new data sources, and senior AI engineering on demand. Starts at $3,000/month.
-
-Every project over $5,000 starts with a paid 1-week discovery ($1000-$2,500, deducted from the project total if you proceed) so we both know exactly what we're building before the build starts.
-
-Want to tell us about your product? We can point to which of these is closest to what you'd need.`,
+Want to tell us about your product? We can point to which stage fits your situation.`,
     followups: [
       { text: "What's the process like", cacheKey: "process" },
       { text: "Show example projects", cacheKey: "show_example_projects" },
@@ -38,24 +29,24 @@ Want to tell us about your product? We can point to which of these is closest to
     ],
   },
   process: {
-    answer: `Every engagement follows the same four phases:
+    answer: `The journey is intentionally simple: Audit, then Build, then Optimize. Not every client needs every stage.
 
-**Phase 0 - Technical scoping call (free, 30 minutes)**
-Not a sales call. You describe your use case, stack, and data. We tell you honestly whether AI is the right fit and roughly what the engagement would look like. If we're not the right team, we say so - and often suggest who would be.
+**1. Intro call (free, 30 minutes)**
+With an engineer, not a salesperson. You describe your product, workflows, and existing AI work. We tell you honestly whether there's a meaningful AI opportunity and whether we're the right team for it. If we're not, we say so - and often suggest who would be.
 
-**Phase 1 - Discovery (1 week, paid $1000-$2,500)**
-Every project over $5,000 starts here. We get read-only access to your data, run experiments on a real subset, interview your technical lead and end users, and deliver a written technical spec with architecture, risks, timeline, and a fixed price for the build. The fee is deducted from the project total if you proceed.
+**2. AI Audit (typically 1-3 weeks)**
+Where the opportunity or technical direction is unclear, the audit provides the deeper assessment: product, operations, workflows, data, existing AI, and infrastructure. You receive an AI opportunity map, a prioritized roadmap, technical recommendations, business impact estimates, an implementation plan, and a clear view of risks and dependencies. The roadmap is yours to keep, whether or not we build anything.
 
-**Phase 2 - Build**
-You see every task in a shared Linear or Notion workspace. Daily commits to a GitHub repo you own from day one. Weekly async written updates and an optional weekly 30-minute video check-in. A staging environment goes up within the first two weeks so you can interact with the system early. Every project is staffed with senior engineers - we take on 3-4 projects per quarter deliberately.
+**3. Build**
+Scoped around a specific outcome. You see every task in a shared Linear or Notion workspace, daily commits to a GitHub repo you own from day one, weekly written updates, and a staging environment early - no big reveal at the end. Every project is staffed with senior engineers; we take on 3-4 projects per quarter deliberately.
 
-**Phase 3 - Handover**
-A complete technical README, a 90-minute walkthrough session with your team, a written runbook, and a 30-day post-launch support window via Slack. All code is yours.
+**4. Handover**
+Documentation written for a developer who has never seen the project, a walkthrough with your team, and a runbook. All code belongs to you - no lock-in, architectures that let you change models or components later.
 
-**After handover - retainer (optional)**
-Many clients continue on a monthly retainer ($1,500+/month) for ongoing improvements, new data sources, or senior AI engineering on demand.
+**5. Ongoing optimization (optional)**
+Many clients continue with a recurring engineering engagement: quality, cost, latency, reliability, evaluation, new capabilities.
 
-We don't bill by the hour, we don't lock you into proprietary tooling, and we don't start building until we're confident in the architecture. If AI isn't the right solution, we'll tell you in discovery - not six weeks into a build.
+If AI isn't the right solution, we'll tell you at the audit stage - not six weeks into a build.
 
 Anything specific about the process you'd like to know more about?`,
     followups: [
@@ -86,25 +77,25 @@ Want to tell us about your situation? We can point to which of these patterns is
   how_to_get_started: {
     answer: `Getting started is light - we don't ask you to commit to anything until you've had a real technical conversation with us.
 
-**1. Free 30-minute scoping call**
-Not a sales call. You describe your use case, your current stack, your data situation, and what a successful outcome looks like. We tell you honestly whether your use case is a good fit, what approach we'd recommend, and roughly what an engagement would look like. If we're not the right team for your problem, we say so - and often suggest who would be.
+**1. Run the AI Opportunity Scanner**
+On our homepage: describe your company, product, or workflow and get tailored AI opportunities based on our library of real projects and templates. Two minutes, no form, no discovery call required.
+
+**2. Free 30-minute intro call**
+With an engineer, not a salesperson. You describe the problem you're trying to solve, your current stack, your data situation, and what a successful outcome looks like. We tell you honestly whether there's a meaningful AI opportunity and whether we're the right team for it. If we're not, we say so - and often suggest who would be.
 
 **What's useful to bring:**
 - A description of the problem you're trying to solve with AI
 - Information about your current tech stack and infrastructure
 - A rough sense of your data (what format, how much, where it lives)
-- Your timeline and budget range (even a rough number helps)
+- Your timeline and constraints
 
-**2. Written proposal within 48 hours**
-If there's a fit, we send a written proposal covering scope, approach, timeline, and price. No pressure - take the time you need to review it internally.
+**3. AI Audit**
+Where the opportunity or direction is unclear, the audit (typically 1-3 weeks, priced by scope, free for selected strategic companies) examines your product, workflows, data, and existing systems. It ends in a prioritized roadmap and an implementation plan - yours to keep either way.
 
-**3. Discovery (1 week, paid)**
-Every project over $5,000 starts with a paid 1-week discovery ($1000-$2,500, deducted from the project total if you proceed). We get read-only access to your data, run experiments on a real subset, interview your technical lead and end users, and deliver a written technical spec with a fixed price for the build. Paid discovery is deliberate - it forces both sides to do it properly rather than rush to a number.
+**4. Build, handover, optional optimization**
+Once a scope is agreed, we build. You see daily commits, a staging environment early, and weekly updates. At the end you get full code ownership, documentation, and a walkthrough with your team. Many clients continue with an ongoing optimization engagement afterward.
 
-**4. Build, handover, optional retainer**
-Once the spec is signed off, we build. You see daily commits, a staging environment within two weeks, and weekly updates. At the end you get full code ownership, a 90-minute handover session, a runbook, and a 30-day support window. Many clients continue on a monthly retainer ($1,500+/month) afterward.
-
-The fastest way to start: tell us what you're working on. We can usually tell you within a single call whether AI is the right tool for it and what scope makes sense.`,
+The fastest way to start: run the scanner or tell us what you're working on. We can usually tell you within a single call whether AI is the right tool for it.`,
     followups: [
       { text: "Show example projects", cacheKey: "show_example_projects" },
       { text: "Ideas for my project", action: "ideas-prompt" },

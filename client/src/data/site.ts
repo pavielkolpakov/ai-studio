@@ -1,277 +1,273 @@
 /**
  * Marketing site content.
  *
- * SOURCE OF TRUTH: docs/vault/. Every number, price, timeline and claim below
- * is transcribed from a vault note — the same notes the chat assistant reads.
- * Do not add figures here that the vault does not state; edit the note first.
+ * SOURCE OF TRUTH: Neuronetis_Website_Notes.md and
+ * Neuronetis_Knowledge_Base_Revised.md. The site follows the
+ * Audit → Build → Optimize narrative: no public package prices,
+ * no standardized "quick wins / mid-size / larger" tiers.
  */
 
-export interface CatalogItem {
-  num: string;
-  title: string;
-  body: string;
-  size: string;
-}
+/* ── Homepage ────────────────────────────────────────────────────────────── */
 
-export interface Spotlight {
-  eyebrow: string;
-  title: string;
-  problem: string;
-  built: string;
-  tags: string[];
-  slotLabel: string;
-  metrics: { value: string; label: string }[];
-}
-
-export interface Plan {
-  name: string;
-  price: string;
-  unit: string;
-  who: string;
-  features: string[];
-  cta: string;
-  featured: boolean;
-}
-
-/* ── Work ────────────────────────────────────────────────────────────────── */
-
-/** docs/vault/services/overview.md + each docs/vault/projects/*.md ("Numbers"). */
-export const CATALOG: CatalogItem[] = [
+/** The journey strip shown directly under the hero. */
+export const JOURNEY = [
   {
     num: "01",
-    title: "RAG / internal knowledge assistant",
-    body: "Ask questions in plain language and get cited answers pulled from your own documents, tickets, wikis, codebases or databases — a synthesised answer with sources, not a list of links.",
-    size: "$18k–$35k MVP",
-  },
-  {
-    num: "02",
-    title: "AI feature audit & LLM readiness sprint",
-    body: "A 1–2 week diagnostic that maps your current AI usage, surfaces what is broken or underperforming, and hands you a prioritised 90-day roadmap with effort estimates.",
-    size: "$5k–$12k",
-  },
-  {
-    num: "03",
-    title: "Embedded LLM feature in an existing SaaS",
-    body: "One high-impact capability shipped inside the product you already have — in-app copilot, AI search, smart drafts, autofill or summarisation — with prompt management, evals and cost monitoring.",
-    size: "$20k–$40k per feature",
-  },
-  {
-    num: "04",
-    title: "Customer support copilot & deflection agent",
-    body: "Classifies incoming tickets, drafts replies for agent review, auto-resolves high-confidence repeats and escalates edge cases. Integrated with Zendesk, Intercom, HubSpot or Freshdesk.",
-    size: "$60k–$100k",
-  },
-  {
-    num: "05",
-    title: "MCP server / agent-ready integration layer",
-    body: "Exposes your product's data and actions to AI agents, so customers using Claude, ChatGPT or Cursor can work with it natively instead of copy-pasting.",
-    size: "$40k–$90k",
-  },
-  {
-    num: "06",
-    title: "Internal workflow & ops automation",
-    body: "An agentic workflow for a high-volume repetitive process: reads unstructured input, classifies or extracts against a schema, acts across your systems, escalates low-confidence cases.",
-    size: "$30k–$80k",
-  },
-  {
-    num: "07",
-    title: "Production-grade agentic RAG system",
-    body: "The step up from an MVP: multi-tenant, hybrid search with re-ranking, role-based access control on retrieval, multi-source ingestion and full observability.",
-    size: "$50k–$100k",
-  },
-  {
-    num: "08",
-    title: "AI evals & observability harness",
-    body: "Golden test sets, LLM-as-judge metrics, regression suites, CI eval gates and production tracing — the measurement layer your AI system should have had from the start.",
-    size: "$15k–$30k",
-  },
-  {
-    num: "09",
-    title: "Model fine-tuning engagement",
-    body: "Adapting a foundation model to your domain, format or proprietary data. A fine-tuned 7B–13B model can match GPT-4-class quality on your task at a fraction of the inference cost.",
-    size: "$25k–$70k",
-  },
-  {
-    num: "10",
-    title: "Enterprise knowledge & compliance platform",
-    body: "Full-stack AI for a regulated vertical — legal, fintech, healthcare, insurance — with audit trails, access-controlled retrieval, domain evals and on-prem or VPC deployment.",
-    size: "$150k–$400k",
-  },
-  {
-    num: "11",
-    title: "Code review agent & developer tooling",
-    body: "An agent in your dev workflow that reviews PRs, flags security issues, enforces your conventions and answers questions about your codebase — grounded in your actual patterns.",
-    size: "$25k–$60k",
-  },
-  {
-    num: "12",
-    title: "Voice AI agent for business operations",
-    body: "Inbound or outbound call handling for a specific use case — support, scheduling, lead qualification, collections — integrated with your systems and escalating with full context.",
-    size: "$30k–$80k",
-  },
-];
-
-/**
- * Three catalog entries in detail. Metric labels state their provenance:
- * these are vault-cited industry benchmarks and typical engagement sizes,
- * not results we are claiming for named past clients.
- */
-export const SPOTLIGHTS: Spotlight[] = [
-  {
-    eyebrow: "Project 01 · RAG / internal knowledge assistant",
-    title: "Answers with sources, from your own content",
-    problem:
-      "Users cannot find answers in your docs. Support tickets pile up for questions already answered somewhere. Keyword search fails on synonyms and paraphrases, so nothing is findable unless you guess the exact wording.",
-    built:
-      "Content is chunked and embedded into a vector database, then a hybrid retrieval layer combining BM25 and dense similarity finds the relevant chunks. An LLM synthesises them into an answer with source citations. Access control, multi-tenancy and an eval harness are wired in from day one.",
-    tags: ["Qdrant / pgvector", "Hybrid BM25 + dense", "Source citations", "Eval harness"],
-    slotLabel: "Screenshot: cited answer in the chat interface",
-    metrics: [
-      { value: "$18k–$35k", label: "typical MVP build" },
-      { value: "30–60%", label: "fewer tickets on documented questions (industry benchmark)" },
-      { value: "3–5 hrs", label: "saved per employee per week in knowledge-heavy teams" },
-    ],
-  },
-  {
-    eyebrow: "Project 06 · Internal workflow & ops automation",
-    title: "The repetitive process, handled end to end",
-    problem:
-      "A high-volume internal task is done by a person following a repeatable decision tree — lead routing, contract review, invoice or form processing, document data extraction, reconciliation. Staff key unstructured documents into your systems by hand.",
-    built:
-      "An agentic workflow that reads unstructured inputs, applies LLM classification or schema-based extraction, takes actions across your systems, and escalates low-confidence cases to a human. For document intake the same architecture becomes an extraction pipeline writing structured data into your database, CRM or ERP.",
-    tags: ["Classification", "Structured extraction", "Human-in-the-loop", "System integrations"],
-    slotLabel: "Screenshot: run timeline with human escalations",
-    metrics: [
-      { value: "$30k–$80k", label: "typical project size" },
-      { value: "40–60%", label: "less manual processing time within 90 days (reported)" },
-      { value: "60–90 days", label: "typical ROI window" },
-    ],
-  },
-  {
-    eyebrow: "Project 08 · AI evals & observability harness",
-    title: "Knowing it still works after you change the prompt",
-    problem:
-      "A prompt change that improves one case silently breaks ten others. A model upgrade that demos well degrades on edge cases in production. Most AI systems have no systematic way to tell whether they are getting better or worse.",
-    built:
-      "A golden dataset of 50–200 representative pairs covering normal cases, edge cases and known failures. Task-specific metrics plus LLM-as-judge for qualitative dimensions. An eval harness in your CI so every change is tested against the golden set, production tracing with dashboards and alerting, and a team training session on eval-driven development.",
-    tags: ["Golden datasets", "LLM-as-judge", "CI eval gates", "LangSmith / Langfuse"],
-    slotLabel: "Screenshot: eval dashboard and CI gate",
-    metrics: [
-      { value: "$15k–$30k", label: "harness setup and team training" },
-      { value: "60–80%", label: "of regressions caught pre-production (reported)" },
-      { value: "$3k–$6k/mo", label: "typical eval maintenance retainer" },
-    ],
-  },
-];
-
-/** docs/vault/projects/03-embedded-llm-feature.md */
-export const ASSISTANT_EXAMPLE = {
-  title: "Embedded LLM feature for your client software",
-  because: "we build client apps and every RFP now asks for AI.",
-  bullets: [
-    "Scope one high-impact feature with your team, in your stack",
-    "Prompt management and cost monitoring wired in, not bolted on",
-    "An eval harness and error handling before it reaches users",
-    "A polished UI matched to your existing product",
-  ],
-  estimate: "$20k–$40k fixed",
-  timeline: "3–5 weeks",
-};
-
-/* ── Pricing ─────────────────────────────────────────────────────────────── */
-
-/** docs/vault/services/pricing.md, projects/02-ai-feature-audit.md, process/retainer.md */
-export const PLANS: Plan[] = [
-  {
-    name: "AI feature audit",
-    price: "$5k–$12k",
-    unit: "fixed, 1–2 weeks",
-    who: "You already have AI in production and it is unreliable, expensive or unmeasured — or you inherited an AI codebase nobody understands.",
-    features: [
-      "Every AI touchpoint mapped and benchmarked",
-      "What is broken or underperforming, named",
-      "Prioritised 90-day action plan",
-      "Effort estimates and ROI projection per item",
-      "Converts to a follow-on build about 30% of the time",
-    ],
-    cta: "Start with an audit",
-    featured: false,
-  },
-  {
-    name: "Fixed-scope build",
-    price: "from $5k",
-    unit: "fixed price, set after discovery",
-    who: "You know roughly what you want built. Every engagement is fixed-scope with a defined deliverable, timeline and price.",
-    features: [
-      "Paid 1-week discovery first, credited against the build",
-      "Fixed price — no hourly billing, no overruns",
-      "Built in a private repo you own from day one",
-      "Staging environment inside the first two weeks",
-      "Tests, evals and 30 days of support included",
-    ],
-    cta: "Scope a build",
-    featured: true,
-  },
-  {
-    name: "Monthly retainer",
-    price: "from $3k",
-    unit: "per month, after a project ships",
-    who: "The system is live and you want it to keep improving — new data sources, better retrieval, additional features, senior AI engineering on demand.",
-    features: [
-      "Retrieval quality iteration and reranking experiments",
-      "New data sources added to an existing RAG system",
-      "Additional AI features on top of the initial build",
-      "Fine-tuning experiments for task-specific gains",
-      "Time-and-materials — the only work we bill this way",
-    ],
-    cta: "Talk about a retainer",
-    featured: false,
-  },
-];
-
-/** docs/vault/services/pricing.md — "Typical Engagement Sizes" */
-export const ENGAGEMENT_SIZES = [
-  { name: "Quick wins", price: "$5k–$25k", time: "2–6 weeks" },
-  { name: "Mid-size builds", price: "$25k–$100k", time: "4–12 weeks" },
-  { name: "Larger end-to-end builds", price: "$100k–$400k", time: "3–6+ months" },
-];
-
-/** docs/vault/services/pricing.md — discovery fee and payment terms */
-export const MONEY_TERMS = {
-  discoveryPrice: "$1k–$2.5k",
-  discoveryNote:
-    "Every project over $5,000 begins with a paid 1-week discovery. The fee is deducted from the project cost if you proceed to a build. A free discovery is not a real discovery — when it is paid, we both commit to running experiments on your actual data and writing a real spec.",
-  paymentTerms: "30% upfront · 40% at midpoint · 30% at delivery",
-  paymentNote: "For projects over $20,000 we can discuss milestone-based structures.",
-};
-
-/** docs/vault/process/*.md */
-export const PHASES = [
-  {
-    num: "00",
-    title: "Scoping call",
-    body: "30 minutes, free, and not a sales call. We tell you honestly whether your use case is a fit and roughly what approach we would recommend. Written proposal within 48 hours if there is one.",
-  },
-  {
-    num: "01",
-    title: "Discovery",
-    body: "Paid, one week. Read-only access, experiments on your actual data, a technical spec, a risk log of the 3–5 likeliest problems, and a fixed price for the build.",
+    title: "Audit",
+    body: "We find where AI can create measurable value across your product, workflows, data, and existing systems — and where it can't.",
   },
   {
     num: "02",
     title: "Build",
-    body: "Shared Linear or Notion board, one weekly written update, daily commits to a private repo you own, and a staging environment inside the first two weeks. No big reveal at the end.",
+    body: "We design and build the production system around a validated opportunity, integrated with the product and infrastructure you already have.",
   },
   {
     num: "03",
-    title: "Handover",
-    body: "A README written for a developer who has never seen the project, a 90-minute walkthrough with your team, a runbook, and 30 days of async support — included in every project price.",
+    title: "Optimize",
+    body: "We measure the system in production and improve quality, cost, latency, and reliability over time.",
   },
 ];
 
-/** docs/vault/faq/working-with-us.md — "How long does a typical project take?" */
+/* ── AI Audit page ───────────────────────────────────────────────────────── */
+
+export const AUDIT_PAGE = {
+  eyebrow: "AI Audit",
+  headline: "Before you build AI, find out where it will actually matter.",
+  sub: "Most AI projects fail because they start with a technology, not a problem. The audit examines your product, operations, and data — and hands you a prioritized set of opportunities grounded in your actual situation, not a generic list of AI ideas.",
+  lookAt: [
+    {
+      title: "Product",
+      body: "Features and user journeys — where AI could make the core product meaningfully better.",
+    },
+    {
+      title: "Operations",
+      body: "Repetitive cognitive work — review, routing, extraction, reporting — that could be automated.",
+    },
+    {
+      title: "Workflows",
+      body: "How work actually moves through your team, and where an AI step would remove friction.",
+    },
+    {
+      title: "Data",
+      body: "What data you have, where it lives, and whether it's ready to support each opportunity.",
+    },
+    {
+      title: "Existing AI",
+      body: "AI features, agents, or automations already in production — quality, cost, and reliability.",
+    },
+    {
+      title: "Infrastructure",
+      body: "Architecture, model choices, integrations, security, and deployment constraints.",
+    },
+  ],
+  deliverables: [
+    {
+      title: "AI opportunity map",
+      body: "Every credible opportunity across your product and operations, in one place.",
+    },
+    {
+      title: "Prioritized roadmap",
+      body: "Ranked by expected impact, feasibility, data readiness, complexity, and risk.",
+    },
+    {
+      title: "Technical recommendations",
+      body: "The architecture and approach we'd use for each opportunity — and what we'd deliberately avoid.",
+    },
+    {
+      title: "Business impact estimates",
+      body: "What each opportunity is worth if it works, with measurable success criteria.",
+    },
+    {
+      title: "Implementation plan",
+      body: "What to build first, what it requires, and in what sequence.",
+    },
+    {
+      title: "Risks and dependencies",
+      body: "What could go wrong, what each opportunity depends on, and what to de-risk early.",
+    },
+  ],
+  after: {
+    title: "What happens after the audit",
+    body: "You keep the roadmap whether or not we build anything. If an opportunity is worth pursuing, we scope the implementation around a specific outcome — fixed-scope where the requirements are clear. If AI isn't the right answer for a problem, the audit says that too.",
+  },
+  cta: "Request an AI Audit",
+};
+
+/** Rows for the stylized sample audit deliverable on the audit page. */
+export const SAMPLE_AUDIT = [
+  {
+    opportunity: "Support triage copilot",
+    problem: "40% of tickets are repeat questions already answered in docs",
+    impact: "High",
+    complexity: "Medium",
+    next: "Validate on 6 months of ticket history",
+  },
+  {
+    opportunity: "Semantic search over product docs",
+    problem: "Users can't find answers with keyword search",
+    impact: "High",
+    complexity: "Low",
+    next: "Prototype on a 500-document slice",
+  },
+  {
+    opportunity: "Automated weekly reporting",
+    problem: "Ops team spends 2 days/week assembling reports by hand",
+    impact: "Medium",
+    complexity: "Medium",
+    next: "Clean up source data first — AI is step two",
+  },
+];
+
+/* ── Implementation page ─────────────────────────────────────────────────── */
+
+export const IMPLEMENTATION_PAGE = {
+  eyebrow: "Implementation",
+  headline: "From AI opportunity to production system.",
+  sub: "Once an opportunity is validated, we design and build the system — integrated with the product, data, and infrastructure you already have. No rewrites proposed to make the project easier for us.",
+  groups: [
+    {
+      title: "AI inside your product",
+      items: [
+        "AI capabilities embedded in your existing SaaS — assistants, intelligent search, drafting, extraction, autofill",
+        "AI-native product features built from the ground up",
+        "Product interfaces and frontend integration for AI experiences",
+      ],
+    },
+    {
+      title: "AI across your operations",
+      items: [
+        "Workflow automation for repetitive cognitive work",
+        "Document processing and structured extraction",
+        "Customer-support automation that escalates with full context",
+        "Voice AI for predictable, high-volume workflows",
+      ],
+    },
+    {
+      title: "The infrastructure behind it",
+      items: [
+        "Agents and MCP integrations that expose your systems to AI",
+        "RAG and knowledge systems over your proprietary data",
+        "Evaluation and observability infrastructure",
+        "Model selection, prompting, fine-tuning, and inference optimization",
+      ],
+    },
+  ],
+  principle: {
+    title: "Technology follows the problem",
+    body: "We don't start with “you need RAG” or “you need an agent.” We start with the business problem, the available data, and the constraints — then choose the simplest architecture that solves it well. If a conventional software solution is better, that's the recommendation.",
+  },
+  delivery: [
+    "Built in a repository you own, from day one",
+    "Staging environment early — you see progress, not a final reveal",
+    "Documentation and handover your team can actually maintain",
+    "No lock-in: architectures that let you change models or components later",
+  ],
+};
+
+/* ── Optimization page ───────────────────────────────────────────────────── */
+
+export const OPTIMIZATION_PAGE = {
+  eyebrow: "Optimization",
+  headline: "Already have AI? Make it work better.",
+  sub: "For companies with AI systems already in production that are too expensive, too slow, unreliable, or unmeasured. A demo that worked is not the same thing as a system that works.",
+  groups: [
+    {
+      title: "Quality & reliability",
+      items: [
+        "Output quality and model selection for the task",
+        "Prompt and workflow architecture",
+        "Retrieval quality",
+        "Reliability and failure handling",
+      ],
+    },
+    {
+      title: "Cost & latency",
+      items: [
+        "Inference and infrastructure cost",
+        "Response latency",
+        "Right-sizing models — a bigger model is not always a better model",
+        "Scaling and maintainability",
+      ],
+    },
+    {
+      title: "Measurement",
+      items: [
+        "Evaluation and regression testing",
+        "Observability and production monitoring",
+        "Success metrics tied to the business outcome",
+      ],
+    },
+    {
+      title: "Architecture",
+      items: [
+        "Architecture review of the existing system",
+        "Data pipelines",
+        "Security and deployment architecture",
+        "Infrastructure your own team can operate",
+      ],
+    },
+  ],
+  outcome:
+    "The goal may be better output quality, lower operating cost, faster responses, greater reliability — or a system your engineering team can maintain without us.",
+};
+
+/* ── Services page ───────────────────────────────────────────────────────── */
+
+export const SERVICES_PAGE = {
+  eyebrow: "Services",
+  headline: "Priced around the problem, not a package.",
+  sub: "Implementation scope varies substantially with your systems, data, integrations, and quality requirements. A number published before we understand your problem would be a guess — so we don't publish one. You pay for outcomes and defined work, not a list of hours or technologies.",
+  blocks: [
+    {
+      title: "Audits",
+      tag: "Scope-based pricing",
+      body: "Priced by the scope of what we examine — a single product area is not a company-wide assessment. For selected strategic companies we offer a limited audit at no cost as the start of a longer relationship. Either way, the audit is rigorous and the roadmap is yours to keep.",
+      cta: "Request an AI Audit",
+    },
+    {
+      title: "Implementation",
+      tag: "Custom-scoped",
+      body: "Scoped individually after the opportunity and requirements are understood — never sold as a standardized small / medium / large package. We prefer fixed-scope engagements where the requirements and deliverables are clear enough to support them.",
+      cta: "Talk to an AI Engineer",
+    },
+    {
+      title: "Optimization",
+      tag: "Ongoing engagement",
+      body: "A recurring engineering engagement where it's appropriate — for systems we built, or AI systems you already run. Structured around continuous improvement: quality, cost, latency, reliability, new capabilities.",
+      cta: "Talk to an AI Engineer",
+    },
+  ],
+};
+
+/* ── Process ─────────────────────────────────────────────────────────────── */
+
+/** The engagement journey — audit-first, not discovery-fee-first. */
+export const PHASES = [
+  {
+    num: "00",
+    title: "Intro call",
+    body: "30 minutes with an engineer, not a salesperson. We learn about your product, workflows, and existing AI work — and tell you honestly whether there's a meaningful opportunity and whether we're the right team for it.",
+  },
+  {
+    num: "01",
+    title: "Audit",
+    body: "Where the opportunity or technical direction is unclear, the audit provides the deeper assessment: product, workflows, data, and existing systems — ending in a prioritized roadmap and concrete recommendations.",
+  },
+  {
+    num: "02",
+    title: "Build",
+    body: "Scoped around a specific outcome. A shared project board, daily commits to a repository you own, and a staging environment early. No big reveal at the end.",
+  },
+  {
+    num: "03",
+    title: "Handover & beyond",
+    body: "Documentation, a walkthrough with your team, and a runbook — all code belongs to you. Continue with ongoing optimization where it makes sense.",
+  },
+];
+
+/** Indicative timelines — no prices, confirmed per project after scoping. */
 export const TIMELINES = [
-  { name: "AI feature audit", time: "1–2 weeks" },
+  { name: "AI audit", time: "1–3 weeks" },
   { name: "Feature integration or RAG MVP", time: "3–6 weeks" },
   { name: "Full production RAG system", time: "6–10 weeks" },
   { name: "Agentic platform or end-to-end build", time: "3–6+ months" },
@@ -305,31 +301,31 @@ export const STACK = [
   },
 ];
 
-/** docs/vault/faq/*.md and docs/vault/about/values.md */
+/** Buyer questions, aligned with the audit-first model. */
 export const FAQS = [
+  {
+    q: "How is implementation priced?",
+    a: "After the opportunity and requirements are understood — never before. Audits are priced by scope. Implementation is custom-scoped around a defined outcome, fixed-price where the requirements are clear enough to support it. We don't publish package prices because a number quoted before we understand your systems would be a guess.",
+  },
+  {
+    q: "When is an audit free?",
+    a: "For selected strategic companies that fit our ideal profile, we offer a limited audit at no cost as the start of a longer relationship. It is still rigorous — but it is not universally free, and we are deliberate about where we invest that time.",
+  },
   {
     q: "Who owns the code?",
     a: "You do. All code we write is yours, in a private repository you own from day one. We document everything as if we will never speak again, so your team can maintain and extend it. No wrappers we keep and rent back to you.",
-  },
-  {
-    q: "Why do you charge for discovery?",
-    a: "Because a free discovery is not a real discovery. When it is free there is pressure to skip straight to a proposal with a number on it. When it is paid, we both commit to doing it properly — experiments on your actual data, a real technical spec, an honest assessment. The fee comes off the build price if you proceed.",
   },
   {
     q: "Do you rewrite our codebase?",
     a: "No. We integrate with your existing stack and never propose rewrites. Our systems are built as services or modules that connect to your architecture through clean API contracts. Your team keeps ownership of the rest of the product.",
   },
   {
-    q: "Can you guarantee the AI will be accurate?",
-    a: "No one can guarantee 100% accuracy from an LLM. What we do: design for precision through careful retrieval, measure accuracy with evaluation pipelines before launch, add confidence scoring and human-in-the-loop for low-confidence output, and tell you upfront what accuracy is realistic for your use case.",
+    q: "Can you review an AI system we already built?",
+    a: "Yes — that's the optimization engagement. We review quality, cost, latency, reliability, evaluation, and architecture of AI systems already in production, then improve them with your team or for your team.",
   },
   {
     q: "Do you sign NDAs, and can data stay on our infrastructure?",
     a: "Yes to both. We sign a mutual NDA before any technical discussion of your data, turned around in 24 hours, and we have standard DPAs for GDPR and HIPAA-adjacent requirements. We have built fully on-prem and private-cloud deployments with self-hosted embedding models and LLMs served via vLLM, where no data leaves your infrastructure.",
-  },
-  {
-    q: "Why hire you instead of building an in-house AI team?",
-    a: "A senior AI engineer in the US costs $180k–$280k in base salary, plus recruiter fees, 3–6 months to hire and 2–4 months to onboard. One person also cannot cover AI/ML, backend, infrastructure and frontend. You get a senior team across all four on a fixed price, with no headcount commitment — and most clients ship their first production system in 4–8 weeks.",
   },
 ];
 
@@ -339,8 +335,8 @@ export const FAQS = [
 export const ABOUT_STATS = [
   { value: "3–4", label: "projects per quarter, deliberately" },
   { value: "3", label: "teams: AI/backend, frontend, DevOps" },
-  { value: "1 wk", label: "paid discovery, ending in a spec and a fixed price" },
-  { value: "30 days", label: "async support after handover, in every project price" },
+  { value: "1–3 wk", label: "typical AI audit, ending in a prioritized roadmap" },
+  { value: "100%", label: "code ownership — every line we write is yours" },
 ];
 
 /** docs/vault/about/location-and-team.md */
@@ -366,8 +362,8 @@ export const VALUES = [
     body: "All code we write is yours. We document everything as if we will never speak again, and your team should be able to maintain and extend all of it.",
   },
   {
-    title: "We price by project, not by hour",
-    body: "Fixed-scope engagements give you cost certainty. We scope carefully upfront so we do not surprise you with overruns.",
+    title: "We price by outcome, not by hour",
+    body: "Fixed-scope engagements around defined deliverables give you cost certainty. We scope carefully upfront so we do not surprise you with overruns.",
   },
   {
     title: "We work asynchronously and transparently",
@@ -402,7 +398,6 @@ export const PEOPLE = [
   { name: "Name Surname", role: "Lead, infrastructure", detail: "github.com/—" },
 ];
 
-export const CONTACT_EMAIL = "hello@neuronetis.com";
+export const CONTACT_EMAIL = "info@neuronetis.com";
 export const LINKEDIN_URL = "https://www.linkedin.com/company/neuronetis";
-/** docs/vault/about/location-and-team.md */
-export const LOCATIONS = "Israel · US · Eastern Europe";
+export const LOCATIONS = "Israel · US";
