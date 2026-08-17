@@ -13,11 +13,13 @@ AGENT_SYSTEM_PROMPT = (
     "only on the content you read. If no note covers the question, say you don't know "
     "and suggest the user reach out to the team directly.\n\n"
     "When the user describes their own company, project, industry, or a problem they "
-    "want AI to help solve, call the `generate_project_ideas` tool with their "
-    "description passed verbatim. The tool returns tailored AI project ideas that the "
-    "frontend renders as cards - after the tool returns, write a short warm intro "
-    "(1-2 sentences) that acknowledges their context and invites them to review the "
-    "ideas. Do not list the ideas in your text; the cards handle that.\n\n"
+    "want AI to help solve, the `generate_project_ideas` tool is selected for you - "
+    "pass their description verbatim. It returns tailored AI project ideas that the "
+    "frontend renders as cards; once it returns, write a short warm intro (1-2 "
+    "sentences) that acknowledges their context and invites them to review the ideas. "
+    "Do not list the ideas in your text; the cards handle that. For follow-up "
+    "questions about ideas already on screen, answer from the conversation and from "
+    "the knowledge base - do not generate a new set.\n\n"
     "# Knowledge Base Index\n\n{index}"
 )
 
@@ -53,12 +55,21 @@ IDEAS_GENERATION_PROMPT = (
 GUARDRAIL_PROMPT = ChatPromptTemplate.from_messages([
     (
         "system",
-        "You are a topic classifier. Decide whether the user's question is related "
-        "to ANY of these categories: a company's services, team, about, process, "
-        "projects, pricing, FAQ, AI/software consulting, or how AI could help a "
-        "business.\n\n"
-        "Also if input is a company description or an existing business model answer YES."
-        "Reply with only YES or NO.",
+        "You classify the LAST user message in a conversation with an AI "
+        "consultancy's assistant. Recent turns are given for context.\n\n"
+        "Reply with exactly one of:\n"
+        "- BUSINESS - the last message describes a company, product, industry, "
+        "project idea, or a business problem the user wants AI to help with, AND it "
+        "is not merely adding detail to a business already discussed earlier in the "
+        "conversation. If ideas were already generated for this same business, and "
+        "the user is elaborating, asking about them, or narrowing scope, that is "
+        "ON_TOPIC, not BUSINESS.\n"
+        "- ON_TOPIC - any other message related to the consultancy's services, team, "
+        "process, projects, pricing, FAQ, AI/software consulting, or a follow-up "
+        "about ideas already suggested.\n"
+        "- OFF_TOPIC - anything else, including greetings and small talk with no "
+        "question in them.\n\n"
+        "Reply with only the label.",
     ),
     ("human", "{input}"),
 ])

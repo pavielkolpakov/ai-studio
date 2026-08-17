@@ -145,29 +145,9 @@ class TestStreamResponse:
         assert len(tool_events) == 1
 
     @pytest.mark.asyncio
-    async def test_done_includes_followups_for_freeform_response(self):
-        followups = [{"id": "tech_stack", "text": "What's your tech stack?"}]
+    async def test_done_carries_no_followups_for_freeform_response(self):
+        """Follow-up suggestions are switched off; the picker must not even run."""
         items = [("messages", (AIMessageChunk(content="answer"), {}))]
-        agent = fake_agent(items)
-
-        with patch(
-            "app.rag.chain.pick_followups",
-            new=AsyncMock(return_value=followups),
-        ) as mock_pick:
-            events = [e async for e in stream_response(agent, "q", [])]
-
-        final = parse(events[-1])
-        assert final == {"type": "done", "followups": followups}
-        mock_pick.assert_awaited_once_with("q", "answer")
-
-    @pytest.mark.asyncio
-    async def test_done_uses_base_followups_when_ideas_emitted(self):
-        tool_msg = ToolMessage(
-            content="Generated.",
-            tool_call_id="i1",
-            artifact={"ideas": [{"title": "x"}]},
-        )
-        items = [("updates", {"tools": {"messages": [tool_msg]}})]
         agent = fake_agent(items)
 
         with patch(
@@ -176,23 +156,26 @@ class TestStreamResponse:
         ) as mock_pick:
             events = [e async for e in stream_response(agent, "q", [])]
 
-        from app.data.followup_pool import resolve_picks
-        from app.rag.chain import IDEAS_MODE_FOLLOWUPS
-
-        final = parse(events[-1])
-        assert final == {"type": "done", "followups": resolve_picks(IDEAS_MODE_FOLLOWUPS)}
+        assert parse(events[-1]) == {"type": "done", "followups": []}
         mock_pick.assert_not_awaited()
 
     @pytest.mark.asyncio
-    async def test_done_followups_empty_on_picker_failure(self):
-        items = [("messages", (AIMessageChunk(content="answer"), {}))]
+    async def test_done_carries_no_followups_when_ideas_emitted(self):
+        tool_msg = ToolMessage(
+            content="Generated.",
+            tool_call_id="i1",
+            artifact={"ideas": [{"title": "x"}]},
+        )
+        items = [("updates", {"tools": {"messages": [tool_msg]}})]
         agent = fake_agent(items)
 
-        with patch(
-            "app.rag.chain.pick_followups",
-            new=AsyncMock(return_value=[]),
-        ):
-            events = [e async for e in stream_response(agent, "q", [])]
+        events = [e async for e in stream_response(agent, "q", [])]
 
-        final = parse(events[-1])
-        assert final == {"type": "done", "followups": []}
+        assert parse(events[-1]) == {"type": "done", "followups": []}
+
+    def test_followup_machinery_is_still_wired_behind_the_switch(self):
+        """Disabled, not deleted - flipping the flag must restore it."""
+        from app.rag.chain import FOLLOWUPS_ENABLED, IDEAS_MODE_FOLLOWUPS, pick_followups
+
+        assert FOLLOWUPS_ENABLED is False
+        assert IDEAS_MODE_FOLLOWUPS and callable(pick_followups)

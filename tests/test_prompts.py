@@ -22,6 +22,24 @@ class TestAgentSystemPrompt:
         assert "{index}" in AGENT_SYSTEM_PROMPT
 
 
+    def test_does_not_instruct_the_model_to_choose_the_ideas_tool(self):
+        """The middleware forces `generate_project_ideas` via tool_choice; the
+        model deciding for itself would double-generate."""
+        assert "call the `generate_project_ideas` tool" not in AGENT_SYSTEM_PROMPT
+
+    def test_still_instructs_grounding_for_followups(self):
+        assert "read_knowledge_base" in AGENT_SYSTEM_PROMPT
+
+
 class TestGuardrailPrompt:
     def test_has_input_variable(self):
         assert "input" in GUARDRAIL_PROMPT.input_variables
+
+    def test_asks_for_the_three_verdicts(self):
+        txt = str(GUARDRAIL_PROMPT)
+        assert "BUSINESS" in txt
+        assert "ON_TOPIC" in txt
+        assert "OFF_TOPIC" in txt
+
+    def test_no_longer_asks_for_yes_no(self):
+        assert "YES or NO" not in str(GUARDRAIL_PROMPT)

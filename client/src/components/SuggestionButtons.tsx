@@ -20,8 +20,8 @@ export function SuggestionButtons({ suggestions, onSelect, onIdeasPrompt, onCach
   if (suggestions.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap gap-2 justify-center px-4 pb-2">
-      {suggestions.map((s) => {
+    <div className="flex flex-wrap justify-center gap-2.5">
+      {suggestions.map((s, i) => {
         const action = s.action ?? "send";
         const handleClick = () => {
           if (s.id && onClicked) onClicked(s.id);
@@ -34,10 +34,11 @@ export function SuggestionButtons({ suggestions, onSelect, onIdeasPrompt, onCach
           <button
             key={s.text}
             onClick={handleClick}
+            style={{ animationDelay: `${i * 70}ms` }}
             className={
               action === "calendly"
-                ? "cta-gradient-pill cursor-pointer px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm text-foreground transition-colors hover:brightness-110"
-                : "cursor-pointer rounded-full border border-border bg-[#2f2f2f] px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm text-foreground hover:bg-[#3a3a3a] transition-colors"
+                ? "btn-primary idea-card-reveal cursor-pointer px-4 py-[9px] text-[13.5px] active:scale-[0.98]"
+                : "idea-card-reveal cursor-pointer rounded-lg border border-white/[0.11] bg-surface px-4 py-[9px] text-[13.5px] text-body-text transition-colors duration-200 hover:border-gold/40 hover:bg-gold/[0.06] hover:text-foreground active:scale-[0.98]"
             }
           >
             {s.text}

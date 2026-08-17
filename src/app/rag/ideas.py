@@ -44,8 +44,9 @@ def select_projects(description: str) -> list[Note]:
     prompt = IDEAS_SELECTION_PROMPT.format(description=description, menu=menu)
     selection = structured_llm.invoke(prompt)
 
+    # IdeasPayload requires 2+ ideas, so a partial match is as unusable as no match.
     selected = [by_name[name] for name in selection.names if name in by_name]
-    return selected or notes[:3]
+    return selected if len(selected) >= 2 else notes[:3]
 
 
 def generate_ideas_payload(description: str) -> IdeasPayload:

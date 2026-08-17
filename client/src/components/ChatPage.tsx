@@ -5,17 +5,17 @@ import { TokenQueue } from "@/lib/tokenQueue";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
 import { SuggestionButtons, type SuggestionItem } from "./SuggestionButtons";
-import { ContactModal } from "./ContactModal";
 import { CACHED_ANSWERS } from "@/data/cachedAnswers";
+import { openCalendlyPopup } from "@/lib/calendly";
 
 const IDEAS_PROMPT_TEXT =
   "Tell us about your company to get tailored AI project ideas. Useful to include: what your product does in a sentence or two, who your users are, what data you have (kind, rough volume, where it lives), what your users complain about most, what your support team gets asked most often, what your internal team does manually that they wish was automated, and any AI features your competitors have shipped.";
 
-const INITIAL_SUGGESTIONS: SuggestionItem[] = [
+/** Shown after the ideas prompt — the hero itself starts with no chips. */
+const TOPIC_SUGGESTIONS: SuggestionItem[] = [
   { text: "Services & pricing", cacheKey: "services_and_pricing" },
   { text: "What's the process like", cacheKey: "process" },
   { text: "About Neuronetis", cacheKey: "about" },
-  { text: "Ideas for my project", action: "ideas-prompt" },
 ];
 
 const BOOK_A_CALL: SuggestionItem = { id: "book_call", text: "Book a call", action: "calendly" };
@@ -23,14 +23,15 @@ const BOOK_A_CALL: SuggestionItem = { id: "book_call", text: "Book a call", acti
 function applyFollowupRules(
   picks: FollowupPick[] | undefined,
   clickedIds: Set<string>,
-  forceBookCall = false
+  hasIdeas = false
 ): SuggestionItem[] {
   const filtered: SuggestionItem[] = (picks ?? [])
     .filter((p) => !clickedIds.has(p.id))
     .map((p) => ({ id: p.id, text: p.text, cacheKey: p.cacheKey, action: p.action }));
+  // When idea cards are shown, the audit CTA block below them is the only CTA
+  if (hasIdeas) return filtered.filter((s) => s.action !== "calendly");
   const hasBookCall = filtered.some((s) => s.action === "calendly");
-  if (forceBookCall && !hasBookCall) filtered.push(BOOK_A_CALL);
-  else if (filtered.length < 2 && !hasBookCall) filtered.push(BOOK_A_CALL);
+  if (filtered.length < 2 && !hasBookCall) filtered.push(BOOK_A_CALL);
   return filtered;
 }
 
@@ -40,10 +41,9 @@ export function ChatPage() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingId, setStreamingId] = useState<string | null>(null);
   const [searching, setSearching] = useState<{ id: string; tool: string } | null>(null);
-  const [suggestions, setSuggestions] = useState<SuggestionItem[]>(INITIAL_SUGGESTIONS);
+  const [suggestions, setSuggestions] = useState<SuggestionItem[]>([]);
   const [clickedIds, setClickedIds] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
-  const [contactOpen, setContactOpen] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const queueRef = useRef<TokenQueue | null>(null);
   const sessionRequested = useRef(false);
@@ -237,9 +237,7 @@ export function ChatPage() {
       if (queue.isDrained) {
         setIsStreaming(false);
         setStreamingId(null);
-        setSuggestions(
-          INITIAL_SUGGESTIONS.filter((s) => s.action !== "ideas-prompt")
-        );
+        setSuggestions(TOPIC_SUGGESTIONS);
         queueRef.current = null;
       } else {
         setTimeout(checkDrained, 50);
@@ -261,73 +259,121 @@ export function ChatPage() {
     setSearching(null);
   }, []);
 
-  return (
-    <div className="flex flex-col h-dvh">
-      {/* Header */}
-      <header className="border-b border-border px-4 py-3 shrink-0">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <h1 className="text-lg font-semibold">Neuronetis</h1>
-          <button
-            onClick={() => setContactOpen(true)}
-            className="cursor-pointer rounded-full border border-border px-4 py-1.5 text-sm text-foreground hover:bg-accent transition-colors"
-          >
-            Contact Us
-          </button>
-        </div>
-      </header>
+  const focusScanner = useCallback(() => {
+    const el = document.getElementById("scanner");
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    el?.querySelector("textarea")?.focus({ preventScroll: true });
+  }, []);
 
-      <ContactModal
-        open={contactOpen}
-        onOpenChange={setContactOpen}
+  const chips =
+    !isStreaming && suggestions.length > 0 ? (
+      <SuggestionButtons
+        suggestions={suggestions}
+        onSelect={handleSend}
+        onIdeasPrompt={handleIdeasPrompt}
+        onCached={handleCachedAnswer}
+        onClicked={handleClickedId}
         sessionId={sessionId}
       />
+    ) : null;
 
-      {/* Messages */}
+  const errorLine = error ? (
+    <div className="px-4 py-2 text-center text-sm text-destructive">{error}</div>
+  ) : null;
+
+  return (
+    <>
       {messages.length === 0 ? (
-        <div className="flex-1 flex flex-col items-center px-4 py-14 text-center">
-          <h2 className="text-3xl font-bold mb-3">
-            Production AI for IT companies
-          </h2>
-          <p className="text-l text-muted-foreground max-w-lg">
-            AI Audits · Agents integrations · Software Development services.
-          </p>
-          <p className="py-2 text-l text-muted-foreground max-w-lg">
-            Use this tool to ask about our services, see how we work or get a custom recommendation for your company.
-          </p>
+        /* Hero — the assistant is the entry point to the site */
+        <div className="relative flex min-h-[calc(100dvh-73px)] items-center justify-center">
+          <div className="pointer-events-none absolute inset-0 overflow-hidden select-none">
+            <img
+              src="/logo-mark.png"
+              alt=""
+              className="absolute top-1/2 left-1/2 h-[760px] w-auto max-w-none -translate-x-1/2 -translate-y-[52%] opacity-[0.055] blur-[2px]"
+              style={{
+                maskImage:
+                  "radial-gradient(ellipse 58% 56% at 50% 46%, #000 0%, rgba(0,0,0,0.55) 55%, transparent 78%)",
+                WebkitMaskImage:
+                  "radial-gradient(ellipse 58% 56% at 50% 46%, #000 0%, rgba(0,0,0,0.55) 55%, transparent 78%)",
+              }}
+            />
+            <div
+              className="absolute inset-x-0 bottom-0 h-60"
+              style={{
+                background: "linear-gradient(180deg, rgba(11,11,12,0) 0%, #0B0B0C 92%)",
+              }}
+            />
+          </div>
+
+          <div className="relative w-full max-w-[1200px] px-5 py-16 sm:px-10">
+            <div className="mx-auto mb-7 max-w-[780px] text-center sm:mb-12">
+              <div className="eyebrow mb-[26px]">AI engineering studio · Israel &amp; US</div>
+              <h1 className="mb-[22px] font-heading text-[42px] leading-[1.03] font-semibold tracking-[-0.03em] text-balance sm:text-[54px] lg:text-[66px]">
+                Find where{" "}
+                <span className="text-gold-gradient">AI creates value</span>
+                . Then{" "}
+                <span className="text-gold-gradient">build it</span>
+                .
+              </h1>
+              <p className="mx-auto mb-9 max-w-[720px] text-[19px] leading-[1.55] text-pretty text-muted-foreground">
+                Neuronetis helps software companies identify high-value AI opportunities,
+                validate them, and build production systems that integrate with their products
+                and workflows.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <button
+                  onClick={focusScanner}
+                  className="btn-primary cursor-pointer px-6 py-[13px] text-[15px]"
+                >
+                  Run the AI Opportunity Scanner
+                </button>
+                <button
+                  onClick={() => openCalendlyPopup()}
+                  className="cursor-pointer rounded-lg border border-white/[0.18] px-6 py-[13px] text-[15px] font-medium text-foreground transition-colors hover:border-white/45 hover:text-white"
+                >
+                  Talk to an AI Engineer
+                </button>
+              </div>
+            </div>
+
+            <div id="scanner" className="mx-auto max-w-[820px] scroll-mt-24">
+              <ChatInput
+                onSend={handleSend}
+                onStop={handleStop}
+                disabled={!sessionId}
+                isStreaming={isStreaming}
+                placeholder="Describe what you're building…"
+              />
+              {errorLine}
+              <div className="mt-[22px] text-center font-mono text-[11.5px] tracking-[0.04em] text-dim-text">
+                Describe your company, product, workflow, or project. You'll get tailored
+                opportunities based on our library of real projects and templates — not a
+                generic idea generator.
+              </div>
+            </div>
+          </div>
         </div>
       ) : (
-        <MessageList
-          messages={messages}
-          streamingId={streamingId}
-          searchingId={searching?.id ?? null}
-          searchingTool={searching?.tool ?? null}
-          footer={
-            !isStreaming && suggestions.length > 0 ? (
-              <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} onCached={handleCachedAnswer} onClicked={handleClickedId} sessionId={sessionId} />
-            ) : null
-          }
-        />
-      )}
-
-      {/* Error */}
-      {error && (
-        <div className="px-4 py-2 text-sm text-destructive text-center">
-          {error}
+        <div className="flex h-[calc(100dvh-73px)] flex-col">
+          <MessageList
+            messages={messages}
+            streamingId={streamingId}
+            searchingId={searching?.id ?? null}
+            searchingTool={searching?.tool ?? null}
+            footer={chips}
+          />
+          {errorLine}
+          <div className="mx-auto w-full max-w-[820px] px-5 pt-2 pb-5 sm:px-10">
+            <ChatInput
+              onSend={handleSend}
+              onStop={handleStop}
+              disabled={!sessionId}
+              isStreaming={isStreaming}
+            />
+          </div>
         </div>
       )}
-
-      {/* Suggestions + Input */}
-      <div className="max-w-4xl mx-auto w-full">
-        {!isStreaming && suggestions.length > 0 && messages.length === 0 && (
-          <SuggestionButtons suggestions={suggestions} onSelect={handleSend} onIdeasPrompt={handleIdeasPrompt} onCached={handleCachedAnswer} onClicked={handleClickedId} sessionId={sessionId} />
-        )}
-        <ChatInput
-          onSend={handleSend}
-          onStop={handleStop}
-          disabled={!sessionId}
-          isStreaming={isStreaming}
-        />
-      </div>
-    </div>
+    </>
   );
 }
