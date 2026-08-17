@@ -1,11 +1,11 @@
 ---
 title: Knowledge Base Index
-generated_by: python -m app.vault
+maintained: by hand
 ---
 
 # Knowledge Base Index
 
-Every note in this vault, grouped by folder. Generated from each note's `read_when` frontmatter — edit the note, not this file.
+Every note in this vault, grouped by folder. Each entry mirrors that note's `read_when` frontmatter — there is no generator, so when you edit a note's `read_when`, update the matching line here in the same commit.
 
 ## about/
 

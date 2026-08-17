@@ -16,7 +16,12 @@ export function SiteLayout() {
     <div className="min-h-dvh bg-background text-foreground">
       <SiteHeader />
       <Outlet />
-      {!isHome && <BookCta /> && <SiteFooter /> }
+      {!isHome && (
+        <>
+          <BookCta />
+          <SiteFooter />
+        </>
+      )}
     </div>
   );
 }

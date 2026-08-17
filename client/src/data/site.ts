@@ -7,27 +7,6 @@
  * no standardized "quick wins / mid-size / larger" tiers.
  */
 
-/* ── Homepage ────────────────────────────────────────────────────────────── */
-
-/** The journey strip shown directly under the hero. */
-export const JOURNEY = [
-  {
-    num: "01",
-    title: "Audit",
-    body: "We find where AI can create measurable value across your product, workflows, data, and existing systems — and where it can't.",
-  },
-  {
-    num: "02",
-    title: "Build",
-    body: "We design and build the production system around a validated opportunity, integrated with the product and infrastructure you already have.",
-  },
-  {
-    num: "03",
-    title: "Optimize",
-    body: "We measure the system in production and improve quality, cost, latency, and reliability over time.",
-  },
-];
-
 /* ── AI Audit page ───────────────────────────────────────────────────────── */
 
 export const AUDIT_PAGE = {

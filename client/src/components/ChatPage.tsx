@@ -5,18 +5,17 @@ import { TokenQueue } from "@/lib/tokenQueue";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
 import { SuggestionButtons, type SuggestionItem } from "./SuggestionButtons";
-import { ContactModal } from "./ContactModal";
 import { CACHED_ANSWERS } from "@/data/cachedAnswers";
 import { openCalendlyPopup } from "@/lib/calendly";
 
 const IDEAS_PROMPT_TEXT =
   "Tell us about your company to get tailored AI project ideas. Useful to include: what your product does in a sentence or two, who your users are, what data you have (kind, rough volume, where it lives), what your users complain about most, what your support team gets asked most often, what your internal team does manually that they wish was automated, and any AI features your competitors have shipped.";
 
-const INITIAL_SUGGESTIONS: SuggestionItem[] = [
+/** Shown after the ideas prompt — the hero itself starts with no chips. */
+const TOPIC_SUGGESTIONS: SuggestionItem[] = [
   { text: "Services & pricing", cacheKey: "services_and_pricing" },
   { text: "What's the process like", cacheKey: "process" },
   { text: "About Neuronetis", cacheKey: "about" },
-  { text: "Ideas for my project", action: "ideas-prompt" },
 ];
 
 const BOOK_A_CALL: SuggestionItem = { id: "book_call", text: "Book a call", action: "calendly" };
@@ -42,10 +41,9 @@ export function ChatPage() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingId, setStreamingId] = useState<string | null>(null);
   const [searching, setSearching] = useState<{ id: string; tool: string } | null>(null);
-  const [suggestions, setSuggestions] = useState<SuggestionItem[]>(INITIAL_SUGGESTIONS);
+  const [suggestions, setSuggestions] = useState<SuggestionItem[]>([]);
   const [clickedIds, setClickedIds] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
-  const [contactOpen, setContactOpen] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const queueRef = useRef<TokenQueue | null>(null);
   const sessionRequested = useRef(false);
@@ -239,9 +237,7 @@ export function ChatPage() {
       if (queue.isDrained) {
         setIsStreaming(false);
         setStreamingId(null);
-        setSuggestions(
-          INITIAL_SUGGESTIONS.filter((s) => s.action !== "ideas-prompt")
-        );
+        setSuggestions(TOPIC_SUGGESTIONS);
         queueRef.current = null;
       } else {
         setTimeout(checkDrained, 50);
@@ -287,8 +283,6 @@ export function ChatPage() {
 
   return (
     <>
-      <ContactModal open={contactOpen} onOpenChange={setContactOpen} sessionId={sessionId} />
-
       {messages.length === 0 ? (
         /* Hero — the assistant is the entry point to the site */
         <div className="relative flex min-h-[calc(100dvh-73px)] items-center justify-center">
@@ -313,7 +307,7 @@ export function ChatPage() {
           </div>
 
           <div className="relative w-full max-w-[1200px] px-5 py-16 sm:px-10">
-            <div className="mx-auto mb-12 max-w-[780px] text-center">
+            <div className="mx-auto mb-7 max-w-[780px] text-center sm:mb-12">
               <div className="eyebrow mb-[26px]">AI engineering studio · Israel &amp; US</div>
               <h1 className="mb-[22px] font-heading text-[42px] leading-[1.03] font-semibold tracking-[-0.03em] text-balance sm:text-[54px] lg:text-[66px]">
                 Find where{" "}
