@@ -318,8 +318,7 @@ export function ChatPage() {
               </h1>
               <p className="mx-auto mb-9 max-w-[720px] text-[19px] leading-[1.55] text-pretty text-muted-foreground">
                 Neuronetis helps software companies identify high-value AI opportunities,
-                validate them, and build production systems that integrate with their products
-                and workflows.
+                validate them, and build production systems.
               </p>
               {/* <div className="flex flex-wrap items-center justify-center gap-3">
                 <button
@@ -346,10 +345,9 @@ export function ChatPage() {
                 placeholder="Describe what you're building…"
               />
               {errorLine}
-              <div className="mt-[22px] text-center font-mono text-[11.5px] tracking-[0.04em] text-dim-text">
-                Describe your company, product, workflow, or project. You'll get tailored
-                opportunities based on our library of real projects and templates — not a
-                generic idea generator.
+              <div className="mt-[22px] text-center font-mono text-sm tracking-[0.04em] text-dim-text">
+                You'll get tailored opportunities based on our library of real projects and templates, 
+                not a generic idea generator.
               </div>
             </div>
           </div>
