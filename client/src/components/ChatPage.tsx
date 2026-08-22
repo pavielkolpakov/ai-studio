@@ -309,11 +309,11 @@ export function ChatPage() {
           <div className="relative w-full max-w-[1200px] px-5 py-16 sm:px-10">
             <div className="mx-auto mb-7 max-w-[780px] text-center sm:mb-12">
               <div className="eyebrow mb-[26px]">AI engineering studio · Israel &amp; US</div>
-              <h1 className="mb-[22px] font-heading text-[42px] leading-[1.03] font-semibold tracking-[-0.03em] text-balance sm:text-[54px] lg:text-[66px]">
+              <h1 className="mb-[22px] font-heading text-[42px] leading-[1.03] font-light tracking-[-0.03em] text-balance sm:text-[54px] lg:text-[66px]">
                 Find where{" "}
-                <span className="text-gold-gradient">AI creates value</span>
+                <span className="text-silver-gradient font-semibold">AI creates value</span>
                 . Then{" "}
-                <span className="text-gold-gradient">build it</span>
+                <span className="text-silver-gradient font-semibold">build it</span>
                 .
               </h1>
               <p className="mx-auto mb-9 max-w-[720px] text-[19px] leading-[1.55] text-pretty text-muted-foreground">
@@ -321,7 +321,7 @@ export function ChatPage() {
                 validate them, and build production systems that integrate with their products
                 and workflows.
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-3">
+              {/* <div className="flex flex-wrap items-center justify-center gap-3">
                 <button
                   onClick={focusScanner}
                   className="btn-primary cursor-pointer px-6 py-[13px] text-[15px]"
@@ -334,7 +334,7 @@ export function ChatPage() {
                 >
                   Talk to an AI Engineer
                 </button>
-              </div>
+              </div> */}
             </div>
 
             <div id="scanner" className="mx-auto max-w-[820px] scroll-mt-24">

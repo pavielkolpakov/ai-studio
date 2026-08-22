@@ -23,7 +23,7 @@ export function IdeaCards({ ideas }: Props) {
         {ideas.map((idea, i) => (
             <Card
               key={i}
-              className="idea-card-reveal gap-5 py-6 transition-all duration-300 hover:-translate-y-0.5 hover:ring-foreground/20 hover:shadow-[0_16px_48px_-16px_rgba(212,175,55,0.18)]"
+              className="idea-card-reveal gap-5 py-6 transition-all duration-300 hover:-translate-y-0.5 hover:ring-foreground/20 hover:shadow-[0_16px_48px_-16px_rgba(200,204,212,0.18)]"
               style={{ animationDelay: `${250 + i * 80}ms` }}
             >
               <CardHeader className="gap-2 px-6">
@@ -39,7 +39,7 @@ export function IdeaCards({ ideas }: Props) {
                     <li key={j} className="flex gap-2.5">
                       <span
                         aria-hidden
-                        className="mt-[8px] h-[5px] w-[5px] shrink-0 rotate-45 bg-gold/70"
+                        className="mt-[8px] h-[5px] w-[5px] shrink-0 rotate-45 bg-silver/70"
                       />
                       <span>{d}</span>
                     </li>

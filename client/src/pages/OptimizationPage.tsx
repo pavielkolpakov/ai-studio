@@ -32,7 +32,7 @@ export function OptimizationPage() {
                   >
                     <span
                       aria-hidden
-                      className="mt-[8px] h-[5px] w-[5px] shrink-0 rotate-45 bg-gold/70"
+                      className="mt-[8px] h-[5px] w-[5px] shrink-0 rotate-45 bg-silver/70"
                     />
                     <span>{item}</span>
                   </div>
@@ -44,7 +44,7 @@ export function OptimizationPage() {
       </section>
 
       {/* Outcome */}
-      <section className="rounded-[20px] border border-hairline-strong bg-[linear-gradient(140deg,rgba(212,175,55,0.10)_0%,rgba(212,175,55,0.02)_44%,#0F0F11_100%)] px-7 py-12 sm:px-14 sm:py-14">
+      <section className="rounded-[20px] border border-hairline-strong bg-[linear-gradient(140deg,rgba(200,204,212,0.10)_0%,rgba(200,204,212,0.02)_44%,#0F0F11_100%)] px-7 py-12 sm:px-14 sm:py-14">
         <p className="m-0 max-w-[760px] font-heading text-[24px] leading-[1.3] font-semibold tracking-[-0.02em] text-balance text-foreground sm:text-[28px]">
           {OPTIMIZATION_PAGE.outcome}
         </p>

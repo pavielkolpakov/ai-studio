@@ -38,7 +38,7 @@ export function SuggestionButtons({ suggestions, onSelect, onIdeasPrompt, onCach
             className={
               action === "calendly"
                 ? "btn-primary idea-card-reveal cursor-pointer px-4 py-[9px] text-[13.5px] active:scale-[0.98]"
-                : "idea-card-reveal cursor-pointer rounded-lg border border-white/[0.11] bg-surface px-4 py-[9px] text-[13.5px] text-body-text transition-colors duration-200 hover:border-gold/40 hover:bg-gold/[0.06] hover:text-foreground active:scale-[0.98]"
+                : "idea-card-reveal cursor-pointer rounded-lg border border-white/[0.11] bg-surface px-4 py-[9px] text-[13.5px] text-body-text transition-colors duration-200 hover:border-silver/40 hover:bg-silver/[0.06] hover:text-foreground active:scale-[0.98]"
             }
           >
             {s.text}

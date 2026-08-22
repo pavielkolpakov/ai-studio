@@ -28,7 +28,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-hairline bg-background">
       <div className="mx-auto flex h-[72px] max-w-[1200px] items-center justify-between gap-6 px-5 sm:px-10">
         <Link to="/" className="flex items-center gap-3">
-          <span className="font-heading text-[18px] font-semibold tracking-[0.01em]">
+          <span className="font-heading text-[18px] font-semibold tracking-[0.01em] text-silver-gradient">
             Neuronetis
           </span>
         </Link>

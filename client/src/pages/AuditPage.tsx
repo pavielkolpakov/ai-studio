@@ -129,7 +129,7 @@ export function AuditPage() {
       </section>
 
       {/* What happens after */}
-      <section className="grid items-center gap-10 rounded-[20px] border border-hairline-strong bg-[linear-gradient(140deg,rgba(212,175,55,0.10)_0%,rgba(212,175,55,0.02)_44%,#0F0F11_100%)] px-7 py-12 sm:px-14 sm:py-14 lg:grid-cols-[minmax(0,1fr)_minmax(260px,340px)] lg:gap-14">
+      <section className="grid items-center gap-10 rounded-[20px] border border-hairline-strong bg-[linear-gradient(140deg,rgba(200,204,212,0.10)_0%,rgba(200,204,212,0.02)_44%,#0F0F11_100%)] px-7 py-12 sm:px-14 sm:py-14 lg:grid-cols-[minmax(0,1fr)_minmax(260px,340px)] lg:gap-14">
         <div>
           <h2 className="mb-4 font-heading text-[28px] leading-[1.12] font-semibold tracking-[-0.026em] text-balance sm:text-[34px]">
             {AUDIT_PAGE.after.title}

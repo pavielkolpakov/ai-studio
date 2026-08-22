@@ -32,7 +32,7 @@ export function ImplementationPage() {
                   >
                     <span
                       aria-hidden
-                      className="mt-[8px] h-[5px] w-[5px] shrink-0 rotate-45 bg-gold/70"
+                      className="mt-[8px] h-[5px] w-[5px] shrink-0 rotate-45 bg-silver/70"
                     />
                     <span>{item}</span>
                   </div>
