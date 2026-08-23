@@ -81,7 +81,7 @@ export function IdeaCards({ ideas }: Props) {
           Want to know which opportunities actually make sense for your systems?
         </p>
         <Link
-          to="/audit"
+          to="/pricing#ai-audit"
           className="btn-primary shrink-0 px-5 py-2.5 text-[14px]"
         >
           Book an AI Audit

@@ -3,219 +3,215 @@
  *
  * SOURCE OF TRUTH: Neuronetis_Website_Notes.md and
  * Neuronetis_Knowledge_Base_Revised.md. The site follows the
- * Audit → Build → Optimize narrative: no public package prices,
- * no standardized "quick wins / mid-size / larger" tiers.
+ * Audit → Build → Optimize narrative on a single Pricing page,
+ * with transparent starting
+ * prices per service — not standardized "quick wins / mid-size /
+ * larger" package tiers.
  */
 
-/* ── AI Audit page ───────────────────────────────────────────────────────── */
+/* ── Pricing page ────────────────────────────────────────────────────────── */
 
-export const AUDIT_PAGE = {
-  eyebrow: "AI Audit",
-  headline: "Before you build AI, find out where it will actually matter.",
-  sub: "Most AI projects fail because they start with a technology, not a problem. The audit examines your product, operations, and data — and hands you a prioritized set of opportunities grounded in your actual situation, not a generic list of AI ideas.",
-  lookAt: [
+export const PRICING_PAGE = {
+  eyebrow: "Pricing",
+  headline: "AI engineering, from opportunity to production.",
+  sub: "We help software companies find where AI can create real value, then build and integrate the systems to capture it.",
+
+  /** The three client situations the whole page is organized around. */
+  paths: [
     {
-      title: "Product",
-      body: "Features and user journeys — where AI could make the core product meaningfully better.",
+      situation: "Not sure where AI fits?",
+      answer: "Audit it.",
+      body: "One to two weeks examining your product, workflows, data, and systems. You end with a prioritized opportunity map and a roadmap you can act on.",
+      service: "AI Audit",
+      price: "From $2,000",
+      href: "#ai-audit",
     },
     {
-      title: "Operations",
-      body: "Repetitive cognitive work — review, routing, extraction, reporting — that could be automated.",
+      situation: "Know what you need?",
+      answer: "Build it.",
+      body: "Skip the assessment. We scope the work, then build and integrate the system into the product and infrastructure you already run.",
+      service: "AI Implementation",
+      price: "From $5,000",
+      href: "#ai-implementation",
     },
     {
-      title: "Workflows",
-      body: "How work actually moves through your team, and where an AI step would remove friction.",
-    },
-    {
-      title: "Data",
-      body: "What data you have, where it lives, and whether it's ready to support each opportunity.",
-    },
-    {
-      title: "Existing AI",
-      body: "AI features, agents, or automations already in production — quality, cost, and reliability.",
-    },
-    {
-      title: "Infrastructure",
-      body: "Architecture, model choices, integrations, security, and deployment constraints.",
-    },
-  ],
-  deliverables: [
-    {
-      title: "AI opportunity map",
-      body: "Every credible opportunity across your product and operations, in one place.",
-    },
-    {
-      title: "Prioritized roadmap",
-      body: "Ranked by expected impact, feasibility, data readiness, complexity, and risk.",
-    },
-    {
-      title: "Technical recommendations",
-      body: "The architecture and approach we'd use for each opportunity — and what we'd deliberately avoid.",
-    },
-    {
-      title: "Business impact estimates",
-      body: "What each opportunity is worth if it works, with measurable success criteria.",
-    },
-    {
-      title: "Implementation plan",
-      body: "What to build first, what it requires, and in what sequence.",
-    },
-    {
-      title: "Risks and dependencies",
-      body: "What could go wrong, what each opportunity depends on, and what to de-risk early.",
+      situation: "Already have AI?",
+      answer: "Optimize it.",
+      body: "We review the system you're running and make it better, faster, cheaper, and easier to operate — with measurement to prove it.",
+      service: "AI Optimization",
+      price: "From $3,000",
+      href: "#ai-optimization",
     },
   ],
-  after: {
-    title: "What happens after the audit",
-    body: "You keep the roadmap whether or not we build anything. If an opportunity is worth pursuing, we scope the implementation around a specific outcome — fixed-scope where the requirements are clear. If AI isn't the right answer for a problem, the audit says that too.",
+
+  audit: {
+    id: "ai-audit",
+    num: "01",
+    title: "AI Audit",
+    price: "From $2,000",
+    lead: "A fixed-length, fixed-price engagement that establishes where AI is worth building in your business — and where it isn't.",
+    options: [
+      {
+        name: "1-week audit",
+        price: "$2,000",
+        body: "The standard engagement. One product area or workflow set, with the data and infrastructure behind it.",
+      },
+      {
+        name: "2-week audit",
+        price: "$4,000",
+        body: "A deeper assessment across multiple workflows, systems, data sources, existing AI infrastructure, or business areas.",
+      },
+      {
+        name: "Larger or complex audits",
+        price: "Custom quote",
+        body: "Unusually broad or complex scope, agreed with you before anything starts.",
+      },
+    ],
+    evaluatesTitle: "What the audit evaluates",
+    evaluates: [
+      "Product and business workflows",
+      "Existing AI systems",
+      "Data and knowledge sources",
+      "AI infrastructure",
+      "Automation opportunities",
+      "Technical feasibility",
+      "Expected business impact",
+      "Risks and dependencies",
+    ],
+    deliverablesTitle: "What you get",
+    deliverables: [
+      {
+        title: "Prioritized AI opportunity map",
+        body: "Every credible opportunity, ranked by impact, feasibility, and data readiness.",
+      },
+      {
+        title: "Technical recommendations",
+        body: "The approach we would take for each opportunity — and what we would deliberately avoid.",
+      },
+      {
+        title: "Business impact estimates",
+        body: "What each opportunity is worth if it works, with measurable success criteria where the numbers support it.",
+      },
+      {
+        title: "Recommended architecture",
+        body: "How the system should be built and how it fits the stack you already run.",
+      },
+      {
+        title: "Implementation roadmap",
+        body: "What to build first, what it depends on, and in what sequence.",
+      },
+      {
+        title: "Risks and dependencies",
+        body: "What could go wrong, and what to de-risk before committing engineering time.",
+      },
+    ],
+    free: {
+      title: "Selected companies receive an AI Audit for free",
+      body: "We run a limited number of audits at no cost as part of our strategic outreach program. It is selective and we choose deliberately — this is not a standing offer. The audit is the same $2,000 engagement, done to the same standard.",
+    },
+    cta: "Request an AI Audit",
   },
-  cta: "Request an AI Audit",
-};
 
-/** Rows for the stylized sample audit deliverable on the audit page. */
-export const SAMPLE_AUDIT = [
-  {
-    opportunity: "Support triage copilot",
-    problem: "40% of tickets are repeat questions already answered in docs",
-    impact: "High",
-    complexity: "Medium",
-    next: "Validate on 6 months of ticket history",
+  implementation: {
+    id: "ai-implementation",
+    num: "02",
+    title: "AI Implementation",
+    price: "From $5,000",
+    lead: "We build and integrate production AI systems into existing products, workflows, and infrastructure — or build new AI systems from the ground up.",
+    tiers: [
+      {
+        name: "AI Integration",
+        price: "From $5,000",
+        body: "An AI capability added to a product, workflow, or backend you already run.",
+      },
+      {
+        name: "AI System / Agent Build",
+        price: "From $8,000",
+        body: "A system, agent, or agentic workflow built end to end and put into production.",
+      },
+      {
+        name: "Complex AI Product / System",
+        price: "From $15,000",
+        body: "Multi-component systems with real data, integration, security, and reliability requirements.",
+      },
+    ],
+    factorsTitle: "These are starting prices, not fixed packages",
+    factorsIntro: "Final pricing is set once the work is scoped. It depends on:",
+    factors: [
+      "Scope",
+      "Integrations",
+      "Data",
+      "Infrastructure",
+      "Quality requirements",
+      "Security requirements",
+      "Deployment complexity",
+    ],
+    examplesTitle: "Work we take on",
+    examples: [
+      "AI product features",
+      "Agents and agentic workflows",
+      "MCP integrations",
+      "RAG and knowledge systems",
+      "Workflow automation",
+      "Document processing",
+      "Voice AI",
+      "AI APIs and backend systems",
+      "Evaluation and observability infrastructure",
+    ],
+    noGate: {
+      title: "Already know what you need? We can scope and build it directly.",
+      body: "An AI Audit is not mandatory before implementation. If the requirements are clear, we go straight to scoping the build.",
+    },
+    cta: "Talk to an AI Engineer",
   },
-  {
-    opportunity: "Semantic search over product docs",
-    problem: "Users can't find answers with keyword search",
-    impact: "High",
-    complexity: "Low",
-    next: "Prototype on a 500-document slice",
+
+  optimization: {
+    id: "ai-optimization",
+    num: "03",
+    title: "AI Optimization",
+    price: "From $3,000",
+    lead: "Already have AI? We can make it better, faster, cheaper, and easier to operate.",
+    body: "For companies already running an AI system — whether it is in production or an early implementation that needs serious improvement. We review what exists, then fix what is actually holding it back.",
+    areas: [
+      "Quality",
+      "Reliability",
+      "Latency",
+      "Model selection",
+      "Retrieval",
+      "Evaluation",
+      "Observability",
+      "Architecture",
+      "Infrastructure",
+      "Operating cost",
+    ],
+    cta: "Review Our AI System",
   },
-  {
-    opportunity: "Automated weekly reporting",
-    problem: "Ops team spends 2 days/week assembling reports by hand",
-    impact: "Medium",
-    complexity: "Medium",
-    next: "Clean up source data first — AI is step two",
+
+  ongoing: {
+    title: "Ongoing AI Engineering",
+    price: "From $3,000/month",
+    body: "An optional continuation after an audit, implementation, or optimization engagement — a standing engineering capacity rather than a new project each time.",
+    items: [
+      "New AI features",
+      "New integrations",
+      "Optimization",
+      "Evaluation",
+      "Infrastructure",
+      "Production improvements",
+      "Additional AI projects",
+    ],
   },
-];
 
-/* ── Implementation page ─────────────────────────────────────────────────── */
-
-export const IMPLEMENTATION_PAGE = {
-  eyebrow: "Implementation",
-  headline: "From AI opportunity to production system.",
-  sub: "Once an opportunity is validated, we design and build the system — integrated with the product, data, and infrastructure you already have. No rewrites proposed to make the project easier for us.",
-  groups: [
-    {
-      title: "AI inside your product",
-      items: [
-        "AI capabilities embedded in your existing SaaS — assistants, intelligent search, drafting, extraction, autofill",
-        "AI-native product features built from the ground up",
-        "Product interfaces and frontend integration for AI experiences",
-      ],
-    },
-    {
-      title: "AI across your operations",
-      items: [
-        "Workflow automation for repetitive cognitive work",
-        "Document processing and structured extraction",
-        "Customer-support automation that escalates with full context",
-        "Voice AI for predictable, high-volume workflows",
-      ],
-    },
-    {
-      title: "The infrastructure behind it",
-      items: [
-        "Agents and MCP integrations that expose your systems to AI",
-        "RAG and knowledge systems over your proprietary data",
-        "Evaluation and observability infrastructure",
-        "Model selection, prompting, fine-tuning, and inference optimization",
-      ],
-    },
-  ],
-  principle: {
-    title: "Technology follows the problem",
-    body: "We don't start with “you need RAG” or “you need an agent.” We start with the business problem, the available data, and the constraints — then choose the simplest architecture that solves it well. If a conventional software solution is better, that's the recommendation.",
+  closing: {
+    title: "Where do you start?",
+    choices: [
+      { label: "Not sure what to build?", body: "Start with an AI Audit." },
+      { label: "Already know what you need?", body: "Let's build it." },
+      { label: "Already have an AI system?", body: "Let's make it better." },
+    ],
+    primary: "Request an AI Audit",
+    secondary: "Talk to an AI Engineer",
   },
-  delivery: [
-    "Built in a repository you own, from day one",
-    "Staging environment early — you see progress, not a final reveal",
-    "Documentation and handover your team can actually maintain",
-    "No lock-in: architectures that let you change models or components later",
-  ],
-};
-
-/* ── Optimization page ───────────────────────────────────────────────────── */
-
-export const OPTIMIZATION_PAGE = {
-  eyebrow: "Optimization",
-  headline: "Already have AI? Make it work better.",
-  sub: "For companies with AI systems already in production that are too expensive, too slow, unreliable, or unmeasured. A demo that worked is not the same thing as a system that works.",
-  groups: [
-    {
-      title: "Quality & reliability",
-      items: [
-        "Output quality and model selection for the task",
-        "Prompt and workflow architecture",
-        "Retrieval quality",
-        "Reliability and failure handling",
-      ],
-    },
-    {
-      title: "Cost & latency",
-      items: [
-        "Inference and infrastructure cost",
-        "Response latency",
-        "Right-sizing models — a bigger model is not always a better model",
-        "Scaling and maintainability",
-      ],
-    },
-    {
-      title: "Measurement",
-      items: [
-        "Evaluation and regression testing",
-        "Observability and production monitoring",
-        "Success metrics tied to the business outcome",
-      ],
-    },
-    {
-      title: "Architecture",
-      items: [
-        "Architecture review of the existing system",
-        "Data pipelines",
-        "Security and deployment architecture",
-        "Infrastructure your own team can operate",
-      ],
-    },
-  ],
-  outcome:
-    "The goal may be better output quality, lower operating cost, faster responses, greater reliability — or a system your engineering team can maintain without us.",
-};
-
-/* ── Services page ───────────────────────────────────────────────────────── */
-
-export const SERVICES_PAGE = {
-  eyebrow: "Services",
-  headline: "Priced around the problem, not a package.",
-  sub: "Implementation scope varies substantially with your systems, data, integrations, and quality requirements. A number published before we understand your problem would be a guess — so we don't publish one. You pay for outcomes and defined work, not a list of hours or technologies.",
-  blocks: [
-    {
-      title: "Audits",
-      tag: "Scope-based pricing",
-      body: "Priced by the scope of what we examine — a single product area is not a company-wide assessment. For selected strategic companies we offer a limited audit at no cost as the start of a longer relationship. Either way, the audit is rigorous and the roadmap is yours to keep.",
-      cta: "Request an AI Audit",
-    },
-    {
-      title: "Implementation",
-      tag: "Custom-scoped",
-      body: "Scoped individually after the opportunity and requirements are understood — never sold as a standardized small / medium / large package. We prefer fixed-scope engagements where the requirements and deliverables are clear enough to support them.",
-      cta: "Talk to an AI Engineer",
-    },
-    {
-      title: "Optimization",
-      tag: "Ongoing engagement",
-      body: "A recurring engineering engagement where it's appropriate — for systems we built, or AI systems you already run. Structured around continuous improvement: quality, cost, latency, reliability, new capabilities.",
-      cta: "Talk to an AI Engineer",
-    },
-  ],
 };
 
 /* ── Process ─────────────────────────────────────────────────────────────── */
@@ -246,49 +242,21 @@ export const PHASES = [
 
 /** Indicative timelines — no prices, confirmed per project after scoping. */
 export const TIMELINES = [
-  { name: "AI audit", time: "1–3 weeks" },
+  { name: "AI audit", time: "1–2 weeks" },
   { name: "Feature integration or RAG MVP", time: "3–6 weeks" },
   { name: "Full production RAG system", time: "6–10 weeks" },
   { name: "Agentic platform or end-to-end build", time: "3–6+ months" },
-];
-
-/** docs/vault/technical/tech-stack.md */
-export const STACK = [
-  {
-    group: "Backend",
-    items: ["FastAPI (Python)", "Pydantic typing", "SSE streaming", "TypeScript / Go / Rust on request"],
-  },
-  {
-    group: "Vector databases",
-    items: ["Qdrant — default", "pgvector — if you run Postgres", "Pinecone — fully managed", "Hybrid dense + sparse"],
-  },
-  {
-    group: "Embeddings",
-    items: ["text-embedding-3-small", "text-embedding-3-large", "FastEmbed", "Local: e5-large, bge-m3, nomic"],
-  },
-  {
-    group: "RAG frameworks",
-    items: ["LangChain", "LlamaIndex", "Direct API — less abstraction", "Chosen per project"],
-  },
-  {
-    group: "Fine-tuning",
-    items: ["HuggingFace + PEFT / LoRA", "Weights & Biases", "vLLM serving", "Self-hosted LLaMA, Mistral, Qwen"],
-  },
-  {
-    group: "Evals & infra",
-    items: ["LangSmith / Langfuse / Arize", "Braintrust, RAGAS", "Docker + Compose", "AWS / Azure, Railway / Render"],
-  },
 ];
 
 /** Buyer questions, aligned with the audit-first model. */
 export const FAQS = [
   {
     q: "How is implementation priced?",
-    a: "After the opportunity and requirements are understood — never before. Audits are priced by scope. Implementation is custom-scoped around a defined outcome, fixed-price where the requirements are clear enough to support it. We don't publish package prices because a number quoted before we understand your systems would be a guess.",
+    a: "From published starting prices, then scoped precisely. Integrations start at $5,000, system and agent builds at $8,000, and complex AI products at $15,000. The final number depends on scope, integrations, data, infrastructure, and quality, security, and deployment requirements — we set it once the work is scoped, and we prefer fixed scope where the requirements support it.",
   },
   {
     q: "When is an audit free?",
-    a: "For selected strategic companies that fit our ideal profile, we offer a limited audit at no cost as the start of a longer relationship. It is still rigorous — but it is not universally free, and we are deliberate about where we invest that time.",
+    a: "Selected companies may receive an AI Audit for free as part of our strategic outreach program. It is selective and not a standing offer — the standard price is $2,000 for one week and $4,000 for two. The work is identical either way.",
   },
   {
     q: "Who owns the code?",
@@ -314,7 +282,7 @@ export const FAQS = [
 export const ABOUT_STATS = [
   { value: "3–4", label: "projects per quarter, deliberately" },
   { value: "3", label: "teams: AI/backend, frontend, DevOps" },
-  { value: "1–3 wk", label: "typical AI audit, ending in a prioritized roadmap" },
+  { value: "1–2 wk", label: "typical AI audit, ending in a prioritized roadmap" },
   { value: "100%", label: "code ownership — every line we write is yours" },
 ];
 

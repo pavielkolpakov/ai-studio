@@ -7,6 +7,8 @@ import { BookCta } from "./BookCta";
 export function SiteLayout() {
   const { pathname } = useLocation();
   const isHome = pathname === "/";
+  // Pricing closes with its own decision-oriented CTA — don't stack a second one.
+  const hideBookCta = isHome || pathname === "/pricing";
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
@@ -18,7 +20,7 @@ export function SiteLayout() {
       <Outlet />
       {!isHome && (
         <>
-          <BookCta />
+          {!hideBookCta && <BookCta />}
           <SiteFooter />
         </>
       )}
