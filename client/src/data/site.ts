@@ -162,7 +162,7 @@ export const PRICING_PAGE = {
       title: "Already know what you need? We can scope and build it directly.",
       body: "An AI Audit is not mandatory before implementation. If the requirements are clear, we go straight to scoping the build.",
     },
-    cta: "Talk to an AI Engineer",
+    cta: "Talk to AI Engineer",
   },
 
   optimization: {
@@ -210,7 +210,7 @@ export const PRICING_PAGE = {
       { label: "Already have an AI system?", body: "Let's make it better." },
     ],
     primary: "Request an AI Audit",
-    secondary: "Talk to an AI Engineer",
+    secondary: "Talk to AI Engineer",
   },
 };
 

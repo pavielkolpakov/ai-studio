@@ -35,9 +35,9 @@ export function SiteHeader() {
           </div>
           <button
             onClick={() => openCalendlyPopup()}
-            className="btn-primary ml-3.5 hidden cursor-pointer px-3 py-2 text-sm sm:block sm:px-[18px]"
+            className="btn-header-cta ml-3 hidden cursor-pointer px-3.5 py-[7px] text-[13.5px] sm:block"
           >
-            Talk to an AI Engineer
+            Talk to AI Engineer
           </button>
 
           <Sheet>
@@ -93,7 +93,7 @@ export function SiteHeader() {
                   onClick={() => openCalendlyPopup()}
                   className="btn-primary w-full cursor-pointer px-4 py-3 text-sm"
                 >
-                  Talk to an AI Engineer
+                  Talk to AI Engineer
                 </SheetClose>
               </SheetFooter>
             </SheetContent>
