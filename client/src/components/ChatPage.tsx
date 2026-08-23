@@ -6,7 +6,6 @@ import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
 import { SuggestionButtons, type SuggestionItem } from "./SuggestionButtons";
 import { CACHED_ANSWERS } from "@/data/cachedAnswers";
-import { openCalendlyPopup } from "@/lib/calendly";
 
 const IDEAS_PROMPT_TEXT =
   "Tell us about your company to get tailored AI project ideas. Useful to include: what your product does in a sentence or two, who your users are, what data you have (kind, rough volume, where it lives), what your users complain about most, what your support team gets asked most often, what your internal team does manually that they wish was automated, and any AI features your competitors have shipped.";
@@ -259,12 +258,6 @@ export function ChatPage() {
     setSearching(null);
   }, []);
 
-  const focusScanner = useCallback(() => {
-    const el = document.getElementById("scanner");
-    el?.scrollIntoView({ behavior: "smooth", block: "center" });
-    el?.querySelector("textarea")?.focus({ preventScroll: true });
-  }, []);
-
   const chips =
     !isStreaming && suggestions.length > 0 ? (
       <SuggestionButtons
@@ -318,13 +311,12 @@ export function ChatPage() {
               </h1>
               <p className="mx-auto mb-9 max-w-[720px] text-[19px] leading-[1.55] text-pretty text-muted-foreground">
                 Neuronetis helps software companies identify high-value AI opportunities,
-                validate them, and build production systems.
+                and turn them into production systems.
               </p>
               {/* <div className="flex flex-wrap items-center justify-center gap-3">
                 <button
                   onClick={focusScanner}
-                  className="btn-primary cursor-pointer px-6 py-[13px] text-[15px]"
-                >
+                  className="btn-primary cursor-pointer px-6 py-[13px] text-[15px]"w                >
                   Run the AI Opportunity Scanner
                 </button>
                 <button
