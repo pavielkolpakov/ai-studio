@@ -1,41 +1,11 @@
 ---
-title: Knowledge Base Index
+title: Project Index
 maintained: by hand
 ---
 
-# Knowledge Base Index
+# Project Index
 
-Every note in this vault, grouped by folder. Each entry mirrors that note's `read_when` frontmatter — there is no generator, so when you edit a note's `read_when`, update the matching line here in the same commit.
-
-## about/
-
-- [[about/location-and-team]] — Our Location and Team. Read when: user asks where we are based, what time zones we work in, what languages we speak, how the team is structured, team size, or who will work on their project
-- [[about/studio-overview]] — Studio Overview. Read when: user asks what Neuronetis is, what the studio does, what we specialize in, whether we are an agency, or how we are different from a general software shop
-- [[about/values]] — Our Values as a Studio. Read when: user asks about vendor lock-in, code ownership, how we price, how we communicate during a project, or how many clients we take at once
-- [[about/what-we-are-not]] — What We Are Not. Read when: user asks whether we build chatbots, whether we are just an OpenAI wrapper, or is skeptical about AI hype and wants to know what we refuse to do
-- [[about/who-we-work-with]] — Who We Work With. Read when: user asks who our clients are, whether we are a fit for their company size or type, whether we work with startups or enterprises, or what kind of team we work best with
-
-## faq/
-
-- [[faq/ai-expectations]] — FAQ: AI and Expectations. Read when: user asks whether the AI will be accurate, whether it will hallucinate, what happens with out-of-scope questions, what happens when OpenAI changes models or pricing, model lock-in, or how quality is maintained over time
-- [[faq/data-and-privacy]] — FAQ: Data and Privacy. Read when: user asks about data access, sensitive data, NDAs, GDPR, HIPAA, compliance, data processing agreements, on-premise or private cloud deployment, self-hosted models, or whether their data leaves their infrastructure
-- [[faq/working-with-us]] — FAQ: Working With Us. Read when: user asks how long a project takes, whether we rewrite their codebase, whether their team can maintain the system afterwards, whether we work with small or early-stage companies, what to do if they're unsure what they need, or why hire us instead of building an in-house AI team
-
-## opportunities/
-
-- [[opportunities/four-questions]] — The Four Questions We Ask About Any Company. Read when: user asks how to find AI opportunities in their business, where AI could help, how we evaluate a company's situation, or wants to know where to start looking for use cases
-- [[opportunities/how-to-describe-your-company]] — How to Describe Your Company to Get Useful AI Ideas. Read when: user is unsure what to tell us about their business, asks what information we need to suggest ideas, or gives a vague description and needs prompting for more detail
-- [[opportunities/red-flags]] — Red Flags, When AI Is Not the Right Answer. Read when: user asks when AI is the wrong tool, whether they actually need AI, or describes a problem that may not be an AI problem at all
-- [[opportunities/what-makes-a-good-project]] — What Makes a Good AI Project. Read when: user asks whether their idea is a good fit, how we judge whether a project is worth doing, or what criteria a project needs to meet
-
-## process/
-
-- [[process/build]] — Phase 2: Build. Read when: user asks how the build phase works, how we communicate during a project, how they track progress, whether they get access to the code, staging environments, or whether we write tests
-- [[process/discovery]] — Phase 1: Discovery. Read when: user asks about discovery, what happens before a build starts, what a technical spec covers, how projects get de-risked, or why there is a paid phase before the build
-- [[process/handover]] — Phase 3: Handover. Read when: user asks what happens at the end of a project, about documentation, runbooks, knowledge transfer, post-delivery support, or whether their team can maintain the system afterwards
-- [[process/retainer]] — Retainer Option After Handover. Read when: user asks about ongoing support after delivery, monthly engagement, continued improvement work, or what happens once a project ends
-- [[process/scoping-call]] — Phase 0: Technical Scoping Call. Read when: user asks how to get started, wants to book a call, asks what the first step is, what happens before an engagement, or what to prepare for a first conversation
-- [[process/what-we-need-from-you]] — What We Need From You. Read when: user asks what is expected of their team, how much of their time a project takes, what access we need, or why a project might go badly
+Every project template available to the agent. Each entry mirrors its project's `read_when` frontmatter. When editing a project's routing description, update its entry here in the same commit. Agency information lives in the conditional system prompt, not in this vault.
 
 ## projects/
 
@@ -51,18 +21,8 @@ Every note in this vault, grouped by folder. Each entry mirrors that note's `rea
 - [[projects/10-compliance-platform]] — Enterprise Knowledge & Compliance AI Platform. Read when: user is in a regulated vertical — legal, fintech, banking, healthcare, insurance, RegTech; needs audit trails, data residency, on-prem or VPC deployment, KYC/AML document processing, contract intelligence, claims triage, or AI behavior they can explain to a regulator
 - [[projects/11-code-review-agent]] — AI Agent for Code Review & Developer Tooling. Read when: user wants automated code review, PR summaries, a codebase Q&A agent, coding standards enforcement, security review in CI, faster time-to-merge, or says Copilot doesn't understand their codebase; also when junior devs repeat mistakes or onboarding is slow because architecture is undocumented
 - [[projects/12-voice-ai-agent]] — Voice AI Agent for Business Operations. Read when: user wants a phone agent, inbound or outbound call automation, appointment scheduling, lead qualification, collections follow-up, an internal helpdesk line, call deflection, or mentions Vapi or Retell
-
-## services/
-
-- [[services/overview]] — Services Overview. Read when: user asks what services we offer, what we can build, what kinds of projects we take on, or wants a list of our service categories before drilling into one
-- [[services/pricing]] — Pricing, Payment Terms, and Engagement Sizes. Read when: user asks about cost, price, budget, how much anything costs, quotes, payment terms, invoicing, deposits, milestones, discovery fees, retainer cost, fixed-price vs time-and-materials, or discounts
-
-## technical/
-
-- [[technical/finetuning-vs-rag-vs-prompting]] — Fine-Tuning vs. RAG vs. Prompting, How to Choose. Read when: user asks whether to fine-tune or use RAG, whether a better system prompt would be enough, how to choose an AI architecture, or what the tradeoffs are between prompting, retrieval, and training
-- [[technical/integrations]] — What We Integrate With. Read when: user asks whether we can connect to a specific tool or system — Notion, Confluence, Google Drive, SharePoint, Zendesk, Intercom, Freshdesk, Jira, GitHub, GitLab, Slack, HubSpot, Salesforce, Postgres, MySQL, MongoDB, Elasticsearch, S3, REST or GraphQL APIs
-- [[technical/production-rag]] — What Makes a RAG System Production-Quality. Read when: user asks what separates a RAG demo from a real system, about hybrid search, metadata filtering, query expansion, HyDE, evaluation pipelines, or why their RAG prototype is not good enough for production
-- [[technical/rag-pipeline]] — The RAG Pipeline, Step by Step. Read when: user asks how a RAG system works internally, about chunking, embeddings, vector storage, similarity search, reranking, or wants the technical pipeline walked through end to end
-- [[technical/tech-stack]] — Our Technology Stack. Read when: user asks what tools, frameworks, languages, models, or infrastructure we use; asks about FastAPI, Python, Qdrant, pgvector, Pinecone, LangChain, LlamaIndex, embedding models, vLLM, LoRA, LangSmith, Langfuse, Braintrust, RAGAS, Docker, AWS, Azure, or Railway; or asks whether we work in a language other than Python
-- [[technical/what-is-rag]] — What Is RAG?. Read when: user asks what RAG means, what retrieval-augmented generation is, why RAG instead of just prompting an LLM, or wants a plain explanation of the concept
-- [[technical/when-rag-fits]] — When Is RAG the Right Choice?. Read when: user asks whether RAG fits their problem, when RAG is the wrong tool, or is deciding between RAG and some other approach
+- [[projects/13-multi-agent-research-reports]] — Multi-Agent Research & Scored Report Engine. Read when: user wants automated market or competitive research, a multi-agent research pipeline, parallel research agents, competitor discovery, deal-flow or idea screening, due-diligence summaries, a scored and cited report instead of a chat answer, or mentions Perplexity, Sonar, LangGraph, or an LLM judge; also when analysts spend days assembling research by hand, or when an existing AI tool returns confident answers with competitors and source links that turn out not to exist
+- [[projects/14-personalization-voice-layer]] — Per-User Personalization & Voice-Matching Layer. Read when: user wants AI that writes in each customer's own voice, per-user personalization, a tone-of-voice engine, ghostwriting or draft generation for creators, a system that learns from approvals and rejections instead of being retrained, or asks whether to fine-tune a model per user; also when generated output sounds generic, users reject drafts and the product never learns from it, or a numeric "virality" or quality score is not trusted
+- [[projects/15-codebase-migration-agent]] — Autonomous Codebase Migration Agent. Read when: user has a portfolio of apps or repos that all need the same change, wants an SDK migration or framework upgrade automated, a fleet-wide refactor, an autonomous coding agent that opens pull requests, a long-running multi-step coding pipeline, or mentions Claude Code, Claude Agent SDK, LangGraph, or agent orchestration; also when a mechanical migration is eating developer weeks per repo, or when an AI coding tool produced a plausible diff that did not compile
+- [[projects/16-app-navigation-agent]] — Autonomous Mobile App Navigation Agent. Read when: user wants an AI agent that drives a real mobile app, automated onboarding or store screenshots, a visual record of every screen in an app, first-run flow capture across a portfolio of apps, UI walkthroughs without hand-written test scripts, or mentions Appium, UiAutomator2, Android emulators, AWS Device Farm, or exporting app screens into Figma; also when capturing onboarding by hand eats hours per app per release, or when Appium suites break on every redesign
+- [[projects/17-llm-gateway]] — LLM Gateway / Multi-Provider Routing and Spend Control. Read when: user wants an LLM gateway, an internal AI proxy, one endpoint in front of OpenAI, Anthropic, Gemini and Grok, per-team budgets or model allow-lists, spend visibility across projects, provider failover, or mentions LiteLLM, Vertex AI, model routing, API key sprawl or rate limits per project; also when every team holds its own provider key, when LLM spend only becomes visible on the monthly invoice, or when adding a new model means a code change in every service

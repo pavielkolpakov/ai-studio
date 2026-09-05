@@ -5,9 +5,7 @@ read_when: >
   reduce tier-1 workload, integrate AI with Zendesk / Intercom / Freshdesk /
   HubSpot, or mentions their support team is drowning in repetitive questions
 links:
-  - "[[services/pricing]]"
   - "[[projects/01-rag-knowledge-assistant]]"
-  - "[[technical/integrations]]"
 ---
 
 ## The problem
@@ -42,4 +40,4 @@ RAG layer over your knowledge base, past ticket history, and product documentati
 - Notion handled 1M+ tickets/year with a 34% reduction in resolution time post-AI implementation
 - Typical project size: $60,000–$100,000 initial build, plus an optional $5,000–$10,000/month retainer for ongoing improvement
 
-See [[services/pricing]] for the retainer floor and payment terms.
+See Pricing, Payment Terms, and Engagement Sizes in the agency information for the retainer floor and payment terms.

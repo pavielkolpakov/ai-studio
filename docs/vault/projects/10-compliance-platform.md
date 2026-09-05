@@ -6,10 +6,8 @@ read_when: >
   deployment, KYC/AML document processing, contract intelligence, claims triage,
   or AI behavior they can explain to a regulator
 links:
-  - "[[services/pricing]]"
   - "[[projects/06-workflow-automation]]"
   - "[[projects/07-agentic-rag-platform]]"
-  - "[[faq/data-and-privacy]]"
 ---
 
 ## The problem

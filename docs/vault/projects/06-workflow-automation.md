@@ -7,9 +7,7 @@ read_when: >
   Finance Ops or Legal Ops; or has staff manually keying unstructured documents
   into their systems
 links:
-  - "[[services/pricing]]"
   - "[[projects/10-compliance-platform]]"
-  - "[[technical/integrations]]"
 ---
 
 ## The problem

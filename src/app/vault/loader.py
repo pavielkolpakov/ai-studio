@@ -1,9 +1,9 @@
 """Load the Neuronetis knowledge vault from disk.
 
-Each note is a markdown file under `docs/vault/` with YAML frontmatter (`title`,
+Each note is a markdown file under `docs/vault/projects/` with YAML frontmatter (`title`,
 `read_when`, `links`). `index.md` is a routing index injected into the agent's
 system prompt; the agent then reads individual notes on demand by their name -
-the path relative to the vault without the `.md` extension, e.g. `services/pricing`.
+the path relative to the vault without the `.md` extension, e.g. `projects/17-llm-gateway`.
 """
 
 import re
@@ -51,14 +51,13 @@ def _parse_note(path: Path) -> Note:
 
 @lru_cache(maxsize=1)
 def load_vault() -> dict[str, Note]:
-    """Parse every content note (the generated `index.md` excluded). Cached."""
+    """Parse project notes only. Agency facts live in the system prompt. Cached."""
     if not VAULT_DIR.is_dir():
         raise VaultError(f"Vault directory not found: {VAULT_DIR}")
-    notes = {
-        note.name: note
-        for path in sorted(VAULT_DIR.rglob("*.md"))
-        if (note := _parse_note(path)).name != INDEX_NAME
-    }
+    notes = {}
+    for path in sorted((VAULT_DIR / "projects").rglob("*.md")):
+        note = _parse_note(path)
+        notes[note.name] = note
     if not notes:
         raise VaultError(f"Vault at {VAULT_DIR} contains no notes")
     return notes
@@ -94,7 +93,7 @@ def read_notes(names: list[str]) -> str:
         if note is None:
             parts.append(
                 f"NOTE NOT FOUND: {name}. Valid note names are listed in the "
-                "knowledge base index in your system prompt."
+                "Project Index in your system prompt."
             )
         else:
             parts.append(f"# {note.title}\n_note: {note.name}_\n\n{note.body}")

@@ -56,7 +56,7 @@ class TestStreamResponse:
             content="",
             tool_calls=[
                 {"id": "t1", "name": "read_knowledge_base",
-                 "args": {"names": ["services/pricing", "process/discovery"]},
+                 "args": {"names": ["projects/01-rag-knowledge-assistant", "projects/17-llm-gateway"]},
                  "type": "tool_call"}
             ],
         )
@@ -72,7 +72,7 @@ class TestStreamResponse:
         assert tool_events[0] == {
             "type": "tool_call",
             "tool": "read_knowledge_base",
-            "query": "services/pricing, process/discovery",
+            "query": "projects/01-rag-knowledge-assistant, projects/17-llm-gateway",
         }
 
     @pytest.mark.asyncio
@@ -132,7 +132,7 @@ class TestStreamResponse:
         ai_with_tool = AIMessage(
             content="",
             tool_calls=[{"id": "t1", "name": "read_knowledge_base",
-                         "args": {"names": ["services/pricing"]}, "type": "tool_call"}],
+                         "args": {"names": ["projects/01-rag-knowledge-assistant"]}, "type": "tool_call"}],
         )
         items = [
             ("updates", {"model": {"messages": [ai_with_tool]}}),

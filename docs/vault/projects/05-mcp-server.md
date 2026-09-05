@@ -4,9 +4,7 @@ read_when: >
   user asks about MCP, Model Context Protocol, making their product usable by
   AI agents, Claude / ChatGPT / Cursor integration, agent-ready APIs, or losing
   deals to competitors with agent compatibility
-links:
-  - "[[services/pricing]]"
-  - "[[technical/integrations]]"
+links: []
 ---
 
 ## The problem

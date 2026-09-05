@@ -1,6 +1,7 @@
 import json
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -21,6 +22,43 @@ def _make_mock_agent(answer: str = "Hello!"):
 
 
 class TestChatEndpoint:
+    @pytest.mark.asyncio
+    async def test_sends_business_description_once_with_prior_history(self, monkeypatch):
+        from app.api.dependencies import async_get_db
+        from app.main import app
+
+        history = [{"role": "assistant", "content": "Tell us about your business."}]
+        conversation = SimpleNamespace(messages=list(history))
+        db = AsyncMock()
+        result = MagicMock()
+        result.scalar_one_or_none.return_value = conversation
+        db.execute.return_value = result
+
+        async def fake_db():
+            yield db
+
+        received = []
+
+        async def astream(inputs, stream_mode=None):
+            received.extend(inputs["messages"])
+            yield ("messages", (AIMessageChunk(content="Here are your ideas."), {}))
+
+        monkeypatch.setattr("app.api.v1.chat.build_agent", lambda: SimpleNamespace(astream=astream))
+        app.dependency_overrides[async_get_db] = fake_db
+        try:
+            async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+                response = await client.post("/api/v1/chat", json={
+                    "session_id": "business-description-once",
+                    "message": "i have a marketing lead generation company",
+                })
+        finally:
+            app.dependency_overrides.pop(async_get_db, None)
+
+        assert response.status_code == 200
+        assert [message.content for message in received] == [
+            "Tell us about your business.", "i have a marketing lead generation company",
+        ]
+
     @pytest.mark.asyncio
     @patch("app.rag.chain.pick_followups", new=AsyncMock(return_value=[]))
     @patch("app.api.v1.chat.build_agent")

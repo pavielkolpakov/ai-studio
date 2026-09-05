@@ -5,9 +5,7 @@ read_when: >
   or unmeasured; wants an audit, a roadmap, a second opinion, cost optimization,
   or is a CTO who inherited an AI codebase nobody understands
 links:
-  - "[[services/pricing]]"
   - "[[projects/08-evals-harness]]"
-  - "[[opportunities/four-questions]]"
 ---
 
 ## The problem

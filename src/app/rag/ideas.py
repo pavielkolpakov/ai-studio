@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 
 from app.core.config import settings
 from app.rag.prompts import IDEAS_GENERATION_PROMPT, IDEAS_SELECTION_PROMPT
-from app.vault.loader import Note, project_notes
+from app.vault.loader import Note, load_index, project_notes
 
 SELECT_MODEL = "gpt-4o-mini"
 
@@ -37,11 +37,10 @@ def select_projects(description: str) -> list[Note]:
     """Ask a cheap LLM to pick the 2-3 best-fitting project notes for the description."""
     notes = project_notes()
     by_name = {note.name: note for note in notes}
-    menu = "\n".join(f"- {note.name}: {note.title} — {note.read_when}" for note in notes)
 
     llm = ChatOpenAI(model=SELECT_MODEL, api_key=settings.OPENAI_API_KEY, streaming=False)
-    structured_llm = llm.with_structured_output(ProjectSelection)
-    prompt = IDEAS_SELECTION_PROMPT.format(description=description, menu=menu)
+    structured_llm = llm.with_structured_output(ProjectSelection).with_config(tags=["ideas"])
+    prompt = IDEAS_SELECTION_PROMPT.format(description=description, index=load_index())
     selection = structured_llm.invoke(prompt)
 
     # IdeasPayload requires 2+ ideas, so a partial match is as unusable as no match.

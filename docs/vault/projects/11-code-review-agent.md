@@ -6,9 +6,7 @@ read_when: >
   Copilot doesn't understand their codebase; also when junior devs repeat
   mistakes or onboarding is slow because architecture is undocumented
 links:
-  - "[[services/pricing]]"
   - "[[projects/09-fine-tuning]]"
-  - "[[technical/integrations]]"
 ---
 
 ## The problem

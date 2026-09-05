@@ -5,10 +5,7 @@ read_when: >
   model, domain-specific terminology, consistent structured output at volume,
   cutting inference cost with a smaller model, or running a model on their own
   infrastructure
-links:
-  - "[[services/pricing]]"
-  - "[[technical/finetuning-vs-rag-vs-prompting]]"
-  - "[[technical/tech-stack]]"
+links: []
 ---
 
 ## The problem
@@ -38,4 +35,4 @@ Use-case assessment: confirming that fine-tuning (vs. RAG or prompt engineering)
 - Typical project size: $25,000–$70,000 depending on dataset size, number of training iterations, and deployment complexity
 - Best ROI case: high-volume inference workloads where even a 5x cost reduction translates to $100,000+/year in savings
 
-If you are still deciding between fine-tuning, RAG, and prompting, see [[technical/finetuning-vs-rag-vs-prompting]].
+If you are still deciding between fine-tuning, RAG, and prompting, see Fine-Tuning vs. RAG vs. Prompting, How to Choose in the agency information.

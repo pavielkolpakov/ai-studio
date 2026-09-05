@@ -6,7 +6,6 @@ read_when: >
   shipped AI and they need to catch up; has "add AI" on the roadmap but no
   engineering bandwidth
 links:
-  - "[[services/pricing]]"
   - "[[projects/01-rag-knowledge-assistant]]"
   - "[[projects/08-evals-harness]]"
 ---

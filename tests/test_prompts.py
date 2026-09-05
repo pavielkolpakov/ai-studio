@@ -22,24 +22,29 @@ class TestAgentSystemPrompt:
         assert "{index}" in AGENT_SYSTEM_PROMPT
 
 
-    def test_does_not_instruct_the_model_to_choose_the_ideas_tool(self):
-        """The middleware forces `generate_project_ideas` via tool_choice; the
-        model deciding for itself would double-generate."""
-        assert "call the `generate_project_ideas` tool" not in AGENT_SYSTEM_PROMPT
-
-    def test_still_instructs_grounding_for_followups(self):
+    def test_describes_the_three_tools(self):
+        assert "get_agency_info" in AGENT_SYSTEM_PROMPT
         assert "read_knowledge_base" in AGENT_SYSTEM_PROMPT
+        assert "generate_project_ideas" in AGENT_SYSTEM_PROMPT
+
+    def test_lets_the_model_decide_when_to_generate_ideas(self):
+        """Tool choice is the agent's job now, not forced by the guardrail, so
+        the prompt must tell the model when to call the ideas tool."""
+        assert "call it when" in AGENT_SYSTEM_PROMPT
 
 
 class TestGuardrailPrompt:
     def test_has_input_variable(self):
         assert "input" in GUARDRAIL_PROMPT.input_variables
 
-    def test_asks_for_the_three_verdicts(self):
+    def test_is_a_binary_on_off_topic_gate(self):
         txt = str(GUARDRAIL_PROMPT)
-        assert "BUSINESS" in txt
         assert "ON_TOPIC" in txt
         assert "OFF_TOPIC" in txt
 
-    def test_no_longer_asks_for_yes_no(self):
-        assert "YES or NO" not in str(GUARDRAIL_PROMPT)
+    def test_no_longer_classifies_business_vs_agency_intent(self):
+        """The gate only judges on/off topic; tool + context decisions moved to
+        the agent, so the old intent labels must be gone."""
+        txt = str(GUARDRAIL_PROMPT)
+        assert "BUSINESS" not in txt
+        assert "FOLLOWUP" not in txt

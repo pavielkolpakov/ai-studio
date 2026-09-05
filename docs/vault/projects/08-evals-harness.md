@@ -6,10 +6,7 @@ read_when: >
   production tracing, LangSmith / Langfuse / Arize / Braintrust / RAGAS, or has
   had an AI failure in production
 links:
-  - "[[services/pricing]]"
-  - "[[technical/production-rag]]"
   - "[[projects/02-ai-feature-audit]]"
-  - "[[technical/tech-stack]]"
 ---
 
 ## The problem
@@ -38,4 +35,4 @@ Golden dataset construction: curating 50–200 representative input/output pairs
 - Typical project size: $15,000–$30,000 for initial harness setup and team training
 - Ongoing retainer model common: $3,000–$6,000/month for eval maintenance and golden set expansion
 
-See [[services/pricing]] for the retainer floor and payment terms.
+See Pricing, Payment Terms, and Engagement Sizes in the agency information for the retainer floor and payment terms.

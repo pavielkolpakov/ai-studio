@@ -5,9 +5,7 @@ read_when: >
   scheduling, lead qualification, collections follow-up, an internal helpdesk
   line, call deflection, or mentions Vapi or Retell
 links:
-  - "[[services/pricing]]"
   - "[[projects/04-support-copilot]]"
-  - "[[technical/integrations]]"
 ---
 
 ## The problem

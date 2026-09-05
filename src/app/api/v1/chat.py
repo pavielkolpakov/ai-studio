@@ -31,10 +31,10 @@ async def chat(
 ) -> StreamingResponse:
     check_chat_rate_limit(body.session_id)
     conversation = await get_or_create_conversation(db, body.session_id)
+    recent = get_recent_messages(conversation.messages)
     await append_message(db, conversation, "user", body.message)
     await db.commit()
 
-    recent = get_recent_messages(conversation.messages)
     chat_history = messages_from_dicts(recent)
     agent = build_agent()
 

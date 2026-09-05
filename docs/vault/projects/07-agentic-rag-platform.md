@@ -5,9 +5,7 @@ read_when: >
   access control on retrieval, re-ranking, multi-source ingestion, multi-step
   agentic retrieval, or an enterprise-grade knowledge platform
 links:
-  - "[[services/pricing]]"
   - "[[projects/01-rag-knowledge-assistant]]"
-  - "[[technical/production-rag]]"
   - "[[projects/08-evals-harness]]"
 ---
 

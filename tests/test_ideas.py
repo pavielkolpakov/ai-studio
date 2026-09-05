@@ -13,6 +13,24 @@ def _note(name, title, body="body text"):
 
 class TestSelectProjects:
     @patch("app.rag.ideas.ChatOpenAI")
+    def test_selects_from_committed_index_without_sending_project_bodies(self, mock_llm_cls):
+        from app.rag.ideas import ProjectSelection, select_projects
+        from app.vault.loader import load_index, load_vault
+
+        names = ["projects/13-multi-agent-research-reports", "projects/17-llm-gateway"]
+        structured = mock_llm_cls.return_value.with_structured_output.return_value
+        structured.with_config.return_value = structured
+        structured.invoke.return_value = ProjectSelection(names=names)
+
+        result = select_projects("We need research reports and model spend control")
+
+        prompt = structured.invoke.call_args.args[0]
+        assert load_index() in prompt
+        assert [note.name for note in result] == names
+        assert all(note.body not in prompt for note in load_vault().values())
+        assert "30% upfront" not in prompt
+
+    @patch("app.rag.ideas.ChatOpenAI")
     @patch("app.rag.ideas.project_notes")
     def test_returns_selected_notes(self, mock_project_notes, mock_llm_cls):
         notes = [
@@ -25,6 +43,7 @@ class TestSelectProjects:
         from app.rag.ideas import ProjectSelection
 
         structured = MagicMock()
+        structured.with_config.return_value = structured
         structured.invoke.return_value = ProjectSelection(
             names=["projects/04-support", "projects/06-workflow"]
         )
@@ -50,6 +69,7 @@ class TestSelectProjects:
         from app.rag.ideas import ProjectSelection
 
         structured = MagicMock()
+        structured.with_config.return_value = structured
         structured.invoke.return_value = ProjectSelection(names=["nope/x", "nope/y"])
         llm = MagicMock()
         llm.with_structured_output.return_value = structured

@@ -20,7 +20,7 @@ class TestBuildAgent:
 
     @patch("app.rag.chain.create_agent")
     @patch("app.rag.chain.ChatOpenAI")
-    def test_registers_both_tools(self, mock_llm_cls, mock_create_agent):
+    def test_registers_all_tools(self, mock_llm_cls, mock_create_agent):
         mock_llm_cls.return_value = MagicMock()
 
         from app.rag.chain import build_agent
@@ -29,7 +29,7 @@ class TestBuildAgent:
 
         tools = mock_create_agent.call_args[1]["tools"]
         names = {t.name for t in tools}
-        assert names == {"read_knowledge_base", "generate_project_ideas"}
+        assert names == {"get_agency_info", "read_knowledge_base", "generate_project_ideas"}
 
     @patch("app.rag.chain.create_agent")
     @patch("app.rag.chain.ChatOpenAI")

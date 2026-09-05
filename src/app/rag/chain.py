@@ -2,12 +2,13 @@ import json
 from collections.abc import AsyncGenerator
 
 from langchain.agents import create_agent
-from langchain_core.messages import AIMessage, AIMessageChunk, BaseMessage, HumanMessage, ToolMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 
 from app.core.config import settings
 from app.data.followup_pool import resolve_picks
+from app.rag.agency_context import AGENCY_CONTEXT
 from app.rag.followups import pick_followups
 from app.rag.guardrail import GuardrailMiddleware
 from app.rag.ideas import generate_ideas_payload
@@ -23,17 +24,25 @@ FOLLOWUPS_ENABLED = False
 
 
 @tool
+def get_agency_info() -> str:
+    """Return Neuronetis agency facts: services, pricing, payment terms, process,
+    team, location, technology stack, and FAQ. Call this to answer any factual
+    question about Neuronetis or what working with us is like."""
+    return AGENCY_CONTEXT
+
+
+@tool
 def read_knowledge_base(names: list[str]) -> str:
-    """Read one or more Neuronetis knowledge-base notes by name (e.g.
-    ['services/pricing']). Note names and when to read each are listed in the
-    Knowledge Base Index in your system prompt. Pass every note whose 'Read when'
-    matches the user's question."""
+    """Read complete Neuronetis project files by name (e.g.
+    ['projects/01-rag-knowledge-assistant']). The Project Index in your system
+    prompt lists the available projects and when to read each. Only project
+    files can be retrieved; general agency facts are supplied in the system prompt."""
     return read_notes(names)
 
 
 @tool(response_format="content_and_artifact")
 def generate_project_ideas(description: str) -> tuple[str, dict]:
-    """Generate 3-5 tailored AI project ideas when the user describes their
+    """Generate 2-3 tailored AI project ideas when the user describes their
     company, project, industry, or a problem they want AI to help solve.
     Pass the user's description verbatim.
 
@@ -55,7 +64,7 @@ def build_agent():
     )
     return create_agent(
         model=llm,
-        tools=[read_knowledge_base, generate_project_ideas],
+        tools=[get_agency_info, read_knowledge_base, generate_project_ideas],
         system_prompt=AGENT_SYSTEM_PROMPT.replace("{index}", load_index()),
         middleware=[GuardrailMiddleware()],
     )
@@ -98,7 +107,7 @@ async def stream_response(
             tags = metadata.get("tags") or []
             if "guardrail" in tags or "ideas" in tags:
                 continue
-            if isinstance(chunk, AIMessageChunk):
+            if isinstance(chunk, AIMessage):
                 token = chunk.content if isinstance(chunk.content, str) else ""
                 if token:
                     full_answer += token

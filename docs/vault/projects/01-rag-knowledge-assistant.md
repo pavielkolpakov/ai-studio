@@ -7,10 +7,7 @@ read_when: >
   understands meaning; also when users can't find answers in their docs or
   support tickets pile up for already-documented questions
 links:
-  - "[[services/pricing]]"
   - "[[projects/07-agentic-rag-platform]]"
-  - "[[technical/what-is-rag]]"
-  - "[[technical/rag-pipeline]]"
 ---
 
 ## The problem
@@ -47,4 +44,4 @@ Documents and data sources are ingested, chunked, and embedded into a vector dat
 - Typical ROI: 3–5 hours saved per employee per week in knowledge-heavy teams
 - Typical project size: $18,000–$35,000 fixed for an MVP build
 
-See [[services/pricing]] for payment terms and discovery. If you have already built a RAG MVP and hit scale or reliability limits, see [[projects/07-agentic-rag-platform]].
+See Pricing, Payment Terms, and Engagement Sizes in the agency information for payment terms and discovery. If you have already built a RAG MVP and hit scale or reliability limits, see [[projects/07-agentic-rag-platform]].

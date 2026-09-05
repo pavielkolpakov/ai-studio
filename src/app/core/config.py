@@ -1,7 +1,12 @@
 from pathlib import Path
 
+from dotenv import load_dotenv
 from pydantic import computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
+# LangSmith reads process environment variables, not Pydantic settings.
+load_dotenv(ENV_FILE, override=False)
 
 
 class AppSettings(BaseSettings):
@@ -55,7 +60,7 @@ class Settings(
     CORSSettings,
 ):
     model_config = SettingsConfigDict(
-        env_file=Path(__file__).resolve().parents[2] / ".env",
+        env_file=ENV_FILE,
         env_file_encoding="utf-8",
         case_sensitive=True,
         extra="ignore",
