@@ -37,11 +37,29 @@ The engine running it is appgent, our LangGraph-based YAML workflow runner with 
 - Product and design teams who want the current flow as a Figma board, not a folder of PNGs
 - Engineering leaders checking a fleet-wide SDK migration did not break first-run
 
+## Indicative implementation scope
+
+- price_range: $40,000–$75,000
+- time_estimate: 8–12 weeks
+- tech: Python, pydantic-ai, Appium, UiAutomator2, LangGraph, Pydantic, Android emulator, GitHub Actions
+
+### Deliverables
+
+- Android navigation agent with screen perception, action selection, and bounded task execution.
+- Batch install, walkthrough, and uninstall workflow on one agreed device backend.
+- Screenshots, action history, session video, and a self-contained HTML storyboard.
+- Versioned session export and a Figma plugin that imports captured flows.
+- Per-app outcome and cost reports, pilot validation, deployment documentation, and handover.
+
+### Estimate assumptions
+
+Covers 3–5 representative Android apps, one device profile, one install method, and one backend selected from a local emulator, hosted emulator, or AWS Device Farm. The client supplies installable builds, test accounts, and example walkthroughs. Additional backends, iOS, broad device coverage, bespoke authentication flows, and specialized ad handling are additional scope. Acceptance concerns capture quality and agreed walkthrough completion; this is not a replacement for functional correctness tests.
+
+These are engineering planning estimates for the scope above, not historical project fees or a fixed quote. Duration assumes timely access, usable inputs, and client feedback; it includes implementation, validation, deployment, and handover. Any separate audit is scoped independently. Model/API usage, hosting, storage, third-party licenses, and ongoing optimization are excluded. Final pricing and schedule follow technical assessment.
+
 ## Numbers
 
 - 32 modules in the agent core, covered by a 55-module test suite
 - 7 LLM roles across 3 model tiers, each metered into its own per-run cost bucket
 - 3 device backends, 5 install methods and 7 pipeline stages behind one JSON input contract
 - Built in ~3 months by 8 contributors over 334 commits, on a 269-commit orchestration engine
-
-See Pricing, Payment Terms, and Engagement Sizes in the agency information for engagement sizes.

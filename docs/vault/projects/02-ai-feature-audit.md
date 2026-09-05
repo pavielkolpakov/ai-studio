@@ -31,5 +31,5 @@ Structured discovery across your codebase, infrastructure, and workflows. Prompt
 
 - Aimpoint Digital documented a 68% reduction in GenAI run cost and 50% inference speed improvement from a single 1-week optimization sprint
 - McKinsey (2025): 88% of organizations use AI in at least one function, but only ~6% achieve meaningful business impact — the gap is almost always execution quality, not model capability
-- Typical project size: $5,000–$12,000 fixed
+- Typical project size: $2,000-$4,000 per week
 - Converts to follow-on builds at roughly 30% rate — making this the highest-ROI first engagement for both sides

@@ -39,5 +39,5 @@ Codebase indexing: ingesting your repositories into a searchable context layer (
 - Reduced onboarding time and fewer repeated architectural mistakes in new code
 - Security vulnerabilities caught pre-merge cost ~$80 to fix; post-release vulnerabilities average $7,600 (NIST)
 - Developer productivity gains from AI code tooling: McKinsey estimates 25–50% faster code review cycles
-- Typical project size: $25,000–$60,000 for a production agent integrated into your CI/CD pipeline
+- Typical project size: $15,000–$20,000 for a production agent integrated into your CI/CD pipeline
 - GitHub Copilot enterprise adoption growing 40% YoY — custom agents for proprietary codebases are the next layer

@@ -37,4 +37,4 @@ Feature scoping and prompt architecture design. Backend integration via FastAPI,
 - 76% of enterprise AI solutions are now bought or outsourced rather than built internally
 - PLG-driven AI feature demand grew 4x YoY in 2025 — every SaaS PM has it on their roadmap
 - Competitive positioning and reduced churn from users who would otherwise switch to AI-native competitors
-- Typical project size: $20,000–$40,000 fixed per feature
+- Typical project size: $20,000–$30,000 fixed per feature

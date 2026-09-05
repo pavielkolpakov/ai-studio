@@ -33,6 +33,6 @@ Golden dataset construction: curating 50–200 representative input/output pairs
 - Braintrust raised $80M Series B at an $800M valuation in February 2026 — evals infrastructure is now a serious category
 - Companies that implement eval pipelines report catching 60–80% of regressions before they reach production
 - Typical project size: $15,000–$30,000 for initial harness setup and team training
-- Ongoing retainer model common: $3,000–$6,000/month for eval maintenance and golden set expansion
+- Ongoing retainer model common: $3,000–$5,000/month for eval maintenance and golden set expansion
 
 See Pricing, Payment Terms, and Engagement Sizes in the agency information for the retainer floor and payment terms.

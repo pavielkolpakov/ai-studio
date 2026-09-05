@@ -43,6 +43,6 @@ Process mapping to identify the exact decision points and data flows. Agent arch
 - Companies deploying agentic workflows in operations report 40–60% reduction in manual processing time within 90 days
 - ROI window is typically 60–90 days — faster than almost any other software investment
 - Near-elimination of manual data entry on extraction workloads, with faster processing and fewer errors
-- Typical project size: $30,000–$80,000 depending on number of systems integrated and complexity of decision logic
+- Typical project size: $30,000–$50,000 depending on number of systems integrated and complexity of decision logic
 
 For regulated verticals needing audit trails and data residency, see [[projects/10-compliance-platform]].

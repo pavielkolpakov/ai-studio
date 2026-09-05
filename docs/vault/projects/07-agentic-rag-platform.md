@@ -32,6 +32,6 @@ Multi-source ingestion pipeline (PDFs, Notion, Confluence, Salesforce, databases
 
 ## Numbers
 
-- RAG system production builds typically price at $50,000–$100,000 depending on integration complexity
+- RAG system production builds typically price from $20,000 heavily depending on integration complexity
 - Enterprise RAG platforms regularly replace 3–5 separate SaaS subscriptions (search tools, wiki tools, support knowledge bases), with consolidation ROI of $80,000–$200,000/year
 - Re-ranking alone typically improves answer quality scores by 20–35% over basic vector search

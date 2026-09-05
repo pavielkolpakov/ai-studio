@@ -38,6 +38,26 @@ A LangGraph `StateGraph` fans out to four separate research nodes over static ed
 - Product teams needing pre-build validation against a fixed rubric rather than an opinion
 - Any product whose users want a cited, scored document rather than a chat transcript
 
+## Indicative implementation scope
+
+- price_range: $25,000–$45,000
+- time_estimate: 6–9 weeks
+- tech: LangGraph, Perplexity Sonar, Claude, Pydantic, FastAPI, PostgreSQL, pgvector, Next.js, LangSmith
+
+### Deliverables
+
+- Four parallel research passes with retries, checkpointing, and visible degraded-run status.
+- Structured report with five subscores, code-computed overall score, competitor table, risks, and validated citation references.
+- Report storage, shareable report page, and embedded research corpus.
+- Evaluation cases for report structure, citation integrity, and scoring consistency, plus run tracing.
+- Deployment, configuration documentation, and operational handover.
+
+### Estimate assumptions
+
+Covers one research domain, one agreed scoring rubric, public-web research, and a basic report interface. The client supplies representative questions and reviews sample reports. Paid-data connectors, authenticated research sources, a full subscription product, and retrieval over the accumulated corpus are additional scope. Source-reference validation does not guarantee that every source claim is correct.
+
+These are engineering planning estimates for the scope above, not historical project fees or a fixed quote. Duration assumes timely access, usable inputs, and client feedback; it includes implementation, validation, deployment, and handover. Any separate audit is scoped independently. Model/API usage, hosting, storage, third-party licenses, and ongoing optimization are excluded. Final pricing and schedule follow technical assessment.
+
 ## Numbers
 
 - 4 research agents run in parallel per report; one Sonar query returned 17 web sources
@@ -46,4 +66,4 @@ A LangGraph `StateGraph` fans out to four separate research nodes over static ed
 - 30 automated tests, each run against a freshly migrated database
 - Six weeks of elapsed build time from empty repository to a running pipeline
 
-See Pricing, Payment Terms, and Engagement Sizes in the agency information for terms and discovery. Where the accumulated corpus becomes the product rather than a by-product, see [[projects/07-agentic-rag-platform]].
+Where the accumulated corpus becomes the product rather than a by-product, see [[projects/07-agentic-rag-platform]].

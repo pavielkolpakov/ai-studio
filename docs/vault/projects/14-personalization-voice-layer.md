@@ -38,6 +38,26 @@ The voice profile is structured JSON produced by a mid-tier analysis pass over r
 - Sales, recruiting and outbound platforms sending messages that must read as human
 - Product teams whose users already reject AI output but whose product captures none of that signal
 
+## Indicative implementation scope
+
+- price_range: $25,000–$50,000
+- time_estimate: 6–10 weeks
+- tech: PostgreSQL, pgvector, Redis, OpenAI embeddings, multi-provider LLM APIs, background workers, AWS or Google Cloud
+
+### Deliverables
+
+- Per-user context store, asynchronous embeddings, and semantic plus structured retrieval with token budgets.
+- Voice-profile generation from onboarding answers and writing samples.
+- Draft-generation API with written quality assessment and a feedback loop for rejection patterns.
+- Model routing, provider fallback, per-user usage limits, caching, and cost visibility.
+- Voice-match evaluation using client-reviewed examples, deployment documentation, and handover.
+
+### Estimate assumptions
+
+Covers one language, one content format, and integration into an existing product with authentication, user accounts, and a feedback interface. Writing samples and feedback arrive through client-provided APIs or exports. A full creator application, new social-platform connectors, audio transcription, per-user fine-tuning, and a guaranteed 10,000-user production capacity are additional scope. The unit economics below are modeled reference figures, not an operating-cost quote.
+
+These are engineering planning estimates for the scope above, not historical project fees or a fixed quote. Duration assumes timely access, usable inputs, and client feedback; it includes implementation, validation, deployment, and handover. Any separate audit is scoped independently. Model/API usage, hosting, storage, third-party licenses, and ongoing optimization are excluded. Final pricing and schedule follow technical assessment.
+
 ## Numbers
 
 - 12 typed record types cover everything the system knows about a user; roughly 500 records each, 5M rows at 10,000 users
@@ -45,4 +65,4 @@ The voice profile is structured JSON produced by a mid-tier analysis pass over r
 - Tier routing puts voice analysis, classification and suggestions on models costing 10-20x less per token
 - Modeled unit economics: about $2.17 per active user per month in LLM and API spend, roughly $24,000/month all-in at 10,000 users, near 3% of revenue
 
-Built as the AI layer for Jucey. See Pricing, Payment Terms, and Engagement Sizes in the agency information for terms and discovery. If per-user fine-tuning is genuinely right, see [[projects/09-fine-tuning]].
+Built as the AI layer for Jucey. If per-user fine-tuning is genuinely right, see [[projects/09-fine-tuning]].

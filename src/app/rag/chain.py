@@ -25,8 +25,10 @@ FOLLOWUPS_ENABLED = False
 
 @tool
 def get_agency_info() -> str:
-    """Return Neuronetis agency facts: services, pricing, payment terms, process,
-    team, location, technology stack, and FAQ. Call this to answer any factual
+    """Return Neuronetis agency facts: audits, implementation, optimization,
+    pricing approach, engagement process, team, capabilities, integrations,
+    code ownership, privacy, deployment, and the AI Opportunity Scanner.
+    Call this to answer any factual
     question about Neuronetis or what working with us is like."""
     return AGENCY_CONTEXT
 
@@ -36,7 +38,9 @@ def read_knowledge_base(names: list[str]) -> str:
     """Read complete Neuronetis project files by name (e.g.
     ['projects/01-rag-knowledge-assistant']). The Project Index in your system
     prompt lists the available projects and when to read each. Only project
-    files can be retrieved; general agency facts are supplied in the system prompt."""
+    files can be retrieved. Use these for project-specific scopes, technologies,
+    indicative prices, timelines, and follow-up questions about project ideas.
+    For general agency facts, use get_agency_info."""
     return read_notes(names)
 
 
@@ -44,7 +48,9 @@ def read_knowledge_base(names: list[str]) -> str:
 def generate_project_ideas(description: str) -> tuple[str, dict]:
     """Generate 2-3 tailored AI project ideas when the user describes their
     company, project, industry, or a problem they want AI to help solve.
-    Pass the user's description verbatim.
+    Pass the user's description verbatim. For follow-up questions about existing
+    ideas, read the relevant project files instead; generate again only when the
+    user requests new or revised ideas.
 
     Returns ideas with rough scope, tech, price, and time; the frontend
     renders them as cards."""

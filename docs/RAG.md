@@ -1,619 +1,943 @@
 # Neuronetis — Knowledge Base
 
----
+## 1. Positioning
 
-# What We Do and Who We Are
+### What We Do
 
-## Studio Overview
+Neuronetis is an AI engineering studio for software companies and technical teams.
 
-We are an AI engineering studio that builds production-grade AI systems for IT companies and software product teams. We specialize in integrating artificial intelligence directly into existing software products and building new AI-native applications from the ground up.
+We help companies identify where AI can create real business value, validate those opportunities, and then build and integrate production-grade AI systems around them.
 
-We are not a general software agency. We focus exclusively on AI engineering — retrieval-augmented generation (RAG), LLM integration into products, agentic workflow automation, voice AI, MCP integrations, model fine-tuning, evals infrastructure, and AI-native application development. This focus means our team works with these systems every day, which translates to faster delivery, fewer surprises, and better architectural decisions for our clients.
+We work with existing products, internal systems, data, and engineering teams. We can improve an AI system that already exists, integrate AI into an existing product or workflow, or build a new AI-native system from the ground up.
 
-## Who We Work With
+We are not a general software agency and we are not an AI consultancy that stops at recommendations. Strategy is useful only when it leads to a system that works in production.
 
-Our clients are typically:
-- B2B SaaS companies (50–500 employees) with an existing product that needs AI capabilities to stay competitive
-- Software development agencies that need an AI subcontractor they can engage on a project basis for their own clients
-- Scale-ups and growth-stage companies sitting on large proprietary datasets — documents, support tickets, logs, product data — who need to make that data intelligent and queryable
-- AI-first startups with a funded idea but no in-house ML or AI engineering capability who need to ship fast
+### Who We Work With
 
-We work best with clients who have a technical point of contact internally — a CTO, VP of Engineering, or technical lead who understands software architecture. We don't replace your team; we extend it with deep AI expertise.
+Our strongest fit is:
 
-## What We Are Not
+- B2B SaaS and software product companies that want to introduce or improve AI capabilities.
+- Scale-ups and growth-stage companies with proprietary data, complex workflows, or significant repetitive cognitive work.
+- Technical teams that already have a product and engineering organization but need deeper AI engineering expertise.
+- AI-first startups that need experienced engineers to turn a validated idea into a production system.
+- Software development agencies that need a specialist AI engineering partner for their clients.
 
-We do not build generic chatbots powered by a system prompt. We do not resell OpenAI wrappers. We do not take on projects where the client wants AI for the sake of AI with no clear use case. Every engagement starts with understanding your actual problem, and we will tell you honestly if AI is not the right solution for it.
+We work best with a CTO, VP of Engineering, technical founder, or another technical owner who can collaborate with us throughout the engagement.
 
-## Our Values as a Studio
+We extend existing teams rather than replacing them.
 
-**We don't lock you in.** All code we write is yours. We document everything as if we'll never speak again. Your team should be able to maintain and extend everything we build.
+### What We Are Not
 
-**We price by project, not by hour.** Fixed-scope engagements give you cost certainty. We scope carefully upfront so we don't surprise you with overruns.
+We do not build generic chatbots just because a company wants an AI feature.
 
-**We work asynchronously and transparently.** You see progress continuously through shared project management tools, not just at a final delivery. Weekly check-ins are standard on all projects.
+We do not sell wrappers around foundation-model APIs as if they were a strategy.
 
-**We take on 3–4 projects per quarter.** We deliberately limit capacity so every client gets senior-level attention throughout the engagement, not a junior developer handed a spec.
+We do not recommend AI when a simpler technical solution is better.
 
-## Our Location and Setup
-
-We are a distributed studio. Our lead engineers are based in Israel, the US, and Eastern Europe, with client delivery experience across the EU, Israel, and North America. We work in European and overlap-friendly time zones and are fluent in English for all technical communication.
-
-## Our Team
-
-We are organized around three specialized teams that cover the full delivery stack:
-
-- **AI / Backend team** — responsible for AI engineering work (RAG pipelines, LLM integration, fine-tuning, agents, evals) as well as the backend services and APIs that wrap them. This is the core of every project we deliver.
-- **Frontend / Mobile team** — builds the client-facing layer when a project requires it: web applications, admin interfaces, embedded chat widgets, and mobile apps.
-- **DevOps team** — handles infrastructure, CI/CD pipelines, cloud deployments, observability, and production reliability across all our engagements.
-
-Each project is staffed with senior engineers from the relevant teams, scaled to match the scope of the work.
+And we do not stop at a slide deck. When an opportunity is worth pursuing, we can take responsibility for engineering it into a production system.
 
 ---
 
-# Our Services
+## 2. How We Help
 
-We offer a range of AI engineering services. Every engagement is a fixed-scope project with a defined deliverable, timeline, and price. All projects over $5,000 begin with a paid 1-week discovery phase.
+The old service catalog and "quick wins / mid-size / larger builds" model should not be used as the primary commercial structure.
 
-Our full project catalog covers 12 service types across every major AI engineering use case — from quick RAG MVPs and AI feature audits to production agentic platforms, voice agents, and enterprise compliance systems. If you describe your business or product, we can identify which projects are most relevant to your situation.
+Our services are organized around three stages.
 
-**Service categories:**
-- RAG and knowledge assistant systems
-- AI feature integration into existing SaaS products
-- Customer support automation and deflection agents
-- MCP server and agent-ready API layer development
-- Internal workflow and ops automation agents
-- AI evals and observability infrastructure
-- Model fine-tuning for domain-specific tasks
-- Voice AI agents for business operations
-- Enterprise knowledge and compliance AI platforms
-- AI-augmented developer tooling and code review agents
-- AI feature audits and LLM readiness sprints
-- Full AI-native product builds
+### AI Audit & Strategy
 
-**Typical engagement sizes:**
-- Quick wins: $5,000–$25,000 / 2–6 weeks
-- Mid-size builds: $25,000–$100,000 / 4–12 weeks
-- Larger end-to-end builds: $100,000–$400,000 / 3–6+ months
+We examine where AI can create measurable value across a company's product, operations, workflows, data, and existing AI systems.
 
-**Retainer:** After completing a project, many clients engage us on a monthly retainer for ongoing improvement, new data sources, additional features, or senior AI engineering on demand. Retainers start at $3,000/month.
+An audit can cover:
 
----
+- Existing AI products, features, agents, or automations.
+- Repetitive cognitive workflows that could be automated.
+- Product features that could become meaningfully better with AI.
+- Search, knowledge, and data-access problems.
+- Existing AI infrastructure, architecture, model choices, and operating costs.
+- Opportunities to improve reliability, accuracy, latency, or cost.
+- Data availability and readiness.
+- Technical and operational constraints.
+- Security, privacy, and deployment requirements.
 
-# How RAG Works — A Technical Explanation
+The output is not a generic list of AI ideas. It is a prioritized set of opportunities based on the client's actual situation.
 
-## What Is RAG?
+A typical audit can include:
 
-Retrieval-Augmented Generation (RAG) is an architecture that combines a retrieval system with a large language model (LLM) to produce answers grounded in a specific knowledge base. Instead of relying solely on what the LLM learned during training, a RAG system first fetches relevant documents from your data at query time, then passes those documents to the LLM as context for generating an answer.
+- AI opportunity map.
+- Prioritized use cases.
+- Expected business impact and measurable success criteria.
+- Technical feasibility assessment.
+- Recommended architecture and implementation approach.
+- Estimated effort and dependencies.
+- Risks and constraints.
+- Recommended implementation sequence.
+- A roadmap for the next stages.
 
-The result: an AI system that answers questions accurately from your specific data, stays up to date as your data changes, and doesn't hallucinate facts it doesn't know — because every answer is anchored to retrieved source documents.
+Audits can be paid engagements. For selected strategic companies, Neuronetis may offer a limited audit at no cost as an entry point for a potential long-term relationship.
 
-## Why RAG Instead of Just Prompting an LLM?
+### AI Implementation
 
-A plain LLM — even GPT-4 — has no knowledge of your internal data. It cannot answer questions about your product documentation, your support history, your internal processes, or your proprietary knowledge. You could put some of this in a system prompt, but the context window has limits — you cannot stuff 50,000 documents into a prompt.
+Once an opportunity is validated, we design and build the system.
 
-RAG solves this by making retrieval dynamic: it finds the most relevant documents for each specific query and only passes those to the LLM. This means your knowledge base can be arbitrarily large.
+Implementation can mean:
 
-## The RAG Pipeline — Step by Step
+- Integrating AI into an existing SaaS product.
+- Building AI-native product features.
+- Agentic workflows and business-process automation.
+- MCP servers and agent-ready API layers.
+- RAG and knowledge systems.
+- Customer-support automation.
+- Document processing and structured extraction.
+- Voice AI systems.
+- AI-assisted developer tooling.
+- Evaluation and observability infrastructure.
+- Model selection, prompting, fine-tuning, and inference optimization.
+- New AI applications built from scratch.
 
-**Ingestion phase (happens offline, on a schedule, or on document upload):**
+The technology is chosen after the problem is understood. RAG, agents, MCP, fine-tuning, voice, or another approach are implementation tools, not products we try to sell regardless of the use case.
 
-1. **Document loading** — source data is loaded from wherever it lives: PDFs, Word docs, Notion, Confluence, databases, S3, APIs. We write custom loaders for each source.
+### AI Optimization & Scale
 
-2. **Chunking** — documents are split into smaller pieces (chunks). Chunk size and strategy matter significantly: too large and retrieval is imprecise; too small and individual chunks lack context. We typically use recursive character splitting with 512–1024 token chunks and meaningful overlap (100–200 tokens).
+We also work with companies that already have AI in production.
 
-3. **Embedding** — each chunk is converted into a vector using an embedding model. We typically use OpenAI's text-embedding-3-small or text-embedding-3-large depending on quality requirements and cost.
+We review and improve existing systems across:
 
-4. **Vector storage** — vectors are stored in a vector database alongside the original chunk text and metadata. We use Qdrant for most production systems or pgvector for simpler use cases.
+- Model quality and model selection.
+- Prompt and workflow architecture.
+- Retrieval quality.
+- Evaluation and regression testing.
+- Observability.
+- Latency.
+- Inference and infrastructure cost.
+- Reliability and failure handling.
+- Data pipelines.
+- Security and deployment architecture.
+- Scaling and maintainability.
 
-**Query phase (happens in real time, per user query):**
-
-5. **Query embedding** — the user's question is converted to a vector using the same embedding model used during ingestion.
-
-6. **Similarity search** — the vector database finds the top-K chunks whose vectors are most semantically similar to the query vector.
-
-7. **Reranking (optional but recommended)** — a cross-encoder reranker re-scores the top-K results for relevance. This significantly improves precision in production systems.
-
-8. **Context construction** — retrieved chunks are assembled into a context block with source metadata attached (document name, page, section).
-
-9. **Generation** — the LLM receives a system prompt, the assembled context, and the user's query. It generates a grounded answer, citing the sources.
-
-10. **Response delivery** — the answer is streamed back to the user with source citations displayed.
-
-## What Makes a RAG System Production-Quality?
-
-Most RAG demos are toy systems that work on clean data with simple queries. Production RAG requires:
-
-- **Hybrid search:** combining dense vector search with sparse keyword search (BM25) improves recall on specific terms, names, and codes
-- **Metadata filtering:** filtering by document type, date, department, or other attributes before semantic search
-- **Query expansion / HyDE:** rewriting or expanding the user query before retrieval to improve match quality
-- **Chunking strategy tuned to content:** legal documents, code, and conversational data each need different chunking approaches
-- **Evaluation pipeline:** an automated way to measure retrieval precision and generation quality as you iterate
-- **Graceful fallbacks:** handling queries outside the knowledge base scope without hallucinating
-
-## When Is RAG the Right Choice?
-
-RAG is the right architecture when:
-- You have a large, dynamic knowledge base that changes over time
-- You need answers grounded in specific, citable sources
-- You need to add AI to an existing knowledge corpus without retraining a model
-- Your users need natural language access to internal data
-
-RAG is NOT the right choice when:
-- Your task requires deep domain-specific reasoning that general LLMs cannot handle (consider fine-tuning instead)
-- Your knowledge base is very small and static (a simple system prompt may suffice)
-- Latency is extremely critical and you cannot afford retrieval round-trips
+The goal may be better output quality, lower operating cost, faster responses, greater reliability, or a system that is easier for the client's engineering team to maintain.
 
 ---
 
-# Fine-Tuning vs. RAG vs. Prompting — How to Choose
+## 3. Our Engagement Model
 
-One of the most common questions we get from technical clients is: "Should we fine-tune a model, use RAG, or just write a better system prompt?" The answer depends on your specific use case, data characteristics, latency requirements, and budget. Here is a practical decision framework.
+The customer journey is intentionally simple:
 
-## Option 1: Prompt Engineering (No Training, No Retrieval)
+**Audit → Roadmap → Implementation → Optimization**
 
-**What it is:** You use a general-purpose LLM (GPT-4o, Claude, Mistral) as-is, with a carefully crafted system prompt and few-shot examples in the prompt.
+Not every client needs every stage.
 
-**When it works well:**
-- Your use case requires general reasoning, writing, summarization, or classification on diverse input
-- Your knowledge is small enough to fit in the context window (a few thousand tokens)
-- You need to ship fast and iterate on behavior without retraining
-- The task doesn't require deep domain-specific terminology or format consistency
+A company may start with an audit, move directly into a focused implementation, ask us to review an existing AI system, or engage us for ongoing engineering support.
 
-**When it breaks down:**
-- Your knowledge base is larger than the context window
-- You need consistent output format across thousands of generations
-- The model doesn't know your proprietary terminology or internal product specifics
-- Cost becomes prohibitive when stuffing large context on every query
+### Initial Conversation
 
-**Typical cost to implement:** Hours to days. No infrastructure beyond an API key.
+The first conversation is used to understand the company, its product, its workflows, its existing AI work, and the business problem behind the request.
 
-## Option 2: RAG (Retrieval-Augmented Generation)
+There is no assumption that the client already knows what technology they need.
 
-**What it is:** A retrieval layer finds the most relevant documents from your knowledge base at query time, then passes them as context to the LLM for generation.
+We determine whether there is a meaningful AI opportunity and whether Neuronetis is the right team to pursue it.
 
-**When it works well:**
-- You have a large, dynamic knowledge base that changes frequently
-- You need answers grounded in specific, citable sources
-- The task requires looking up specific facts, policies, or content from your data
-- You can't fine-tune (proprietary API model, no training data, too expensive)
+### Audit
 
-**When it breaks down:**
-- The task requires generating consistent structured output at high volume (fine-tuning is cheaper per inference)
-- Your domain vocabulary is so specialized that general embeddings produce poor retrieval
-- Latency is extremely critical
+Where the opportunity or technical direction is unclear, the audit provides the deeper assessment.
 
-**Typical cost to implement:** $12,000–$100,000 depending on scale, integrations, and complexity.
+The audit should use the client's real business context and, where appropriate, relevant data, product information, workflows, architecture, and existing AI systems.
 
-## Option 3: Fine-Tuning
+The outcome is a concrete recommendation rather than a generic strategy document.
 
-**What it is:** You train additional parameters on top of a base model using your domain-specific data. The result is a model that "knows" your terminology, output format, and domain patterns intrinsically.
+### Implementation
 
-**When it works well:**
-- You have a high-volume, specific task with consistent input/output patterns
-- Output format consistency is critical (structured extraction, specific JSON schemas)
-- Your domain vocabulary is so specialized that prompting a general model produces poor results
-- Inference cost at scale makes hosted API costs prohibitive
-- Data privacy requires a model that runs entirely on your infrastructure
+After the audit, we scope the implementation around a specific outcome and deliverable.
 
-**When it breaks down:**
-- You don't have enough labeled training data (typically need 500+ high-quality examples minimum)
-- Your task is diverse and general-purpose
-- You need the knowledge base to be updated frequently (fine-tuning requires retraining)
+Implementation projects are scoped individually rather than sold as standardized "small / medium / large" packages.
 
-**Typical cost to implement:** $25,000–$70,000 for dataset preparation, training runs, evaluation, and deployment.
+We prefer fixed-scope engagements where the requirements and deliverables are clear enough to support them.
 
-## How We Help You Choose
+### Handover
 
-When a client comes to us with an AI use case, we start with a 1-week discovery engagement that includes: mapping your data sources, defining the task precisely, running quick experiments with prompting and retrieval on a subset of your data, and delivering a written technical recommendation with rationale. This means you don't commit to a full build before knowing what the right architecture is.
+All production systems are delivered so the client's team can understand, operate, and extend them.
+
+We provide appropriate technical documentation, architecture information, deployment instructions, and operational guidance.
+
+All code belongs to the client.
+
+### Ongoing Optimization
+
+After launch, clients can continue with Neuronetis for AI engineering, optimization, new integrations, new features, evaluation, infrastructure work, or ongoing improvement.
 
 ---
 
-# AI Use Cases for SaaS and IT Companies
+## 4. Engineering Principles
 
-This document covers the most impactful and proven AI use cases for software product companies and IT organizations. For each use case we describe the problem it solves, how it works architecturally, and what success looks like.
+### Build for the Existing System
 
-## 1. Intelligent Documentation and Knowledge Base Search
+We integrate with existing products and infrastructure whenever practical. We do not propose rewrites simply to make a project easier for us.
 
-**The problem:** Users can't find answers in your docs. Support tickets pile up for questions that are already answered somewhere. Internal teams waste time searching wikis.
+### Production Over Demo
 
-**The AI solution:** A RAG-powered search that understands natural language queries and returns precise, cited answers from your documentation — not a list of links, but a synthesized answer with sources.
+A successful AI demo is not the same thing as a production system.
 
-**Impact:** 30–60% reduction in support ticket volume for documentation-related queries. Faster onboarding for new users and employees.
+Production work includes evaluation, observability, error handling, cost awareness, security considerations, maintainability, and clear operational behavior.
 
-**Typical implementation:** RAG pipeline over your documentation (synced from your docs source), conversational interface embedded in your product or help center, streaming responses with source citations.
+### Technology Follows the Problem
 
-**Best fit:** SaaS products with extensive documentation, developer tools, B2B products with complex onboarding.
+We do not start with "you need RAG" or "you need an agent."
 
----
+We start with the business problem, available data, workflow, constraints, and desired outcome. Then we choose the simplest architecture that can solve it well.
 
-## 2. AI-Powered Customer Support Triage and Response
+### No Lock-In
 
-**The problem:** Your support team spends 60–70% of their time on repetitive tickets. Response times are slow. Tier-1 agents are answering the same 50 questions over and over.
+The client owns the code and the resulting system.
 
-**The AI solution:** An AI layer that classifies incoming tickets, drafts responses for agent review, auto-resolves high-confidence repetitive queries, and escalates edge cases to humans.
+We document systems so another engineering team can maintain them. We prefer architectures that make it practical to change models, infrastructure, or individual components when circumstances change.
 
-**Impact:** 40–70% reduction in time-to-first-response. Significant reduction in tier-1 agent workload. Better consistency in support quality.
+### Honest Recommendations
 
-**Typical implementation:** Integration with your helpdesk (Zendesk, Intercom, Freshdesk), RAG over your support history and knowledge base, LLM response drafting with confidence scoring, human-in-the-loop for review.
+If AI is not the right solution, we say so.
 
-**Best fit:** Any SaaS with a support team handling 100+ tickets/week.
-
----
-
-## 3. Semantic Search Over Internal Data
-
-**The problem:** Your product or internal tools use keyword search. Users can't find things unless they use the exact right words. Synonyms, paraphrases, and conceptual searches return nothing.
-
-**The AI solution:** Replace or augment keyword search with vector-based semantic search that understands meaning, not just exact matches.
-
-**Impact:** Dramatically improved search relevance. Users find what they need faster. Reduced "no results" frustration.
-
-**Typical implementation:** Embedding pipeline over your content corpus, Qdrant or pgvector for vector storage, hybrid search combining BM25 + vector similarity, integration with your existing search UI.
-
-**Best fit:** Marketplaces, content platforms, developer tools, internal knowledge systems, e-commerce.
+If a workflow can be solved with conventional software, a rule-based system, or a better process, that may be the recommendation.
 
 ---
 
-## 4. Agentic Workflow and Operations Automation
+## 5. AI Opportunity Framework
 
-**The problem:** Your ops team handles high-volume repetitive tasks — lead routing, contract review, document extraction, report generation — that are too variable for traditional automation but too repetitive to justify skilled human time.
+Neuronetis should develop and eventually formalize a recognizable methodology for identifying and implementing AI opportunities.
 
-**The AI solution:** An agentic workflow that reads unstructured inputs, applies LLM-powered classification or extraction, takes actions across your systems, and escalates low-confidence cases to humans.
+The basic framework:
 
-**Impact:** 40–60% reduction in manual processing time within 90 days. ROI typically visible within the first 60 days.
+1. **Understand** — understand the product, users, workflows, data, current technology, and business objectives.
+2. **Identify** — find processes, product capabilities, and existing AI systems where AI can create meaningful value.
+3. **Prioritize** — rank opportunities by expected impact, feasibility, data readiness, complexity, and risk.
+4. **Validate** — test the most promising assumptions before committing to a large implementation.
+5. **Implement** — design and build the production system.
+6. **Measure & Optimize** — evaluate performance, monitor production behavior, and improve quality, cost, and reliability over time.
 
-**Typical implementation:** Process mapping, agent architecture connecting CRM/ERP/email/Slack via API, LLM layer for decision-making, human-in-the-loop checkpoints, monitoring dashboard.
-
-**Best fit:** RevOps, Sales Ops, Finance Ops, Legal Ops teams at companies that have recently scaled headcount to handle repeatable cognitive work.
-
----
-
-## 5. Embedded AI Copilot in a SaaS Product
-
-**The problem:** Competitors are shipping AI features. Your product feels dated. Users are asking why you don't have AI yet.
-
-**The AI solution:** A purpose-built AI feature embedded directly into your product — an in-app assistant, AI-powered search, smart draft generator, or intelligent autofill — that makes your product's core job noticeably better.
-
-**Impact:** Competitive positioning. Reduced churn from users who would otherwise switch to AI-native competitors.
-
-**Typical implementation:** Feature scoping, prompt architecture, FastAPI integration, RAG layer if the feature needs to reference proprietary data, React UI component, eval harness, observability hooks.
-
-**Best fit:** B2B SaaS PMs and VPs of Engineering at Series A–D companies with "add AI" on the roadmap.
+This framework is a positioning asset as much as a delivery process. It can become part of Neuronetis' website, audits, sales process, case studies, and thought leadership.
 
 ---
 
-## 6. AI-Assisted Code Review and Developer Tooling
+## 6. AI Opportunity Scanner
 
-**The problem:** Code reviews are slow. Junior developers repeat the same mistakes. Internal frameworks and architectural decisions aren't documented, slowing onboarding and causing inconsistent implementation across teams.
+Neuronetis has an existing website tool that allows a visitor to describe their company, product, or project and receive AI opportunity recommendations.
 
-**The AI solution:** An LLM agent integrated into your development workflow that performs automated code review, flags issues against your internal patterns, generates PR summaries, and answers questions about your codebase.
+The recommendations are generated using Neuronetis' internal library of past projects and project templates.
 
-**Impact:** 20–40% reduction in time-to-merge for standard PRs. Reduced onboarding time. Fewer repeated architectural mistakes in new code.
+This asset should be positioned as an entry point into the Neuronetis methodology.
 
-**Typical implementation:** Codebase indexing via embeddings, agent with tool-calling for file reads and linting, GitHub/GitLab webhook integration for automated PR review, feedback loop for engineer accept/reject training.
+The tool should not feel like a generic "AI idea generator."
 
-**Best fit:** Engineering teams of 10–100 developers; dev agencies with multiple client codebases; companies with significant technical debt.
+A stronger positioning is:
 
----
+**Describe your product or workflow. We identify where AI could create the most value.**
 
-## 7. Voice AI Agent
+Recommendations should ideally be presented as prioritized opportunities rather than an undifferentiated list.
 
-**The problem:** High-volume inbound calls for predictable use cases — appointment scheduling, tier-1 support, lead qualification — are consuming expensive human time around the clock.
+Useful dimensions include:
 
-**The AI solution:** A custom voice AI agent that handles these calls end-to-end, integrates with your CRM and booking systems, and transfers to a human with full context when needed.
+- Business impact.
+- Implementation effort.
+- Data readiness.
+- Technical feasibility.
+- Expected value or ROI.
+- Suggested implementation order.
 
-**Impact:** 60–75% of calls fully resolved without human involvement. Cost per call reduced 10–30x vs. human agent.
-
-**Typical implementation:** Vapi or Retell for voice pipeline, conversation flow design, CRM/calendar integration, warm transfer logic, post-call transcript and outcome logging.
-
-**Best fit:** Healthcare clinics, real estate agencies, SaaS support teams, financial services with routine inquiry volume.
-
----
-
-## 8. Data Extraction and Document Processing
-
-**The problem:** Your business receives unstructured documents — contracts, invoices, forms, emails — and staff manually extract information from them into your systems.
-
-**The AI solution:** An LLM-powered extraction pipeline that reads unstructured documents and outputs structured data to your database, CRM, or ERP automatically.
-
-**Impact:** Near-elimination of manual data entry. Faster processing. Fewer errors.
-
-**Typical implementation:** Document ingestion pipeline (PDF, DOCX, email), LLM extraction with structured output (JSON schema enforcement), confidence scoring, human review queue for low-confidence extractions.
-
-**Best fit:** Legal tech, fintech, insurance, logistics, any business receiving high volumes of documents.
+The strongest call to action after the scanner is an AI Audit: validate the recommendations against the company's actual systems and data.
 
 ---
 
-# How We Work — Our Engagement Process
+## 7. Examples of AI Opportunities
 
-## Phase 0: Technical Scoping Call (Free, 30 Minutes)
+These are examples of the types of problems Neuronetis can evaluate and implement.
 
-Before any engagement begins, we do a 30-minute technical scoping call. This is not a sales call. We ask you to describe your use case, your current stack, your data situation, and what a successful outcome looks like. We tell you honestly whether your use case is a good fit for our services, roughly what approach we'd recommend, and what the engagement would look like.
+### Knowledge & Search
 
-After the call, if there's a fit, we send a written proposal within 48 hours. If we're not the right team for your problem, we'll tell you that and often suggest who would be.
+Natural-language search and knowledge systems over product documentation, internal knowledge, support history, or other proprietary information.
 
-**What to bring to the scoping call:**
-- A description of the problem you're trying to solve with AI
-- Information about your current tech stack and infrastructure
-- Rough sense of your data (what format, how much, where it lives)
-- Your timeline and budget range (even a rough number helps)
+### Customer Support
 
----
+AI systems that classify incoming requests, draft responses, resolve high-confidence cases, retrieve relevant knowledge, and escalate cases that require people.
 
-## Phase 1: Discovery (1 Week, Paid)
+### Workflow Automation
 
-Every project over $5,000 begins with a paid 1-week discovery phase ($1000–$2,500 depending on complexity). Discovery is not busywork — it's the most important week of the project.
+AI-powered workflows for repetitive cognitive work such as document review, lead routing, data extraction, report generation, and operational processing.
 
-**What happens in discovery:**
-- We get read-only access to your relevant data sources, codebase, and infrastructure
-- We run experiments on your actual data — test different chunking strategies, embedding models, retrieval approaches
-- We interview your technical lead and the intended end users (1 session each)
-- We map exactly what integrations are needed with your existing systems
+### Embedded Product AI
 
-**What you get from discovery:**
-- A detailed technical specification document covering architecture, stack decisions, data model, API contracts, and integration points
-- A risk log identifying the 3–5 things most likely to cause problems and how we'll mitigate them
-- A revised, accurate project timeline and fixed price for the build phase
-- Optionally: a proof-of-concept prototype demonstrating the core AI functionality works on your data
+AI features built directly into SaaS products: assistants, intelligent search, drafting, extraction, recommendations, autofill, and other capabilities that make the core product more useful.
 
-Discovery de-risks the build for both sides. It ensures we're building exactly what you need, with no surprises in scope or timeline during the build.
+### AI Developer Tooling
 
----
+Codebase assistants, automated review, engineering knowledge systems, and other AI capabilities integrated into development workflows.
 
-## Phase 2: Build
+### Voice AI
 
-The build phase follows the technical spec produced in discovery. You know exactly what we're building before we start.
+Voice agents for predictable, high-volume workflows such as qualification, scheduling, support, and information collection.
 
-**How the build phase works:**
+### Document Processing
 
-**Project management:** We set up a shared Linear or Notion workspace before day one. You can see every task, its status, and who owns it at any time. You never have to ask "where are things?" — you can look.
+Systems that turn unstructured documents, emails, and forms into structured information that can be used by business systems.
 
-**Communication:** One weekly async written update (what was completed, what's next, any blockers). One weekly 30-minute video check-in if the client wants it — optional, not required. All async communication in a shared Slack channel or Linear comments.
+### Existing AI Systems
 
-**Code:** All code is in a private GitHub repository you own from day one. We commit daily. You can see the work in progress at any time and raise concerns early, not at the end.
-
-**Staging environment:** We deploy a staging version of the system within the first two weeks so you can interact with it and give feedback before the build is complete. No big-reveal at the end.
-
-**Testing:** We write tests. Unit tests for core logic, integration tests for the AI pipeline, and an evaluation suite for retrieval and generation quality. We don't ship untested code.
+Assessment and optimization of AI systems that are already in production, including quality, cost, latency, reliability, evaluation, and architecture.
 
 ---
 
-## Phase 3: Handover
+## 8. Technical Capabilities
 
-At the end of every project, we run a structured handover process:
+Technology should remain available for technical buyers, but should not be the primary marketing structure.
 
-**Documentation:** A complete technical README covering architecture, setup, configuration, and how to add/update data in the system. Written for a developer who has never seen the project.
+Neuronetis works across:
 
-**Handover session:** A 90-minute video session with your technical team walking through the architecture, the codebase, the deployment setup, and how to operate the system day-to-day.
+- LLM and multimodal model integration.
+- RAG and knowledge systems.
+- Agentic workflows.
+- MCP and tool integrations.
+- AI APIs and backend services.
+- Fine-tuning and model adaptation.
+- Evaluation and observability.
+- Voice AI.
+- Data and document pipelines.
+- Cloud and private infrastructure.
+- Frontend and product integration.
+- Existing SaaS and enterprise system integrations.
 
-**Runbook:** A written runbook covering how to monitor the system, common issues and how to fix them, how to add new data sources, and how to update or replace the LLM.
+Relevant integrations include tools and systems such as Notion, Confluence, Google Drive, SharePoint, Zendesk, Intercom, Freshdesk, Jira, GitHub/GitLab, Slack, HubSpot, Salesforce, PostgreSQL, MySQL, MongoDB, Elasticsearch, S3-compatible storage, and REST/GraphQL APIs.
 
-**30-day support window:** After handover, we provide 30 days of async support via Slack for bugs, questions, and minor adjustments. This is included in all project prices.
-
----
-
-## After Handover: Retainer Option
-
-Many clients continue working with us on a monthly retainer after the initial project. Typical retainer work includes:
-- Iterating on retrieval quality (better chunking, reranking experiments, hybrid search)
-- Adding new data sources to an existing RAG system
-- Building additional AI features on top of the initial system
-- Model fine-tuning experiments to improve task-specific performance
-- General senior AI engineering support on demand
-
-Retainers start at $1,500/month.
+The exact technology stack is selected per project.
 
 ---
 
-## What We Need From You
+## 9. Team
 
-Projects go badly when clients are unavailable. For a smooth engagement, we need:
-- A dedicated technical point of contact who can answer questions within 24 hours
-- Access to relevant data, systems, and infrastructure within the first 3 days
-- Timely feedback on staging demos (within 3–5 business days)
-- Clear sign-off authority — we need to know who can approve scope decisions
+Neuronetis is organized around specialized engineering capabilities:
 
-We deliberately limit our active projects to 3–4 at a time so we can give this level of attention to every client. In return, we ask the same level of engagement from you.
+- **AI / Backend** — AI systems, model integration, RAG, agents, evaluation, APIs, and backend services.
+- **Frontend / Mobile** — product interfaces, embedded AI experiences, dashboards, and mobile applications when required.
+- **DevOps / Infrastructure** — deployments, CI/CD, cloud infrastructure, observability, security-related infrastructure, and production reliability.
 
----
-
-# Our Technology Stack
-
-We are opinionated about tools. We use technologies we have deployed in production and understand deeply — not whatever is newest or most hyped.
-
-## Backend Framework: FastAPI (Python)
-
-We build all AI backends in FastAPI. Python is the lingua franca of AI/ML engineering — all major model libraries, embedding tools, and LLM frameworks are Python-first. FastAPI gives us high performance (async by default), automatic OpenAPI documentation, strong typing with Pydantic, and a clean pattern for streaming responses via Server-Sent Events.
-
-Our Team is experienced with Typescript, Go and Rust.
-
-If customer's project is written in a different language - the details are discussed individually.
-
-## Vector Databases
-
-**Qdrant** — our default for most production RAG systems. Purpose-built for vector search, supports filtering, payload storage, and hybrid search (dense + sparse) natively. Fast, well-maintained, and can be self-hosted.
-
-**pgvector** — our choice when the client already runs PostgreSQL and wants to minimize infrastructure complexity. Entirely sufficient for knowledge bases under ~1 million vectors.
-
-**Pinecone** — when a client requires a fully managed, serverless vector database with no infrastructure overhead.
-
-## Embedding Models
-
-**OpenAI text-embedding-3-small** — our default for most use cases. Excellent quality-to-cost ratio, adequate for the vast majority of production RAG systems.
-
-**OpenAI text-embedding-3-large** — when retrieval quality is critical and cost is secondary.
-
-**FastEmbed** — lyghtweight, fast python library natively compatible with Qdrant database.
-
-**Local embedding models (e5-large, bge-m3, nomic-embed)** — when a client has data privacy requirements and cannot send data to external APIs.
-
-## RAG Frameworks
-
-**LangChain** — we use LangChain's document loaders, text splitters, and retrieval chains.
-
-**LlamaIndex** — preferred for complex document hierarchies, multi-document reasoning, and structured data integration.
-
-**Direct API** — for simpler systems, we skip frameworks entirely and call the OpenAI / Qdrant APIs directly. Less abstraction, more control, easier debugging.
-
-## Fine-Tuning Stack
-
-**HuggingFace Transformers + PEFT / LoRA** — for all fine-tuning work. LoRA fine-tunes a small number of additional parameters rather than updating all model weights, dramatically reducing compute cost and training time.
-
-**Weights & Biases** — experiment tracking for all training runs.
-
-**vLLM** — our preferred serving framework for open-source models in production.
-
-## Observability and Evals
-
-**LangSmith / Langfuse / Arize** — for production tracing, prompt monitoring, and regression detection.
-
-**Braintrust** — LLM eval orchestration, datasets, CI integration - most senior-eng-favored right now
-
-**RAGAS** — RAG-specific retrieval + generation metrics
-
-**Custom eval harnesses** — golden test sets, LLM-as-judge metrics, and CI/CD eval gates for all production AI systems.
-
-## Infrastructure
-
-**Docker + Docker Compose** — all services are containerized.
-
-**AWS / Azure** — for production cloud deployments, especially for clients with enterprise compliance requirements.
-
-**Railway / Render** — for lighter deployments, staging environments, and smaller-scale productions.
-
-## What We Integrate With
-
-We have integration experience with: Notion, Confluence, Google Drive, SharePoint, Zendesk, Intercom, Freshdesk, Jira, GitHub/GitLab, Slack, HubSpot, Salesforce, PostgreSQL, MySQL, MongoDB, Elasticsearch, S3-compatible object storage, and REST/GraphQL APIs. We also build MCP servers to make client SaaS products accessible to AI agents and tools.
+Projects are staffed with senior engineers appropriate to the scope.
 
 ---
 
-# How to Think About AI Opportunities for Your Company
+## 10. Working Style
 
-This document is designed to help identify the most promising AI integration opportunities for a specific software product or IT company. It describes how we evaluate a company's situation and generate concrete, actionable project ideas.
+We work asynchronously and transparently.
 
-## The Four Questions We Ask About Any Company
+Clients should be able to see progress, review work in progress, and understand what is happening without waiting for a final presentation.
 
-**1. Where does your team spend time on repetitive cognitive work?**
-Any task a human does repeatedly that involves reading, classifying, summarizing, extracting, or drafting based on existing information is a candidate for AI automation. Support ticket responses, document review, report generation, data entry from unstructured sources, code review comments.
+We use shared project-management and communication tools, keep code in repositories owned by the client, and expose production work early through staging environments where appropriate.
 
-**2. Where do your users struggle to find information?**
-If your product has a search function that users complain about — or if users repeatedly ask support questions that are answered somewhere in your documentation — that is a RAG opportunity.
-
-**3. Where does your product use rules or logic that could be learned from data?**
-Classification, ranking, recommendation, anomaly detection, scoring — if you have rules a human wrote and data those rules apply to, a model can probably do it better and at a fraction of the cost.
-
-**4. Where would your product feel meaningfully smarter with AI?**
-Not AI for the sake of AI — but what capability, if you had it, would users notice and value? What would make your product clearly better than a competitor's?
-
-## How to Describe Your Company to Get Useful AI Ideas
-
-**Tell us:**
-- What your product does in one or two sentences
-- Who your users are (developers? ops teams? end consumers? internal employees?)
-- What data you have — not just what kind, but roughly how much and in what form
-- What your users complain about or struggle with most
-- What your support team gets asked most often
-- What your internal team does manually that they wish was automated
-- What AI features your competitors have shipped or are shipping
-
-**Example of a useful description:**
-"We make a B2B project management tool for construction companies. Our users are project managers and site supervisors. We have 5 years of project data — tasks, timelines, budgets, issue logs — for about 3,000 completed projects. Users constantly ask our support team how to set up project templates. Our competitors recently added an AI assistant that answers questions about project status."
-
-From this, we can immediately identify:
-- A RAG system over project documentation and templates to answer setup questions
-- A project outcome predictor trained on historical project data (delays, budget overruns)
-- An AI assistant for project status queries against live project data
-- Automated project template generation based on project type and parameters
-
-## What Makes a Good AI Project
-
-**Clear problem:** We can articulate exactly what problem the AI solves and for whom.
-
-**Available data:** The AI has something to work with. For RAG: a knowledge base, documents, or history. For fine-tuning: labeled examples. For predictive models: historical outcomes.
-
-**Measurable outcome:** We can define what success looks like in numbers — ticket deflection rate, search success rate, accuracy on a held-out test set, time saved per task.
-
-**Proportionate scope:** The project size matches the value it delivers.
-
-## Red Flags — When AI Is Not the Right Answer
-
-We will tell you if AI is not the right tool for your problem:
-- If your search problem is really a content quality problem (bad docs), AI won't fix it
-- If you don't have enough data for the task, fine-tuning won't help
-- If the problem could be solved with a simpler rule-based system in a week, don't build an LLM pipeline
-- If the accuracy requirement is 100% (legal liability, financial transactions, safety-critical), current AI systems are not ready — build the human-in-the-loop carefully
-- If your real problem is unclear requirements or team misalignment, AI is not a substitute for clarity
+We intentionally keep the number of active engagements limited so senior engineers can stay involved.
 
 ---
 
-# Frequently Asked Questions
+## 11. Data, Privacy & Deployment
 
-## About Working With Us
+For systems that require proprietary data, we can work under NDA and implement appropriate technical controls.
 
-**How long does a typical project take?**
-It depends on scope. An AI feature audit takes 1–2 weeks. A focused feature integration or RAG MVP typically takes 3–6 weeks including discovery. A full production RAG system takes 6–10 weeks. An agentic platform or end-to-end product build takes 3–6+ months. We give a precise timeline after discovery, not before.
+Depending on the project, systems can use external model APIs, private cloud infrastructure, or self-hosted models.
 
-**Do you work with our existing codebase, or do you rewrite things?**
-We integrate with your existing stack. We do not propose rewrites. Our AI systems are built as services or modules that connect to your existing architecture via clean API contracts. Your team maintains ownership of the rest of your product.
+For clients with strict data requirements, we can design architectures where sensitive data remains within the client's infrastructure.
 
-**Can our engineering team maintain the system after you're done?**
-Yes, and this is a core design principle for us. We document everything as if we'll never speak again after handover. We run a thorough 90-minute handover session with your technical team. Every system we build has a detailed runbook, clean commented code, and a 30-day support window after delivery. We have had clients with no prior AI/ML experience successfully maintain and extend our systems.
-
-**Do you work with small teams or early-stage companies?**
-Yes. Many of our clients are startups with engineering teams of 2–10 people. Early-stage companies actually benefit from working with a specialized studio rather than trying to hire an AI engineer full-time before they've validated the use case. We can deliver a production system faster and at lower total cost than a 6-month hire.
-
-**What if we're not sure what we need?**
-Start with a scoping call. We will ask you about your problem and your data and tell you honestly what approach makes sense, how long it would take, and roughly what it would cost. If you're very uncertain, our discovery engagement is specifically designed to answer the "what should we build?" question before committing to a full project.
-
-**Why should we hire you instead of building an in-house AI team?**
-Hiring a senior AI engineer in the US currently costs $180,000–$280,000/year in base salary alone. Add recruiter fees (15–25% of first-year salary), 3–6 months of hiring time, 2–4 months of onboarding before real productivity, and the very real risk of a bad hire — the total cost of a single wrong AI engineering hire can exceed $300,000–$400,000 when you factor in severance, re-hiring, and lost time. And one person can't cover the full stack: you typically need AI/ML expertise, backend engineering, infrastructure/DevOps, and frontend — four different skill sets.
-
-With Neuronetis, you get immediate access to a senior team across all of those disciplines, on a fixed-price project with a defined deliverable, zero onboarding time, and no long-term headcount commitment. If the project doesn't work out, you haven't hired someone. Most of our clients get their first production AI system shipped in 4–8 weeks — a timeline that's simply not achievable when you're still posting a job description.
+We can implement technical controls specified by a client's security, privacy, or compliance requirements. We do not provide legal advice.
 
 ---
 
-## About Data and Privacy
+## 12. Pricing Philosophy
 
-**Do you need access to our sensitive data?**
-For RAG systems, yes — we need to ingest your data. We work under NDA from day one, and we have standard data processing agreements for clients with regulatory requirements (GDPR, HIPAA-adjacent). For model fine-tuning, we need a dataset of examples; we can design the data pipeline to minimize our exposure to raw sensitive data.
+The old "quick wins / mid-size / larger builds" pricing structure should be removed from the positioning.
 
-**Can you build systems that keep all data on our infrastructure?**
-Yes. We have built fully on-premise and private cloud deployments using self-hosted embedding models (e.g., bge-m3, e5-large) and self-hosted LLMs (LLaMA 3, Mistral, Qwen) served via vLLM. No data leaves your infrastructure. This adds complexity and cost but is entirely feasible.
+Neuronetis should avoid presenting a public catalog of standardized implementation prices because implementation scope varies substantially based on the client's systems, data, integrations, quality requirements, and constraints.
 
-**We're in the EU — do you handle GDPR considerations?**
-We are familiar with GDPR requirements and design systems with data minimization and retention controls in mind. We are not lawyers and cannot give legal advice, but we can implement the technical controls your legal/compliance team specifies.
+The commercial sequence is:
 
----
+**Audit → specific scope → implementation proposal → build → optional ongoing optimization**
 
-## About Pricing and Contracts
+Audit pricing can be communicated separately based on scope. Selected strategic companies may receive an audit at no cost.
 
-**Why do you charge for discovery?**
-Because a free discovery is not a real discovery. When discovery is free, there is pressure to skip straight to a proposal with a number. When it is paid, we both commit to doing it properly — running experiments on your actual data, writing a real technical spec, giving you an honest assessment. Discovery fees are $800–$1,500 and are deducted from the total project cost if you proceed.
+Implementation pricing is determined after the problem and requirements are sufficiently understood.
 
-**Do you do fixed-price or time-and-materials?**
-We prefer fixed-price engagements scoped precisely after discovery. This gives you budget certainty. We use time-and-materials only for retainer work after an initial fixed-scope project.
+Ongoing optimization can be structured as a recurring engineering engagement when appropriate.
 
-**What payment terms do you use?**
-Standard terms: 30% upfront, 40% at midpoint milestone, 30% at delivery. For projects over $20,000 we can discuss milestone-based structures.
-
-**Do you sign NDAs?**
-Yes, before any technical discussion of client data or systems. We have a standard mutual NDA we can turn around in 24 hours.
+The key principle remains: clients pay for outcomes and defined work, not for a list of hours or technologies.
 
 ---
 
-## About AI and Expectations
+## 13. What Makes a Good AI Project
 
-**Can you guarantee the AI will be accurate?**
-No one can guarantee 100% accuracy from an LLM-based system. What we can do: design for high precision through careful retrieval architecture, implement evaluation pipelines that measure accuracy before launch, add confidence scoring and human-in-the-loop for low-confidence outputs, and iterate on quality after launch. We will tell you upfront what accuracy level is realistic for your use case.
+A strong AI opportunity has:
 
-**Will the system hallucinate?**
-A well-built RAG system is specifically designed to minimize hallucination by grounding every answer in retrieved sources. It is not zero — the LLM can still misread or miscombine retrieved context. This is why we implement source citations, confidence scoring, and graceful fallback behavior for out-of-scope queries. We also build evaluation sets to measure and track hallucination rate during development.
+- A clear business or product problem.
+- A defined user or team affected by it.
+- Relevant data or examples.
+- A measurable definition of success.
+- A reasonable path to production.
+- A scope proportionate to the value created.
 
-**How do you handle queries that are outside the knowledge base?**
-We design explicit fallback behavior. When retrieval confidence is low, the system says so rather than generating a confident-sounding wrong answer. Honest uncertainty is better than silent hallucination.
+AI is not the right answer when:
 
-**What happens when OpenAI changes their models or pricing?**
-We build systems that are as model-agnostic as reasonable. The LLM is typically behind a configuration variable, not hardcoded. If you want to switch from GPT-4o to Claude or a self-hosted model, the change is a configuration update plus testing — not a rewrite.
+- The underlying problem is poor data or unclear requirements.
+- There is not enough data for the proposed approach.
+- A conventional software solution is clearly simpler.
+- The accuracy requirement cannot tolerate the limitations of current AI systems without appropriate human controls.
+- The organization has not defined the problem or desired outcome.
 
-**How do you make sure the AI keeps working correctly over time?**
-Every production system we build includes an eval harness — a set of test cases that run automatically to catch regressions before they reach users. We also set up production observability (LangSmith or Langfuse) so you can monitor answer quality, latency, and cost in real time. This is what separates a system that degrades silently from one you can trust over time.
+---
+
+## 14. Proof & Case Study Data
+
+Neuronetis has a library of past projects and project templates containing technical details, implementation information, and measured improvement percentages.
+
+This should become a major commercial asset.
+
+Case studies and audit recommendations should use this library where appropriate to demonstrate:
+
+- What problem was solved.
+- What was built.
+- How it was integrated.
+- What technical constraints existed.
+- What changed after implementation.
+- What measurable improvement was achieved.
+
+The internal project library can also power the AI Opportunity Scanner and help inform audit recommendations.
+
+---
+
+## 15. FAQ Principles
+
+The website FAQ should answer practical buyer questions without returning to the old discovery-led model.
+
+Key topics:
+
+- What happens during an AI audit?
+- What do we receive from an audit?
+- Can you work with our existing product and codebase?
+- Can you review an AI system we already built?
+- Can you reduce our AI infrastructure or inference costs?
+- Can you build on our infrastructure?
+- Can our engineering team maintain what you build?
+- Do you work with startups and small engineering teams?
+- How do you handle sensitive data?
+- How do you evaluate AI quality?
+- What happens after implementation?
+- How is implementation priced?
+- When is an audit free?
+
+---
+
+## 16. Website Content Direction
+
+The website should feel like an engineering company with strong commercial judgment, not a catalog of AI technologies.
+
+Lead with:
+
+- Business problems.
+- AI opportunities.
+- Audits.
+- Engineering capability.
+- Production outcomes.
+- Evidence and case studies.
+- A clear path from assessment to implementation.
+
+Do not lead with:
+
+- Long lists of frameworks.
+- Vector database names.
+- Generic AI buzzwords.
+- Standardized project-size categories.
+- Artificially precise implementation prices.
+- Technical architecture before the visitor understands why it matters.
+
+Deep technical material can remain available for technical buyers through case studies, technical pages, and a knowledge base.
+
+---
+
+# Marketing & Business Direction
+
+## 1. Core Positioning
+
+Neuronetis should be positioned as the team that helps software companies answer two questions:
+
+**Where should we use AI?**
+
+and
+
+**How do we actually make it work in production?**
+
+The combination of strategic judgment and engineering execution is the differentiator.
+
+A useful positioning line:
+
+> We identify where AI can create real value in your business, then build and integrate the systems to capture it.
+
+The wording can evolve, but the idea should remain consistent.
+
+## 2. Primary Commercial Funnel
+
+The commercial funnel should be:
+
+**AI Opportunity Scanner → AI Audit → Implementation → Optimization**
+
+The scanner creates interest.
+
+The audit creates trust and produces a concrete roadmap.
+
+Implementation converts the opportunity into revenue.
+
+Optimization creates recurring relationships.
+
+This is a much cleaner funnel than trying to sell twelve different technical services independently.
+
+## 3. AI Audits as the Main Marketing Product
+
+The audit should be treated as a product, not as a renamed discovery call.
+
+Marketing should explain exactly what the client gets.
+
+A strong audit should answer:
+
+- Where can AI create the most value?
+- Which opportunities should we pursue first?
+- What will each opportunity require?
+- What data is available?
+- What systems need to change?
+- What could go wrong?
+- How should we measure success?
+- What should we build first?
+
+The audit becomes the bridge between "we are curious about AI" and "we have a concrete implementation plan."
+
+## 4. Free Strategic Audits
+
+Offering free audits selectively to large companies can be a strong account-based marketing tactic.
+
+Do not make the audit universally free.
+
+Use it selectively for companies where:
+
+- The potential engagement is strategically valuable.
+- The company fits the ideal customer profile.
+- There is a realistic path to implementation.
+- Neuronetis wants the relationship or case study.
+
+The free audit should still be rigorous. The goal is to demonstrate how Neuronetis thinks and create a natural path into implementation.
+
+## 5. Social Content
+
+Social content should establish Neuronetis as an engineering team with unusually strong judgment about AI.
+
+Good recurring themes:
+
+### AI Opportunity Analysis
+
+Break down a real business workflow and explain where AI would and would not make sense.
+
+### AI Architecture
+
+Explain why one architecture is appropriate in a particular situation and another is not.
+
+### AI Cost Optimization
+
+Show how existing AI systems can become unnecessarily expensive and what engineering changes can reduce cost.
+
+### AI System Reviews
+
+Analyze common production mistakes: weak evaluation, bad retrieval, excessive context, unnecessary agents, fragile workflows, poor fallbacks, or unclear success metrics.
+
+### Build-in-Public Evidence
+
+Share sanitized lessons from projects, implementation patterns, benchmarks, and measured improvements.
+
+### AI Audits
+
+Show what a good audit looks like and the kinds of opportunities companies miss when they jump directly into implementation.
+
+### Strong Opinions
+
+Neuronetis should be willing to say:
+
+- You probably don't need an agent.
+- RAG is not automatically the answer.
+- AI will not fix bad documentation.
+- A bigger model is not always a better model.
+- Your AI bill may be an architecture problem.
+- A demo is not a production system.
+
+These opinions are more distinctive than generic "AI is changing everything" content.
+
+## 6. Content Formula
+
+A useful recurring structure:
+
+**Problem → Diagnosis → Technical insight → Business impact → What we would do**
+
+This naturally demonstrates the same thinking that the audit sells.
+
+## 7. Outbound / Account-Based Marketing
+
+For selected companies, outbound should not start with:
+
+> We are an AI development agency. Here are our services.
+
+Instead:
+
+> We looked at your product/business and identified several places where AI could potentially improve [specific workflow/product area].
+
+Then provide one or two concrete observations and offer to investigate further.
+
+The AI Opportunity Scanner and the internal project library make this strategy much more credible because recommendations can be grounded in actual past implementation patterns.
+
+## 8. Business Model Direction
+
+The business should gradually move toward a high-value engineering relationship rather than a collection of one-off projects.
+
+The desired progression is:
+
+**Low-friction entry → high-trust assessment → high-value implementation → recurring optimization**
+
+Audits create the relationship.
+
+Implementation creates the major project revenue.
+
+Optimization creates recurring revenue and deeper client relationships.
+
+The business should not depend on selling small technical tasks individually.
+
+## 9. Case Studies
+
+The existing project dataset is particularly valuable here.
+
+Turn past projects into structured case studies containing:
+
+- Client context.
+- Problem.
+- Why AI was appropriate.
+- What was built.
+- Architecture at a useful level.
+- Integration points.
+- Main technical challenge.
+- Before/after metrics.
+- Business outcome.
+
+Avoid making every case study a technology showcase.
+
+The reader should understand the business problem first.
+
+## 10. Proof Strategy
+
+Where real numbers exist, use them.
+
+Examples of useful proof:
+
+- Reduction in manual processing time.
+- Reduction in support workload.
+- Improvement in retrieval or answer quality.
+- Reduction in inference cost.
+- Reduction in latency.
+- Increase in automation rate.
+- Time saved per workflow.
+- Number of documents or interactions processed.
+
+Only publish metrics that are backed by actual project data.
+
+## 11. Brand Direction
+
+Neuronetis should feel:
+
+- Technical.
+- Senior.
+- Direct.
+- Opinionated.
+- Practical.
+- Selective.
+- Commercially aware.
+
+Avoid:
+
+- Excessive AI jargon.
+- "Revolutionize your business" language.
+- Generic agency claims.
+- Huge technology grids as proof of expertise.
+- Artificially futuristic language.
+- Overpromising AI accuracy or ROI.
+
+The brand should communicate: **these people understand the technology, but they are thinking about the business first.**
+
+---
+
+# Website Notes & Blueprint
+
+## 1. Homepage
+
+### Hero
+
+The first screen should answer:
+
+**Who are you?  
+Who do you help?  
+What do you do?**
+
+Suggested direction:
+
+> **Find where AI creates value. Then build it.**
+>
+> Neuronetis helps software companies identify high-value AI opportunities, validate them, and build production systems that integrate with their products and workflows.
+
+Primary CTA:
+
+**Run the AI Opportunity Scanner**
+
+Secondary CTA:
+
+**Talk to an AI Engineer**
+
+### Immediately Below Hero
+
+Introduce the basic journey:
+
+**Audit → Build → Optimize**
+
+Short, simple explanations.
+
+The visitor should understand the business model within seconds.
+
+## 2. AI Opportunity Scanner
+
+Give this tool a prominent place in the site.
+
+Suggested headline:
+
+> **Where could AI make the biggest difference in your business?**
+
+Description:
+
+> Tell us about your product, workflow, or project. We'll identify potential AI opportunities based on patterns from real projects we've engineered.
+
+Output should prioritize opportunities.
+
+For each opportunity show:
+
+- Opportunity.
+- Problem solved.
+- Expected impact.
+- Complexity.
+- Data requirements.
+- Suggested next step.
+
+CTA at the end:
+
+> **Want to know which opportunities actually make sense for your systems?**
+>
+> Book an AI Audit.
+
+## 3. AI Audit Page
+
+This should be one of the most important pages on the website.
+
+Headline direction:
+
+> **Before you build AI, find out where it will actually matter.**
+
+Explain:
+
+- What the audit examines.
+- What inputs are required.
+- What the client receives.
+- How opportunities are prioritized.
+- How implementation recommendations are produced.
+- What happens after the audit.
+
+Show a sample audit output visually if possible.
+
+Possible sections:
+
+**We look at**
+- Product.
+- Operations.
+- Workflows.
+- Data.
+- Existing AI systems.
+- Infrastructure.
+
+**You get**
+- AI opportunity map.
+- Prioritized roadmap.
+- Technical recommendations.
+- Business impact estimates.
+- Implementation plan.
+- Risks and dependencies.
+
+CTA:
+
+**Request an AI Audit**
+
+## 4. Implementation Page
+
+Headline direction:
+
+> **From AI opportunity to production system.**
+
+Explain that Neuronetis can:
+
+- Integrate AI into existing products.
+- Build new AI features.
+- Automate workflows.
+- Build agents.
+- Build MCP integrations.
+- Build knowledge systems.
+- Build voice AI.
+- Build evaluation and observability infrastructure.
+- Build AI-native products.
+
+Do not make this a giant grid of 12 services.
+
+Group capabilities around outcomes and let technical details appear lower on the page.
+
+## 5. Optimization Page
+
+Headline direction:
+
+> **Already have AI? Make it work better.**
+
+Target companies that already have AI systems.
+
+Explain that Neuronetis can help with:
+
+- Quality.
+- Cost.
+- Latency.
+- Reliability.
+- Evaluation.
+- Observability.
+- Architecture.
+- Model selection.
+- Retrieval.
+- Infrastructure.
+
+This page can be particularly strong for companies that have already experimented with AI but are unhappy with production results.
+
+## 6. Case Studies
+
+Make this a major proof section.
+
+Use the existing project dataset.
+
+Every case study should follow:
+
+**Problem → Approach → System → Result**
+
+Put the business result before the technical stack.
+
+If possible, include real before/after metrics.
+
+## 7. Methodology
+
+Introduce the Neuronetis AI Opportunity Framework.
+
+Possible presentation:
+
+**Understand → Identify → Prioritize → Validate → Implement → Optimize**
+
+This gives the company a recognizable process without making the site feel like consulting theater.
+
+## 8. About
+
+The About page should focus on:
+
+- AI engineering specialization.
+- Senior team.
+- Existing engineering capabilities.
+- Why the company is selective.
+- How you work with client teams.
+- Ownership and no lock-in.
+
+Avoid making geography the main story.
+
+## 9. Technology
+
+Keep a technical page for CTOs and engineering teams.
+
+Include:
+
+- LLMs.
+- RAG.
+- Agents.
+- MCP.
+- Evaluation.
+- Observability.
+- Infrastructure.
+- Integrations.
+- Backend/frontend capabilities.
+
+This page can contain the technical depth currently present in the knowledge base.
+
+It simply should not be the homepage's primary sales argument.
+
+## 10. Pricing
+
+Do not recreate the old "quick wins / mid-size / larger builds" table.
+
+Recommended structure:
+
+**Audits**
+Scope and pricing explained separately.
+
+**Implementation**
+Custom-scoped after the audit or technical assessment.
+
+**Optimization**
+Ongoing engineering engagement where appropriate.
+
+The site should communicate pricing philosophy rather than forcing every implementation into a generic package.
+
+## 11. CTA Strategy
+
+Primary CTA across the site:
+
+**Run the AI Opportunity Scanner**
+
+Secondary CTA:
+
+**Request an AI Audit**
+
+For technical visitors:
+
+**Talk to an AI Engineer**
+
+Avoid having five different competing calls to action.
+
+## 12. Overall Copy Rule
+
+Every page should answer:
+
+**What problem does this solve?  
+Why should I trust Neuronetis?  
+What happens next?**
+
+If a paragraph does not help answer one of those questions, it probably does not belong on the main marketing page.
+
+---
+
+# Side Note: Neuronetis AI Opportunity Framework
+
+This is not something that needs to be fully launched immediately.
+
+It is a potential long-term differentiator.
+
+The idea is to turn the way Neuronetis evaluates AI opportunities into a recognizable methodology that can be used across:
+
+- AI audits.
+- The Opportunity Scanner.
+- Sales calls.
+- Case studies.
+- LinkedIn content.
+- Website messaging.
+- Internal project planning.
+
+Over time, Neuronetis could publish parts of the framework publicly and build a reputation around a specific approach to AI opportunity discovery.
+
+The important distinction is that this should be a real engineering methodology, not consulting language invented for marketing.
+
+The framework should be continuously improved using lessons from actual audits and projects.
+

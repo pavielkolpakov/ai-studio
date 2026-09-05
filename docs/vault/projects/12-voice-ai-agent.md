@@ -36,4 +36,4 @@ Use-case scoping and call flow design: mapping the decision tree for the specifi
 - Voice AI agents handle calls at approximately $0.05–$0.15/minute vs. $0.50–$1.50/minute for human agents — 10–30x cost reduction
 - Average deflection rate for well-implemented voice agents: 60–75% of calls fully resolved without human involvement
 - Cost per call reduced 10–30x vs. a human agent
-- Typical project size: $30,000–$80,000 for a production voice agent with full system integrations
+- Typical project size: $20,000–$40,000 for a production voice agent with full system integrations

@@ -37,5 +37,5 @@ Domain discovery: mapping the specific document types, workflows, and regulatory
 - Healthcare AI vertical accounted for 43% of all vertical AI spend in 2025 ($1.5B), outspending the next four verticals combined (Menlo Ventures 2025)
 - Legal AI is among the fastest-growing verticals, with law firms reporting 30–50% reduction in contract review time
 - KYC/AML document processing: banks report 60–80% reduction in manual review hours after AI implementation
-- Regulated verticals tolerate significantly higher project pricing due to compliance value — typical project size: $150,000–$400,000
+- Regulated verticals tolerate significantly higher project pricing due to compliance value — typical project size: $50,000+
 - High retention: compliance platforms become embedded in daily operations, making them near-permanent — 90%+ renewal rate on retainer contracts

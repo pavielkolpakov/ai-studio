@@ -31,4 +31,4 @@ Tool schema design (defining what actions and data the MCP server exposes). OAut
 - MCP SDK installations crossed 97 million in March 2026 (up from ~2 million at launch in November 2024)
 - 28% of Fortune 500 companies have deployed MCP servers as of early 2026
 - Gartner forecasts 75% of API gateway vendors and 50% of iPaaS vendors will have MCP features by end of 2026
-- Typical project size: $40,000–$90,000 for a production-grade build
+- Typical project size: $20,000–$40,000 for a production-grade build

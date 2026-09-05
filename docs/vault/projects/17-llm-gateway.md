@@ -39,6 +39,26 @@ Provider keys come from GCP Secret Manager through External Secrets as a pre-upg
 - Finance and ops owners who need per-project cost attribution, not one invoice line
 - Security teams that need key revocation, audit logs, and no long-lived secrets in apps
 
+## Indicative implementation scope
+
+- price_range: $20,000–$40,000
+- time_estimate: 4–7 weeks
+- tech: LiteLLM, Python, PostgreSQL, Redis, GKE, Helm, GCP Secret Manager, External Secrets, Google IAP
+
+### Deliverables
+
+- OpenAI-compatible gateway with up to three providers and an agreed model-route configuration.
+- Project and user keys, model allow-lists, budget controls, rate limits, and spend attribution.
+- Secret management, protected admin access, provider-route switching, and policy hooks.
+- CI configuration checks, migration gates, deployment rollback, and operational monitoring.
+- Integration of two existing calling services, deployment documentation, and handover.
+
+### Estimate assumptions
+
+Covers one existing GCP/GKE environment and server-side callers with a consistent user/project identity scheme. The client provides provider accounts, cloud access, and representative traffic. Consumer-device attestation and short-lived mobile credentials, additional clouds, multi-region availability, migration of all company services, and custom billing interfaces are separate scope. Automatic failover behavior and budget-enforcement tolerances must be agreed and tested; alternate routes alone do not guarantee uninterrupted service or zero overspend.
+
+These are engineering planning estimates for the scope above, not historical project fees or a fixed quote. Duration assumes timely access, usable inputs, and client feedback; it includes implementation, validation, deployment, and handover. Any separate audit is scoped independently. Model/API usage, hosting, storage, third-party licenses, and ongoing optimization are excluded. Final pricing and schedule follow technical assessment.
+
 ## Numbers
 
 - 49 model routes across four providers in the live config, on one endpoint
@@ -46,5 +66,3 @@ Provider keys come from GCP Secret Manager through External Secrets as a pre-upg
 - Autoscales 3 to 12 pods on CPU, with a disruption budget holding one available
 - 129 commits by 7 contributors over 15 months of continuous operation
 - Every branch push smoke-tests both configs, with no paid API calls
-
-See Pricing, Payment Terms, and Engagement Sizes in the agency information for engagement sizes.

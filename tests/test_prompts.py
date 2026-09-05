@@ -15,22 +15,24 @@ class TestAgentSystemPrompt:
         assert "neuronetis" in txt
         assert "we" in txt or "our" in txt
 
-    def test_instructs_tool_use(self):
-        assert "read_knowledge_base" in AGENT_SYSTEM_PROMPT
-
     def test_has_index_placeholder(self):
         assert "{index}" in AGENT_SYSTEM_PROMPT
 
 
-    def test_describes_the_three_tools(self):
-        assert "get_agency_info" in AGENT_SYSTEM_PROMPT
-        assert "read_knowledge_base" in AGENT_SYSTEM_PROMPT
-        assert "generate_project_ideas" in AGENT_SYSTEM_PROMPT
+    def test_tool_schemas_supply_descriptions_and_arguments(self):
+        from langchain_core.utils.function_calling import convert_to_openai_tool
+        from app.rag.chain import get_agency_info, read_knowledge_base, generate_project_ideas
 
-    def test_lets_the_model_decide_when_to_generate_ideas(self):
-        """Tool choice is the agent's job now, not forced by the guardrail, so
-        the prompt must tell the model when to call the ideas tool."""
-        assert "call it when" in AGENT_SYSTEM_PROMPT
+        for tool, arguments in [
+            (get_agency_info, set()),
+            (read_knowledge_base, {"names"}),
+            (generate_project_ideas, {"description"}),
+        ]:
+            function = convert_to_openai_tool(tool)["function"]
+            assert function["name"] == tool.name
+            assert function["description"] == tool.description
+            assert function["description"]
+            assert set(function["parameters"]["properties"]) == arguments
 
 
 class TestGuardrailPrompt:

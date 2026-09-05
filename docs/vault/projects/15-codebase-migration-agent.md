@@ -39,6 +39,26 @@ Quality is measured, not assumed: deterministic scorers pinned by golden-commit 
 - Companies acquiring apps that must be brought onto a shared internal stack
 - Teams who tried an AI coding tool on a migration and got a confident diff that did not build
 
+## Indicative implementation scope
+
+- price_range: $60,000–$110,000
+- time_estimate: 12–18 weeks
+- tech: Python, LangGraph, Claude Agent SDK, Pydantic, YAML, Docker, GitHub Actions
+
+### Deliverables
+
+- Migration workflow for one agreed SDK or framework change within one application stack.
+- Repository checkout, phased edits and commits, build verification, bounded repair loops, and pull-request creation.
+- Checkpoint and resume support, restricted agent tools, and isolated CI execution.
+- Deterministic migration checks and review scores calibrated against representative client repositories.
+- Pilot rollout, per-run reports, workflow documentation, and engineering handover.
+
+### Estimate assumptions
+
+Covers one repository host, one CI environment, and a pilot on 3–5 representative repositories with working baseline builds. The client supplies migration requirements, credentials, build instructions, and reviewers. Human approval remains required before merging. Repositories with unrelated build failures, additional migration types or languages, fleet-wide rollout, and a general-purpose orchestration platform are separate scope. This estimate does not recreate the entire historical engine and pipeline described below.
+
+These are engineering planning estimates for the scope above, not historical project fees or a fixed quote. Duration assumes timely access, usable inputs, and client feedback; it includes implementation, validation, deployment, and handover. Any separate audit is scoped independently. Model/API usage, hosting, storage, third-party licenses, and ongoing optimization are excluded. Final pricing and schedule follow technical assessment.
+
 ## Numbers
 
 - ~100 orchestrated steps across 8 phases, from ~50 reusable prompt files
@@ -47,4 +67,4 @@ Quality is measured, not assumed: deterministic scorers pinned by golden-commit 
 - Scorer-to-human agreement calibrated on a 58-PR corpus of reviewed production PRs
 - Built across two repositories, pipeline and engine, over ~10 months by 11 contributors
 
-See Pricing, Payment Terms, and Engagement Sizes in the agency information for engagement sizes, and [[projects/08-evals-harness]] for the measurement layer as a standalone engagement.
+See [[projects/08-evals-harness]] for the measurement layer as a standalone engagement.

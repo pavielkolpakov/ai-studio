@@ -38,6 +38,6 @@ RAG layer over your knowledge base, past ticket history, and product documentati
 - 40–70% reduction in time-to-first-response
 - ROI formula: 1,000 tickets/week × 70% deflection × $20/ticket handling cost = ~$728,000/year saved
 - Notion handled 1M+ tickets/year with a 34% reduction in resolution time post-AI implementation
-- Typical project size: $60,000–$100,000 initial build, plus an optional $5,000–$10,000/month retainer for ongoing improvement
+- Typical project size: $30,000–$50,000 initial build, plus an optional $3,000–$5,000/month retainer for ongoing improvement
 
 See Pricing, Payment Terms, and Engagement Sizes in the agency information for the retainer floor and payment terms.
