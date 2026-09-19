@@ -1,0 +1,15 @@
+Mode: built-in imagegen. Final export: center crop and resize using sips to requested 1128 x 191 pixels.
+
+Edit this Neuronetis cover with a much more appropriate premium graphite/silver architectural background inspired by its folded ribbon N logo, and redesign composition for a final 1128 x 191 pixel LinkedIn company banner.
+
+CRITICAL PRODUCTION LAYOUT: Generate at 3:1 canvas 2048x683, but place THE ENTIRE FINISHED COVER in the CENTRAL HORIZONTAL BAND from y=168 to y=515 (347 pixels high, spanning the full 2048 pixel width). Top 168 and bottom 168 pixels are empty background bleed to be trimmed off. All text and logo MUST FIT INSIDE y=200 to y=485. This is essential: we will center crop this image to a 5.906:1 banner. Do not spread the composition vertically. No visible divider at the crop boundary.
+
+Inside that extremely shallow center band:
+- left 18% reserved mostly for abstract background and avatar clearance;
+- text starts x=420, small eyebrow at y=214 reading 'NEURONETIS / AI ENGINEERING STUDIO' in spaced monospace;
+- headline at y=266 and y=331: exact lines 'Find where AI creates value.' and 'Then build it.' geometric Space Grotesk style, 52px, crisp off-white with restrained silver emphasis on AI creates value and build it;
+- small subline at y=404: 'From opportunity to production.' in readable light silver;
+- small 'neuronetis.com' at y=461;
+- accurately preserve the folded silver N monogram at far right, bounding box x=1650 to x=1900, y=217 to y=464. No enclosing square. It has three upright strokes joined by two diagonal folded ribbons, exactly like reference.
+
+NEW BACKGROUND: rich visible graphite charcoal #171a20 with broad diagonal folded planes and softly lit brushed-metal surfaces echoing the N geometry. Sculptural architectural silver-gray ribbons sweep in from left edge and behind the far-right logo; muted gunmetal and silver, soft directional studio light, delicate satin grain, refined tonal depth. A restrained cool steel glow behind right logo separates it from background. Center text area remains calm dark slate for contrast. Background should look designed, tactile, dimensional, not merely black or an empty gradient. No blue or purple neon, no brains, neural nodes, or circuit-board cliché. Premium engineering-studio identity consistent with black-and-silver website. No boxes, cards, borders, UI or mockup. Artwork only. Keep all important content within the stated center band so it survives exact 1128x191 export.
