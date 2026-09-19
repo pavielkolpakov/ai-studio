@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { BookCta } from "./BookCta";
+import { PageMetadata } from "./PageMetadata";
 
 export function SiteLayout() {
   const { pathname } = useLocation();
@@ -16,6 +17,7 @@ export function SiteLayout() {
 
   return (
     <div className="min-h-dvh bg-background text-foreground">
+      <PageMetadata />
       <SiteHeader />
       <Outlet />
       {!isHome && (

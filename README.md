@@ -11,6 +11,27 @@ cd src && python -m app.ingestion           # Ingest RAG.md into Qdrant
 cd src && uvicorn app.main:app --reload
 ```
 
+## Frontend HTML and search indexing
+
+Run `npm ci`, `npm run build`, and `npm run test:seo` from `client/`.
+The build pre-renders Home, Pricing, About, and a 404 page into `client/dist/`;
+React hydrates that HTML to enable chat and other interactions. It also generates
+`robots.txt` and `sitemap.xml`. Page metadata and canonical URLs live in
+`client/src/data/seo.ts` and update during client-side navigation.
+
+Vercel should use `client` as its root directory, `npm run build` as its build
+command, and `dist` as its output directory. `client/vercel.json` serves clean
+page URLs, permanently redirects retired service URLs to Pricing, and lets
+unknown URLs return a real 404. Do not restore the catch-all rewrite to the
+homepage. `npm run preview` previews content locally but does not emulate
+Vercel's redirects or 404 routing.
+
+After deploying, verify the raw HTML at `/`, `/pricing`, and `/about`, check
+that an unknown URL returns HTTP 404, and submit
+`https://www.neuronetis.com/sitemap.xml` in Google Search Console. Use URL
+Inspection to request indexing of the three public pages. Indexing is Google's
+decision and is not immediate.
+
 ## Project Layout
 
 ```

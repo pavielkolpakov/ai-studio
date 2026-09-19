@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { HomePage } from "@/pages/HomePage";
 import { PricingPage } from "@/pages/PricingPage";
@@ -7,7 +7,6 @@ import { NotFoundPage } from "@/pages/NotFoundPage";
 
 function App() {
   return (
-    <BrowserRouter>
       <Routes>
         <Route element={<SiteLayout />}>
           <Route path="/" element={<HomePage />} />
@@ -20,7 +19,6 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
-    </BrowserRouter>
   );
 }
 
