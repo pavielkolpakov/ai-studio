@@ -1,3 +1,4 @@
+import { ArrowLeft, ArrowUpRight, Sparkles } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import type { ChatMessage, FollowupPick, Idea } from "@/types/chat";
 import { createSession, sendMessage } from "@/api/chat";
@@ -5,6 +6,7 @@ import { TokenQueue } from "@/lib/tokenQueue";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
 import { SuggestionButtons, type SuggestionItem } from "./SuggestionButtons";
+import { StudioLanding } from "./home/StudioLanding";
 import { CACHED_ANSWERS } from "@/data/cachedAnswers";
 
 const IDEAS_PROMPT_TEXT =
@@ -35,6 +37,7 @@ function applyFollowupRules(
 }
 
 export function ChatPage() {
+  const [showLanding, setShowLanding] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -52,7 +55,7 @@ export function ChatPage() {
     sessionRequested.current = true;
     createSession()
       .then(setSessionId)
-      .catch(() => setError("Failed to connect. Is the server running?"));
+      .catch(() => setError("Live replies are unavailable right now. You can still read our saved answers."));
   }, []);
 
   const handleClickedId = useCallback((id: string) => {
@@ -68,6 +71,7 @@ export function ChatPage() {
     async (text: string) => {
       if (!sessionId || isStreaming) return;
       setError(null);
+      setShowLanding(false);
       setSuggestions([]);
 
       const userMsg: ChatMessage = {
@@ -160,6 +164,7 @@ export function ChatPage() {
   const handleCachedAnswer = useCallback(
     (cacheKey: string, buttonText: string) => {
       if (isStreaming) return;
+      setShowLanding(false);
       const entry = CACHED_ANSWERS[cacheKey];
       if (!entry) return;
 
@@ -271,81 +276,33 @@ export function ChatPage() {
     ) : null;
 
   const errorLine = error ? (
-    <div className="px-4 py-2 text-center text-sm text-destructive">{error}</div>
+    <div role="status" className="chat-error">{error}</div>
   ) : null;
 
   return (
     <>
-      {messages.length === 0 ? (
-        /* Hero — the assistant is the entry point to the site */
-        <div className="relative flex min-h-[calc(100dvh-73px)] items-center justify-center">
-          <div className="pointer-events-none absolute inset-0 overflow-hidden select-none">
-            <img
-              src="/logo-mark.png"
-              alt=""
-              className="absolute top-1/2 left-1/2 h-[760px] w-auto max-w-none -translate-x-1/2 -translate-y-[52%] opacity-[0.055] blur-[2px]"
-              style={{
-                maskImage:
-                  "radial-gradient(ellipse 58% 56% at 50% 46%, #000 0%, rgba(0,0,0,0.55) 55%, transparent 78%)",
-                WebkitMaskImage:
-                  "radial-gradient(ellipse 58% 56% at 50% 46%, #000 0%, rgba(0,0,0,0.55) 55%, transparent 78%)",
-              }}
-            />
-            <div
-              className="absolute inset-x-0 bottom-0 h-60"
-              style={{
-                background: "linear-gradient(180deg, rgba(11,11,12,0) 0%, #0B0B0C 92%)",
-              }}
-            />
+      {messages.length === 0 || showLanding ? (
+        <StudioLanding>
+          <ChatInput
+            onSend={handleSend}
+            onStop={handleStop}
+            disabled={!sessionId}
+            isStreaming={isStreaming}
+            autoFocus={false}
+            variant="idea"
+            placeholder="What does your business do, and what would you love to improve?"
+          />
+          {errorLine}
+          <div className="scanner-shortcuts">
+            {messages.length > 0 && <button onClick={() => setShowLanding(false)}>Continue conversation <ArrowUpRight className="inline" size={13} /></button>}
+            <button disabled={isStreaming} onClick={() => handleCachedAnswer("services_and_pricing", "Services & pricing")}>Services & pricing</button>
+            <button disabled={isStreaming} onClick={() => handleCachedAnswer("process", "What’s the process like?")}>How we work</button>
+            <button disabled={isStreaming} onClick={() => handleCachedAnswer("about", "About Neuronetis")}>About the studio</button>
           </div>
-
-          <div className="relative w-full max-w-[1200px] px-5 py-16 sm:px-10">
-            <div className="mx-auto mb-7 max-w-[780px] text-center sm:mb-12">
-              <div className="eyebrow mb-[26px]">AI engineering studio · Israel &amp; US</div>
-              <h1 className="mb-[22px] font-heading text-[42px] leading-[1.03] font-light tracking-[-0.03em] text-balance sm:text-[54px] lg:text-[66px]">
-                Find where{" "}
-                <span className="text-silver-gradient font-semibold">AI creates value</span>
-                . Then{" "}
-                <span className="text-silver-gradient font-semibold">build it</span>
-                .
-              </h1>
-              <p className="mx-auto mb-9 max-w-[720px] text-[19px] leading-[1.55] text-pretty text-muted-foreground">
-                Neuronetis helps software companies identify high-value AI opportunities,
-                and turn them into production systems.
-              </p>
-              {/* <div className="flex flex-wrap items-center justify-center gap-3">
-                <button
-                  onClick={focusScanner}
-                  className="btn-primary cursor-pointer px-6 py-[13px] text-[15px]"w                >
-                  Run the AI Opportunity Scanner
-                </button>
-                <button
-                  onClick={() => openCalendlyPopup()}
-                  className="cursor-pointer rounded-lg border border-white/[0.18] px-6 py-[13px] text-[15px] font-medium text-foreground transition-colors hover:border-white/45 hover:text-white"
-                >
-                  Talk to an AI Engineer
-                </button>
-              </div> */}
-            </div>
-
-            <div id="scanner" className="mx-auto max-w-[820px] scroll-mt-24">
-              <ChatInput
-                onSend={handleSend}
-                onStop={handleStop}
-                disabled={!sessionId}
-                isStreaming={isStreaming}
-                placeholder="Describe what you're building…"
-              />
-              {errorLine}
-              <div className="mt-[22px] text-center font-mono text-sm tracking-[0.04em] text-dim-text">
-                You'll get tailored opportunities based on our library of real projects and templates, 
-                not a generic idea generator.
-              </div>
-            </div>
-          </div>
-        </div>
+        </StudioLanding>
       ) : (
-        <div className="flex h-[calc(100dvh-73px)] flex-col">
+        <main className="chat-workspace">
+          <div className="chat-toolbar"><div><span className="chat-emblem"><Sparkles size={19} aria-hidden="true" /></span><span>Your opportunity, explored.<small>Neuronetis · AI studio assistant</small></span></div><button onClick={() => setShowLanding(true)}><ArrowLeft size={14} />Back to the studio</button></div>
           <MessageList
             messages={messages}
             streamingId={streamingId}
@@ -354,15 +311,17 @@ export function ChatPage() {
             footer={chips}
           />
           {errorLine}
-          <div className="mx-auto w-full max-w-[820px] px-5 pt-2 pb-5 sm:px-10">
+          <div className="chat-composer">
             <ChatInput
               onSend={handleSend}
               onStop={handleStop}
               disabled={!sessionId}
               isStreaming={isStreaming}
+              placeholder="Ask a follow-up…"
             />
+            <p className="composer-disclaimer">A starting point for exploration. Our engineers validate the details.</p>
           </div>
-        </div>
+        </main>
       )}
     </>
   );

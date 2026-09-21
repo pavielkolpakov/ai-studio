@@ -1,402 +1,62 @@
-import { PRICING_PAGE, PHASES, TIMELINES, FAQS } from "@/data/site";
+import { useSyncExternalStore } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { ArrowRight, ArrowUpRight, Check, Plus } from "lucide-react";
+import { PRICING_PAGE } from "@/data/site";
 import { openCalendlyPopup } from "@/lib/calendly";
+import { Reveal } from "@/components/site/Reveal";
+import { ImpactCalculator } from "@/components/site/ImpactCalculator";
 
-const { paths, audit, implementation, optimization, ongoing, closing } = PRICING_PAGE;
+const clean = (text: string) => text.replaceAll(" — ", ", ").replaceAll("–", "-");
+// Buyer questions drawn from docs/RAG.md, sections 3, 4, 11, 12, and 15.
+const FAQS = [
+  { q: "What do we receive from an audit?", a: "A prioritized opportunity map, technical recommendations, success criteria, risks, dependencies, and a roadmap. The assessment uses your product, workflows, data, and existing systems." },
+  { q: "Do we need an audit before implementation?", a: "No. If your requirements and technical direction are clear, we can scope implementation directly. An audit is useful when the opportunity or approach still needs validation." },
+  { q: "How is implementation priced?", a: "We publish starting points, then prepare a proposal around the actual scope. Data, integrations, quality requirements, security, and deployment constraints determine the work. We prefer a fixed scope when the requirements support it." },
+  { q: "Who owns the code?", a: "You do. We provide the technical documentation, deployment instructions, and operational guidance your team needs to understand, operate, and extend the system." },
+  { q: "Can you work with our existing product?", a: "Yes. We integrate with existing products and infrastructure wherever practical. We can also review an AI system you already run or build a new AI-native system." },
+  { q: "Can sensitive data stay on our infrastructure?", a: "We can design for private cloud or self-hosted models when the project requires it, work under NDA, and implement the technical controls specified by your security team. The deployment approach is agreed during scoping." },
+  { q: "How do you know the AI is working?", a: "We define success criteria, use representative evaluation examples, and monitor production behavior. The right measures depend on the task: answer quality, retrieval relevance, latency, cost, or escalation accuracy." },
+  { q: "What happens after handover?", a: "Your team can operate and extend the system. If useful, continue with ongoing AI engineering for new capabilities, evaluation, infrastructure, and optimization." },
+];
+// Static HTML has no URL fragment; defer fragment-dependent content until hydration.
+const subscribeHydration = () => () => {};
 
-/** Small diamond bullet used in the detail lists. */
-function Bullet() {
-  return (
-    <span
-      aria-hidden
-      className="mt-[7px] h-[5px] w-[5px] shrink-0 rotate-45 bg-silver/70"
-    />
-  );
-}
-
-/** Shared left column for a service section: number, name, price, lead, CTA. */
-function ServiceIntro({
-  num,
-  title,
-  price,
-  lead,
-  cta,
-}: {
-  num: string;
-  title: string;
-  price: string;
-  lead: string;
-  cta: string;
-}) {
-  return (
-    <div className="lg:sticky lg:top-[104px]">
-      <div className="mb-3.5 font-mono text-[11px] tracking-[0.1em] text-steel">{num}</div>
-      <h2 className="mb-3 font-heading text-[32px] leading-[1.1] font-semibold tracking-[-0.026em] sm:text-[38px]">
-        {title}
-      </h2>
-      <div className="mb-4 font-heading text-[20px] font-semibold tracking-[-0.015em] text-silver">
-        {price}
-      </div>
-      <p className="mb-7 text-[15.5px] leading-[1.6] text-pretty text-muted-foreground">{lead}</p>
-      <button
-        onClick={() => openCalendlyPopup()}
-        className="btn-primary w-full cursor-pointer px-6 py-[14px] text-[15px] sm:w-auto"
-      >
-        {cta}
-      </button>
-    </div>
-  );
-}
+const services = [PRICING_PAGE.audit, PRICING_PAGE.implementation, PRICING_PAGE.optimization];
 
 export function PricingPage() {
-  return (
-    <div className="mx-auto max-w-[1200px] px-5 pt-20 sm:px-10">
-      <header className="mb-16 max-w-[760px]">
-        <div className="eyebrow mb-4">{PRICING_PAGE.eyebrow}</div>
-        <h1 className="mb-[18px] font-heading text-[40px] leading-[1.05] font-semibold tracking-[-0.03em] text-balance sm:text-[54px]">
-          {PRICING_PAGE.headline}
-        </h1>
-        <p className="m-0 text-[18px] leading-[1.55] text-pretty text-muted-foreground">
-          {PRICING_PAGE.sub}
-        </p>
-      </header>
+  const { hash } = useLocation();
+  const hydrated = useSyncExternalStore(subscribeHydration, () => true, () => false);
+  const selected = hydrated ? Math.max(0, services.findIndex(service => `#${service.id}` === hash)) : 0;
+  const service = services[selected];
+  const reduce = useReducedMotion();
+  return <main className="design-page pricing-page">
+    <header className="design-hero pricing-hero dot-field">
+      <Reveal><p className="studio-kicker">Pricing & engagements</p><h1>The right scope.<br />A clear way forward.</h1><p>Start with the question you need answered. We scope the engineering around a defined outcome.</p><a className="studio-button" href="#engagements">Explore engagements <ArrowDownIcon /></a></Reveal>
+      <div className="pricing-art"><img src="/images/optical-layers.jpg" alt="Precisely layered optical glass, an abstract study of systems engineering" width="1536" height="1024" fetchPriority="high" /></div>
+    </header>
 
-      {/* Three client situations — the core message of the page */}
-      <section className="grid items-stretch gap-4 lg:grid-cols-3">
-        {paths.map((p) => (
-          <a
-            key={p.answer}
-            href={p.href}
-            className="group flex flex-col rounded-2xl border border-hairline-strong bg-surface px-8 pt-9 pb-8 transition-colors hover:border-white/30"
-          >
-            <div className="text-[15px] leading-[1.4] text-muted-foreground">{p.situation}</div>
-            <div className="mt-2 mb-4 font-heading text-[30px] leading-[1.05] font-semibold tracking-[-0.028em] text-white sm:text-[34px]">
-              {p.answer}
-            </div>
-            <p className="mb-8 text-[14.5px] leading-[1.6] text-pretty text-body-text">{p.body}</p>
-            <div className="mt-auto flex flex-wrap items-baseline justify-between gap-2 border-t border-hairline pt-4">
-              <span className="text-[14px] font-medium text-foreground">{p.service}</span>
-              <span className="font-mono text-[12.5px] tracking-[0.02em] text-silver">
-                {p.price}
-              </span>
-            </div>
-          </a>
-        ))}
-      </section>
-
-      {/* Service 01 — AI Audit */}
-      <section
-        id={audit.id}
-        className="mt-28 grid scroll-mt-[104px] items-start gap-10 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)] lg:gap-16"
-      >
-        <ServiceIntro
-          num={audit.num}
-          title={audit.title}
-          price={audit.price}
-          lead={audit.lead}
-          cta={audit.cta}
-        />
-
-        <div className="grid gap-4">
-          {/* Audit options and prices */}
-          <div className="grid gap-px overflow-hidden rounded-xl border border-hairline bg-white/[0.08]">
-            {audit.options.map((o) => (
-              <div
-                key={o.name}
-                className="grid items-baseline gap-x-6 gap-y-1.5 bg-surface px-[26px] py-[22px] sm:grid-cols-[minmax(0,0.85fr)_120px_minmax(0,1.5fr)]"
-              >
-                <span className="font-heading text-[17px] font-semibold tracking-[-0.015em]">
-                  {o.name}
-                </span>
-                <span className="font-mono text-[13.5px] text-silver">{o.price}</span>
-                <span className="text-[14px] leading-[1.55] text-muted-foreground">{o.body}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* What the audit evaluates */}
-          <div className="rounded-xl border border-hairline bg-surface px-[30px] pt-7 pb-6">
-            <div className="mb-4 font-mono text-[10.5px] tracking-[0.12em] uppercase text-steel">
-              {audit.evaluatesTitle}
-            </div>
-            <div className="grid gap-2.5 sm:grid-cols-2">
-              {audit.evaluates.map((e) => (
-                <div
-                  key={e}
-                  className="grid grid-cols-[10px_minmax(0,1fr)] gap-3 text-[14.5px] leading-[1.5] text-body-text"
-                >
-                  <Bullet />
-                  <span>{e}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Deliverables */}
-          <div className="rounded-xl border border-hairline bg-surface px-[30px] pt-7 pb-7">
-            <div className="mb-5 font-mono text-[10.5px] tracking-[0.12em] uppercase text-steel">
-              {audit.deliverablesTitle}
-            </div>
-            <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
-              {audit.deliverables.map((d) => (
-                <div key={d.title}>
-                  <div className="mb-1 font-heading text-[15.5px] font-semibold tracking-[-0.01em]">
-                    {d.title}
-                  </div>
-                  <p className="m-0 text-[14px] leading-[1.55] text-pretty text-muted-foreground">
-                    {d.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Free audit for selected companies */}
-          <div className="rounded-xl border border-hairline-strong bg-[linear-gradient(140deg,rgba(200,204,212,0.10)_0%,rgba(200,204,212,0.02)_44%,#0F0F11_100%)] px-[30px] py-7">
-            <div className="mb-2 font-heading text-[18px] font-semibold tracking-[-0.018em] text-foreground">
-              {audit.free.title}
-            </div>
-            <p className="m-0 max-w-[620px] text-[14.5px] leading-[1.6] text-pretty text-body-text">
-              {audit.free.body}
-            </p>
-          </div>
+    <section className="design-section engagement-section" id="engagements" aria-labelledby="engagement-title">
+      <div className="section-intro"><h2 id="engagement-title">Where are you with AI?</h2><p>Choose your starting point. An audit is optional when the requirements are already clear.</p></div>
+      <nav className="engagement-selector" aria-label="Choose an engagement">{PRICING_PAGE.paths.map((path, index) => <Link key={path.service} to={`/pricing${path.href}`} aria-current={selected === index ? "true" : undefined}><span>{path.situation}</span><strong>{path.answer}</strong><small>{path.service}</small><ArrowUpRight size={22} /></Link>)}</nav>
+      <div className="service-anchors" aria-hidden="true">{services.map(item => <span key={item.id} id={item.id} />)}</div>
+      <AnimatePresence mode="wait" initial={false}><motion.div key={service.id} className={`engagement-detail engagement-${selected}`} initial={{ opacity: 0, y: reduce ? 0 : 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : .2 }}>
+        <div className="engagement-lead"><span className="studio-kicker">{selected === 0 ? "Clarity before commitment" : selected === 1 ? "From validated idea to production" : "Make what runs work better"}</span><h3>{service.title}</h3><p>{clean(service.lead)}</p><div className="engagement-price">{service.price}</div><p className="price-caption">{selected === 0 ? "One-week audit. Broader assessments scoped separately." : "Starting point. Final proposal follows technical scoping."}</p><button className="studio-button" onClick={() => openCalendlyPopup()}>{service.cta}<ArrowUpRight size={17} /></button></div>
+        <div className="engagement-includes">
+          <h4>{selected === 0 ? "A roadmap you can act on" : selected === 1 ? "Built around your existing system" : "Measure. Improve. Repeat."}</h4>
+          {selected === 0 ? <><ul className="included-list">{PRICING_PAGE.audit.deliverables.map(item => <li key={item.title}><Check size={17} /><span><strong>{item.title}</strong><small>{clean(item.body)}</small></span></li>)}</ul><details className="scope-details"><summary>Audit options and scope <Plus size={16} /></summary>{PRICING_PAGE.audit.options.map(option => <p key={option.name}><strong>{option.name} · {option.price}</strong><br />{option.body}</p>)}<p>We assess product workflows, data readiness, infrastructure, feasibility, business impact, and risk.</p></details></> : selected === 1 ? <><ul className="included-list">{PRICING_PAGE.implementation.tiers.map(item => <li key={item.name}><Check size={17} /><span><strong>{item.name}<em>{item.price}</em></strong><small>{item.body}</small></span></li>)}</ul><p className="scope-copy">Your scope accounts for integrations, data, infrastructure, quality requirements, security, and deployment complexity. A model API, RAG, or an agent is chosen to fit the problem.</p><div className="tag-list">{["Your repository", "Early staging", "Evaluation", "Documented handover"].map(item => <span key={item}>{item}</span>)}</div></> : <><p className="scope-copy">Review the system you already run. Establish a baseline, address the bottlenecks, and evaluate the changes against real tasks.</p><ul className="included-list">{["Output quality and retrieval", "Latency and operating cost", "Evaluation and observability", "Reliability and failure handling", "Architecture and maintainability"].map(item => <li key={item}><Check size={17} /><span>{item}</span></li>)}</ul></>}
         </div>
-      </section>
+      </motion.div></AnimatePresence>
+      <p className="audit-note">Selected strategic companies may receive an audit at no cost. This is a selective outreach program, not a standing offer.</p>
+    </section>
 
-      {/* Service 02 — AI Implementation */}
-      <section
-        id={implementation.id}
-        className="mt-28 grid scroll-mt-[104px] items-start gap-10 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)] lg:gap-16"
-      >
-        <ServiceIntro
-          num={implementation.num}
-          title={implementation.title}
-          price={implementation.price}
-          lead={implementation.lead}
-          cta={implementation.cta}
-        />
+    <ImpactCalculator />
 
-        <div className="grid gap-4">
-          {/* Starting-price anchors */}
-          <div className="grid gap-px overflow-hidden rounded-xl border border-hairline bg-white/[0.08]">
-            {implementation.tiers.map((t) => (
-              <div
-                key={t.name}
-                className="grid items-baseline gap-x-6 gap-y-1.5 bg-surface px-[26px] py-[22px] sm:grid-cols-[minmax(0,0.85fr)_120px_minmax(0,1.5fr)]"
-              >
-                <span className="font-heading text-[17px] font-semibold tracking-[-0.015em]">
-                  {t.name}
-                </span>
-                <span className="font-mono text-[13.5px] text-silver">{t.price}</span>
-                <span className="text-[14px] leading-[1.55] text-muted-foreground">{t.body}</span>
-              </div>
-            ))}
-          </div>
+    <section className="design-section" aria-labelledby="ongoing-title"><Reveal className="ongoing-panel"><div><p className="studio-kicker">Beyond the first release</p><h2 id="ongoing-title">Keep making<br />the system better.</h2><p>Continue with a standing engineering capacity for new features, integrations, evaluations, and production improvements.</p></div><div className="ongoing-price"><span>Ongoing AI Engineering</span><strong>From $3,000<small>/month</small></strong><p>Optional, scoped to the work ahead.</p><button className="studio-text-link" onClick={() => openCalendlyPopup()}>Discuss ongoing support <ArrowUpRight size={17} /></button></div></Reveal></section>
 
-          {/* What moves the price */}
-          <div className="rounded-xl border border-hairline bg-surface px-[30px] pt-7 pb-6">
-            <div className="mb-1.5 font-heading text-[17px] font-semibold tracking-[-0.015em]">
-              {implementation.factorsTitle}
-            </div>
-            <p className="mb-4 max-w-[560px] text-[14.5px] leading-[1.6] text-pretty text-muted-foreground">
-              {implementation.factorsIntro}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {implementation.factors.map((f) => (
-                <span
-                  key={f}
-                  className="rounded-md border border-hairline px-2.5 py-1.5 text-[13.5px] text-body-text"
-                >
-                  {f}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Not the focus of the page: kept quiet, on purpose */}
-          <div className="rounded-xl border border-hairline bg-surface px-[30px] pt-6 pb-6">
-            <div className="mb-3 font-mono text-[10.5px] tracking-[0.12em] uppercase text-steel">
-              {implementation.examplesTitle}
-            </div>
-            <p className="m-0 text-[14px] leading-[1.7] text-pretty text-muted-foreground">
-              {implementation.examples.join(" · ")}
-            </p>
-          </div>
-
-          {/* No audit gate */}
-          <div className="rounded-xl border border-hairline-strong bg-[linear-gradient(140deg,rgba(200,204,212,0.10)_0%,rgba(200,204,212,0.02)_44%,#0F0F11_100%)] px-[30px] py-7">
-            <div className="mb-2 font-heading text-[18px] font-semibold tracking-[-0.018em] text-foreground">
-              {implementation.noGate.title}
-            </div>
-            <p className="m-0 max-w-[620px] text-[14.5px] leading-[1.6] text-pretty text-body-text">
-              {implementation.noGate.body}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Service 03 — AI Optimization */}
-      <section
-        id={optimization.id}
-        className="mt-28 grid scroll-mt-[104px] items-start gap-10 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)] lg:gap-16"
-      >
-        <ServiceIntro
-          num={optimization.num}
-          title={optimization.title}
-          price={optimization.price}
-          lead={optimization.lead}
-          cta={optimization.cta}
-        />
-
-        <div className="grid gap-4">
-          <div className="rounded-xl border border-hairline bg-surface px-[30px] pt-7 pb-7">
-            <p className="mb-6 max-w-[620px] text-[15px] leading-[1.6] text-pretty text-body-text">
-              {optimization.body}
-            </p>
-            <div className="grid gap-2.5 sm:grid-cols-2">
-              {optimization.areas.map((a) => (
-                <div
-                  key={a}
-                  className="grid grid-cols-[10px_minmax(0,1fr)] gap-3 text-[14.5px] leading-[1.5] text-body-text"
-                >
-                  <Bullet />
-                  <span>{a}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Secondary — Ongoing AI Engineering */}
-      <section className="mt-20 rounded-xl border border-hairline bg-surface px-[30px] py-7">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:gap-16">
-          <div>
-            <div className="flex flex-wrap items-baseline gap-3">
-              <h2 className="m-0 font-heading text-[20px] font-semibold tracking-[-0.018em]">
-                {ongoing.title}
-              </h2>
-              <span className="font-mono text-[13px] text-silver">{ongoing.price}</span>
-            </div>
-            <p className="mt-2 mb-0 text-[14px] leading-[1.6] text-pretty text-muted-foreground">
-              {ongoing.body}
-            </p>
-          </div>
-          <div className="flex flex-wrap content-start gap-2">
-            {ongoing.items.map((i) => (
-              <span
-                key={i}
-                className="rounded-md border border-hairline px-2.5 py-1.5 text-[13.5px] text-body-text"
-              >
-                {i}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How engagements run */}
-      <section className="mt-24 grid items-start gap-10 lg:grid-cols-[minmax(280px,340px)_minmax(0,1fr)] lg:gap-14">
-        <div>
-          <div className="eyebrow mb-3.5">How engagements run</div>
-          <h2 className="mb-4 font-heading text-[32px] leading-[1.15] font-semibold tracking-[-0.026em]">
-            No mandatory gate, no open-ended scope
-          </h2>
-          <p className="m-0 text-[15px] leading-[1.6] text-pretty text-muted-foreground">
-            You may start with an audit, move directly into a focused implementation, or ask us to
-            review an AI system you already run.
-          </p>
-        </div>
-        <div className="grid gap-px overflow-hidden rounded-xl border border-hairline bg-white/[0.08]">
-          {PHASES.map((s) => (
-            <div
-              key={s.num}
-              className="grid items-baseline gap-5 bg-surface px-[26px] py-[22px] sm:grid-cols-[44px_minmax(0,0.9fr)_minmax(0,1.6fr)]"
-            >
-              <span className="font-mono text-[11px] tracking-[0.1em] text-steel">{s.num}</span>
-              <span className="font-heading text-[17px] font-semibold tracking-[-0.015em]">
-                {s.title}
-              </span>
-              <span className="text-sm leading-[1.55] text-muted-foreground">{s.body}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Timelines */}
-      <section className="mt-16">
-        <div className="grid gap-px overflow-hidden rounded-xl border border-hairline bg-white/[0.08] sm:grid-cols-2 lg:grid-cols-4">
-          {TIMELINES.map((t) => (
-            <div key={t.name} className="bg-surface px-6 py-5">
-              <div className="font-heading text-[18px] font-semibold tracking-[-0.02em]">
-                {t.time}
-              </div>
-              <div className="mt-1.5 text-[13.5px] leading-[1.4] text-muted-foreground">
-                {t.name}
-              </div>
-            </div>
-          ))}
-        </div>
-        <p className="mt-3 text-[13px] text-dim-text">
-          Indicative only. We give a precise timeline once the scope is understood, not before.
-        </p>
-      </section>
-
-      {/* FAQ */}
-      <section className="mt-24 grid items-start gap-10 lg:grid-cols-[minmax(260px,340px)_minmax(0,1fr)] lg:gap-14">
-        <div>
-          <h2 className="mb-3 font-heading text-[32px] leading-[1.15] font-semibold tracking-[-0.026em]">
-            Questions we get before signing
-          </h2>
-          <p className="m-0 text-[15px] leading-[1.6] text-muted-foreground">
-            Anything else, ask the assistant — it answers from the same source we do.
-          </p>
-        </div>
-        <div className="grid gap-px overflow-hidden rounded-xl border border-hairline bg-white/[0.08]">
-          {FAQS.map((f) => (
-            <div key={f.q} className="bg-surface px-[30px] py-[26px]">
-              <h3 className="mb-[9px] font-heading text-[17px] font-semibold tracking-[-0.015em]">
-                {f.q}
-              </h3>
-              <p className="m-0 text-[14.5px] leading-[1.6] text-pretty text-muted-foreground">
-                {f.a}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Decision-oriented close */}
-      <section className="mt-24 rounded-[20px] border border-hairline-strong bg-[linear-gradient(140deg,rgba(200,204,212,0.10)_0%,rgba(200,204,212,0.02)_44%,#0F0F11_100%)] px-7 py-12 sm:px-14 sm:py-14">
-        <h2 className="mb-8 font-heading text-[32px] leading-[1.08] font-semibold tracking-[-0.028em] text-balance sm:text-[40px]">
-          {closing.title}
-        </h2>
-        <div className="mb-10 grid gap-px overflow-hidden rounded-xl border border-hairline bg-white/[0.08] sm:grid-cols-3">
-          {closing.choices.map((c) => (
-            <div key={c.label} className="bg-surface px-6 py-6">
-              <div className="mb-1.5 text-[14px] leading-[1.4] text-muted-foreground">
-                {c.label}
-              </div>
-              <div className="font-heading text-[19px] font-semibold tracking-[-0.018em] text-white">
-                {c.body}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <button
-            onClick={() => openCalendlyPopup()}
-            className="btn-primary cursor-pointer px-6 py-[15px] text-[15px]"
-          >
-            {closing.primary}
-          </button>
-          <button
-            onClick={() => openCalendlyPopup()}
-            className="cursor-pointer rounded-lg border border-hairline-strong px-6 py-[15px] text-[15px] font-medium text-foreground transition-colors hover:border-white/45 hover:text-white"
-          >
-            {closing.secondary}
-          </button>
-        </div>
-      </section>
-    </div>
-  );
+    <section className="design-section faq-section" aria-labelledby="faq-title"><div className="section-intro"><h2 id="faq-title">Good questions.<br />Straight answers.</h2><p>What to know before we work together.</p></div><div className="faq-list">{FAQS.map(item => <details key={item.q}><summary>{item.q}<Plus size={20} /></summary><p>{clean(item.a)}</p></details>)}</div></section>
+    <section className="design-section page-closing"><h2>Let’s find your<br />next useful move.</h2><button className="studio-button" onClick={() => openCalendlyPopup()}>Talk to AI Engineer <ArrowUpRight size={17} /></button></section>
+  </main>;
 }
+
+function ArrowDownIcon() { return <ArrowRight size={17} className="rotate-90" />; }

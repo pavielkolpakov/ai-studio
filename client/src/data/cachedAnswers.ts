@@ -19,7 +19,7 @@ Once an opportunity is validated, we design and build the production system: AI 
 **AI Optimization**
 For AI systems already in production: quality, cost, latency, reliability, evaluation, observability, architecture. An ongoing engineering engagement where it's appropriate.
 
-We don't publish package prices. Implementation scope varies substantially with your systems, data, integrations, and quality requirements - a number quoted before we understand your problem would be a guess. You pay for outcomes and defined work, not a list of hours or technologies.
+Published prices are starting points, not standardized packages. The audit starts at $2,000, implementation at $5,000, and optimization at $3,000. Final implementation scope depends on your systems, data, integrations, and quality requirements. You pay for outcomes and defined work, not a list of hours or technologies.
 
 Want to tell us about your product? We can point to which stage fits your situation.`,
     followups: [
@@ -34,7 +34,7 @@ Want to tell us about your product? We can point to which stage fits your situat
 **1. Intro call (free, 30 minutes)**
 With an engineer, not a salesperson. You describe your product, workflows, and existing AI work. We tell you honestly whether there's a meaningful AI opportunity and whether we're the right team for it. If we're not, we say so - and often suggest who would be.
 
-**2. AI Audit (typically 1-3 weeks)**
+**2. AI Audit**
 Where the opportunity or technical direction is unclear, the audit provides the deeper assessment: product, operations, workflows, data, existing AI, and infrastructure. You receive an AI opportunity map, a prioritized roadmap, technical recommendations, business impact estimates, an implementation plan, and a clear view of risks and dependencies. The roadmap is yours to keep, whether or not we build anything.
 
 **3. Build**

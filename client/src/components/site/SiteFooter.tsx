@@ -1,24 +1,7 @@
+import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 import { CONTACT_EMAIL, LINKEDIN_URL, LOCATIONS } from "@/data/site";
 
-const LINK_CLASS = "text-[13.5px] text-muted-foreground transition-colors hover:text-white";
-
 export function SiteFooter() {
-  return (
-    <div className="mx-auto max-w-[1200px] px-5 pb-11 sm:px-10">
-      <div className="mt-[72px] flex flex-wrap items-center justify-between gap-6 border-t border-white/[0.09] pt-7">
-        <div className="flex items-center gap-[11px]">
-          <img src="/logo-mark.png" alt="" className="block h-5 w-auto opacity-80" />
-          <span className="text-[13px] text-faint-text">
-            © {new Date().getFullYear()} Neuronetis · {LOCATIONS}
-          </span>
-        </div>
-        <div className="flex flex-wrap items-center gap-x-[22px] gap-y-2">
-          <a href={`mailto:${CONTACT_EMAIL}`} className={LINK_CLASS}>{CONTACT_EMAIL}</a>
-          <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className={LINK_CLASS}>
-            LinkedIn
-          </a>
-        </div>
-      </div>
-    </div>
-  );
+  return <footer className="site-footer"><div className="footer-main"><div><Link to="/" className="footer-brand">Neuronetis</Link><p>Clear thinking.<br />Production AI.</p></div><div className="footer-links"><Link to="/">Home</Link><Link to="/pricing">Pricing</Link><Link to="/about">About</Link></div><div className="footer-contact"><span>Start a conversation</span><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}<ArrowUpRight size={16} /></a><a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">LinkedIn<ArrowUpRight size={16} /></a></div></div><div className="footer-bottom"><span>© {new Date().getFullYear()} Neuronetis</span><span>{LOCATIONS}</span><span>Built around your business.</span></div></footer>;
 }

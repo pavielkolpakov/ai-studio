@@ -1,145 +1,21 @@
-import { ABOUT_STATS, TEAMS, VALUES, FITS, NON_FITS } from "@/data/site";
+import { ArrowUpRight, Code2, PanelsTopLeft, Cloud, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Reveal } from "@/components/site/Reveal";
+import { MethodExplorer } from "@/components/site/MethodExplorer";
+
+const teams = [
+  { name: "AI / Backend", icon: Code2, body: "Model integration, RAG, agents, evaluation, APIs, and the services behind your product." },
+  { name: "Frontend / Mobile", icon: PanelsTopLeft, body: "Embedded AI experiences, product interfaces, and mobile applications shaped around the people using them." },
+  { name: "DevOps / Infrastructure", icon: Cloud, body: "Deployment, CI/CD, observability, and the infrastructure a dependable production system needs." },
+];
 
 export function AboutPage() {
-  return (
-    <div className="mx-auto max-w-[1200px] px-5 pt-20 sm:px-10">
-      <header className="mb-13 max-w-[760px]">
-        <div className="eyebrow mb-4">About</div>
-        <h1 className="mb-[18px] font-heading text-[40px] leading-[1.05] font-semibold tracking-[-0.03em] sm:text-[54px]">
-          A small studio that stays small on purpose
-        </h1>
-        <p className="mb-4 text-[18px] leading-[1.55] text-pretty text-muted-foreground">
-          Neuronetis is an AI engineering studio building production-grade AI systems for IT
-          companies and software product teams — integrating AI into existing products, and building
-          AI-native applications from the ground up.
-        </p>
-        <p className="m-0 text-[18px] leading-[1.55] text-pretty text-muted-foreground">
-          We are distributed: lead engineers in Israel, the US and Eastern Europe, with delivery
-          experience across the EU, Israel and North America. We work in European and
-          overlap-friendly time zones, in English.
-        </p>
-      </header>
-
-      <div className="mb-22 grid gap-px overflow-hidden rounded-xl border border-hairline bg-white/[0.08] sm:grid-cols-2 lg:grid-cols-4">
-        {ABOUT_STATS.map((s) => (
-          <div key={s.label} className="bg-surface px-[26px] py-7">
-            <div className="font-heading text-[30px] font-semibold tracking-[-0.02em]">{s.value}</div>
-            <div className="mt-1.5 text-[13.5px] leading-[1.4] text-muted-foreground">{s.label}</div>
-          </div>
-        ))}
-      </div>
-
-      <section className="mb-22">
-        <h2 className="mb-7 font-heading text-[32px] leading-[1.15] font-semibold tracking-[-0.026em]">
-          Three teams, senior on every project
-        </h2>
-        <div className="grid gap-4 lg:grid-cols-3">
-          {TEAMS.map((t) => (
-            <div
-              key={t.name}
-              className="rounded-[14px] border border-hairline bg-surface px-[30px] pt-[30px] pb-7"
-            >
-              <div className="mb-3.5 font-mono text-[10.5px] tracking-[0.12em] uppercase text-steel">
-                {t.name}
-              </div>
-              <p className="m-0 text-[15px] leading-[1.6] text-body-text">{t.body}</p>
-            </div>
-          ))}
-        </div>
-        <p className="mt-4 text-[13.5px] text-dim-text">
-          Each project is staffed with senior engineers from the relevant teams, scaled to the scope
-          of the work.
-        </p>
-      </section>
-
-      <section className="mb-22">
-        <h2 className="mb-7 font-heading text-[32px] leading-[1.15] font-semibold tracking-[-0.026em]">
-          How we operate
-        </h2>
-        <div className="grid gap-px overflow-hidden rounded-xl border border-hairline bg-white/[0.08] sm:grid-cols-2">
-          {VALUES.map((v) => (
-            <div key={v.title} className="bg-surface px-[30px] py-[26px]">
-              <h3 className="mb-2 font-heading text-[17px] font-semibold tracking-[-0.015em]">
-                {v.title}
-              </h3>
-              <p className="m-0 text-[14.5px] leading-[1.6] text-pretty text-muted-foreground">
-                {v.body}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <div className="mb-22 grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
-        <div>
-          <h2 className="mb-6 font-heading text-[32px] leading-[1.15] font-semibold tracking-[-0.026em]">
-            Who we work with
-          </h2>
-          <div className="grid gap-3.5">
-            {FITS.map((f) => (
-              <div
-                key={f}
-                className="grid grid-cols-[14px_minmax(0,1fr)] gap-3.5 text-[15.5px] leading-[1.55] text-body-text"
-              >
-                <span className="text-steel">✓</span>
-                <span>{f}</span>
-              </div>
-            ))}
-          </div>
-          <p className="mt-5 text-[14.5px] leading-[1.6] text-pretty text-muted-foreground">
-            We work best with a technical point of contact internally — a CTO, VP of Engineering or
-            technical lead. We don't replace your team; we extend it with deep AI expertise.
-          </p>
-          <div className="mt-8 border-t border-white/10 pt-7">
-            <div className="mb-4 font-mono text-[10.5px] tracking-[0.1em] uppercase text-dim-text">
-              What we don't build
-            </div>
-            <div className="grid gap-3.5">
-              {NON_FITS.map((f) => (
-                <div
-                  key={f}
-                  className="grid grid-cols-[14px_minmax(0,1fr)] gap-3.5 text-[15.5px] leading-[1.55] text-dim-text"
-                >
-                  <span className="text-faint-text">✕</span>
-                  <span>{f}</span>
-                </div>
-              ))}
-            </div>
-            <p className="mt-5 text-[14.5px] leading-[1.6] text-pretty text-dim-text">
-              Every engagement starts with understanding your actual problem, and we will tell you
-              honestly if AI is not the right solution for it.
-            </p>
-          </div>
-        </div>
-        <img
-          src="/office-view-graded.jpg"
-          alt="The Neuronetis workspace"
-          className="h-[420px] w-full rounded-[14px] border border-hairline object-cover"
-        />
-      </div>
-
-      {/* <section>
-        <h2 className="mb-7 font-heading text-[32px] leading-[1.15] font-semibold tracking-[-0.026em]">
-          The people you'd actually work with
-        </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {PEOPLE.map((p) => (
-            <div
-              key={p.role}
-              className="flex flex-col gap-4 rounded-[14px] border border-hairline bg-surface p-[22px]"
-            >
-              <ImagePlaceholder label="Photo" circle className="size-[76px] shrink-0" />
-              <div>
-                <div className="font-heading text-[17px] font-semibold tracking-[-0.015em]">
-                  {p.name}
-                </div>
-                <div className="mt-1 text-[13.5px] text-muted-foreground">{p.role}</div>
-                <div className="mt-2.5 font-mono text-[11px] text-dim-text">{p.detail}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section> */}
-    </div>
-  );
+  return <main className="design-page about-page">
+    <header className="design-hero about-hero"><Reveal className="about-hero-copy"><p className="studio-kicker">About Neuronetis</p><h1>Built by engineers.<br />Grounded in your business.</h1><p>We help software companies find where AI creates real value, then take responsibility for building the system.</p><Link className="studio-text-link" to="/pricing">Find your starting point <ArrowUpRight size={17} /></Link></Reveal><Reveal className="about-hero-image" delay={.15}><img src="/images/connected-systems.jpg" alt="Interlocking glass and metal sculptures representing connected engineering disciplines" width="1536" height="1024" fetchPriority="high" /></Reveal></header>
+    <section className="design-section about-manifesto"><Reveal><p>Strategy matters when it leads to<br className="hidden sm:block" /> <span>a system that works.</span></p></Reveal><div className="manifesto-detail"><p>We work with your existing product, data, and engineering team. The right solution might improve what you already run, add a focused capability, or become a new AI-native system.</p><p>Our role is to understand the problem, choose the simplest architecture that solves it well, and make it practical for your team to operate.</p></div></section>
+    <section className="design-section" aria-labelledby="method-title"><Reveal className="section-intro"><p className="studio-kicker">Our approach</p><h2 id="method-title">Clear decisions.<br />At every stage.</h2><p>Explore the path from the first question to a system you can measure and improve.</p></Reveal><MethodExplorer /></section>
+    <section className="design-section team-section" aria-labelledby="team-title"><Reveal className="section-intro"><h2 id="team-title">Specialist depth.<br />One engineering team.</h2><p>Senior engineers across three disciplines, brought together around the scope of your project.</p></Reveal><div className="team-layout"><div className="team-image"><img src="/office-view-graded.jpg" alt="The Neuronetis workspace overlooking the city" loading="lazy" width="900" height="1100" /></div><div className="team-disciplines">{teams.map(team => <Reveal key={team.name}><team.icon size={26} strokeWidth={1.3} aria-hidden="true" /><div><h3>{team.name}</h3><p>{team.body}</p></div></Reveal>)}</div></div></section>
+    <section className="design-section" aria-labelledby="principles-title"><Reveal className="section-intro"><h2 id="principles-title">A few things<br />we won’t compromise.</h2></Reveal><div className="principle-grid"><Reveal className="principle-card principle-iris"><span>Your system</span><h3>Ownership.<br />Without a catch.</h3><p>All code belongs to you. Documentation, deployment instructions, and operational guidance make the handover part of the work.</p><ArrowUpRight size={26} aria-hidden="true" /></Reveal><Reveal className="principle-card principle-dark" delay={.1}><span>Our judgment</span><h3>The right tool.<br />Even when it isn’t AI.</h3><p>We recommend conventional software or a better process when it solves the problem more simply. Technology follows the outcome.</p><ArrowRight size={26} aria-hidden="true" /></Reveal></div></section>
+    <section className="design-section fit-section"><Reveal><h2>Built to extend<br />your team.</h2><p>Our strongest partnerships have a technical owner: a CTO, engineering lead, or founder who can collaborate throughout the work.</p></Reveal><div className="fit-list">{["B2B SaaS & software products", "AI-first startups", "Scale-ups with proprietary data", "Engineering & platform teams", "Agencies with AI projects"].map(item => <div key={item}>{item}<ArrowUpRight size={19} aria-hidden="true" /></div>)}</div></section>
+  </main>;
 }

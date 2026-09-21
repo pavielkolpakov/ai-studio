@@ -20,66 +20,120 @@ def _make_mock_agent(answer="Hello!"):
 
 @pytest.fixture(autouse=True)
 def reset_rate_limiters():
-    from app.core.rate_limiter import _session_limiter, _chat_limiter
-    _session_limiter._store.clear()
+    from app.core.rate_limiter import _chat_ip_limiter, _chat_limiter
     _chat_limiter._store.clear()
+    _chat_ip_limiter._store.clear()
 
 
-class TestSessionRateLimit:
+class TestSessionCreation:
     @pytest.mark.asyncio
-    async def test_blocks_after_10_sessions_per_ip(self):
+    async def test_session_creation_is_not_rate_limited(self):
         from app.main import app
 
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            for _ in range(10):
+            for _ in range(50):
                 resp = await client.post("/api/v1/chat/session")
                 assert resp.status_code == 200
-
-            # 11th request should be blocked
-            resp = await client.post("/api/v1/chat/session")
-            assert resp.status_code == 429
-
-    @pytest.mark.asyncio
-    async def test_429_includes_retry_after(self):
-        from app.main import app
-
-        transport = ASGITransport(app=app)
-        async with AsyncClient(transport=transport, base_url="http://test") as client:
-            for _ in range(10):
-                await client.post("/api/v1/chat/session")
-
-            resp = await client.post("/api/v1/chat/session")
-            assert resp.status_code == 429
-            body = resp.json()
-            assert body["detail"] == "Rate limit exceeded"
-            assert "retry_after" in body
-            assert int(body["retry_after"]) > 0
-            assert "retry-after" in resp.headers
-            assert int(resp.headers["retry-after"]) > 0
 
 
 class TestWindowReset:
     @pytest.mark.asyncio
-    async def test_session_limit_resets_after_window(self):
-        from app.core.rate_limiter import _session_limiter
+    @patch("app.rag.chain.pick_followups", new=AsyncMock(return_value=[]))
+    @patch("app.api.v1.chat.build_agent")
+    @patch("app.api.v1.chat.get_or_create_conversation")
+    @patch("app.api.v1.chat.append_message")
+    @patch("app.api.v1.chat.async_get_db")
+    async def test_chat_limit_resets_after_window(
+        self, mock_db_dep, mock_append, mock_get_conv, mock_build_agent
+    ):
+        from app.core.rate_limiter import _chat_limiter
         from app.main import app
+
+        mock_conv = MagicMock()
+        mock_conv.messages = []
+        mock_get_conv.return_value = mock_conv
+        mock_build_agent.return_value = _make_mock_agent()
+
+        mock_session = AsyncMock()
+
+        async def fake_db():
+            yield mock_session
 
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            for _ in range(10):
-                await client.post("/api/v1/chat/session")
+            for i in range(30):
+                mock_db_dep.return_value = fake_db()
+                resp = await client.post(
+                    "/api/v1/chat",
+                    json={"session_id": "sess-w", "message": f"msg {i}"},
+                )
+                assert resp.status_code == 200
 
-            resp = await client.post("/api/v1/chat/session")
+            mock_db_dep.return_value = fake_db()
+            resp = await client.post(
+                "/api/v1/chat",
+                json={"session_id": "sess-w", "message": "blocked"},
+            )
             assert resp.status_code == 429
+            body = resp.json()
+            assert body["detail"] == "Rate limit exceeded"
+            assert int(body["retry_after"]) > 0
+            assert int(resp.headers["retry-after"]) > 0
 
             # Simulate window expiry by backdating the stored timestamp
-            for key in _session_limiter._store:
-                count, _ = _session_limiter._store[key]
-                _session_limiter._store[key] = (count, 0.0)  # epoch = expired
+            for key in _chat_limiter._store:
+                count, _ = _chat_limiter._store[key]
+                _chat_limiter._store[key] = (count, 0.0)  # epoch = expired
 
-            resp = await client.post("/api/v1/chat/session")
+            mock_db_dep.return_value = fake_db()
+            resp = await client.post(
+                "/api/v1/chat",
+                json={"session_id": "sess-w", "message": "allowed again"},
+            )
             assert resp.status_code == 200
+
+
+class TestChatIPRateLimit:
+    @pytest.mark.asyncio
+    @patch("app.rag.chain.pick_followups", new=AsyncMock(return_value=[]))
+    @patch("app.api.v1.chat.build_agent")
+    @patch("app.api.v1.chat.get_or_create_conversation")
+    @patch("app.api.v1.chat.append_message")
+    @patch("app.api.v1.chat.async_get_db")
+    async def test_blocks_after_60_messages_per_ip_across_sessions(
+        self, mock_db_dep, mock_append, mock_get_conv, mock_build_agent
+    ):
+        from app.main import app
+
+        mock_conv = MagicMock()
+        mock_conv.messages = []
+        mock_get_conv.return_value = mock_conv
+        mock_build_agent.return_value = _make_mock_agent()
+
+        mock_session = AsyncMock()
+
+        async def fake_db():
+            yield mock_session
+
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            # Fresh session every 30 messages keeps the per-session limit clear
+            for i in range(60):
+                mock_db_dep.return_value = fake_db()
+                resp = await client.post(
+                    "/api/v1/chat",
+                    json={"session_id": f"sess-{i // 30}", "message": f"msg {i}"},
+                )
+                assert resp.status_code == 200
+
+            # A brand-new session no longer buys more LLM calls from the same IP
+            mock_db_dep.return_value = fake_db()
+            resp = await client.post(
+                "/api/v1/chat",
+                json={"session_id": "sess-fresh", "message": "blocked by ip"},
+            )
+            assert resp.status_code == 429
 
 
 class TestIndependentCounters:

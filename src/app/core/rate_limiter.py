@@ -34,8 +34,8 @@ class RateLimiter:
         return None
 
 
-_session_limiter = RateLimiter(max_requests=10, window_seconds=3600)
 _chat_limiter = RateLimiter(max_requests=30, window_seconds=3600)
+_chat_ip_limiter = RateLimiter(max_requests=60, window_seconds=3600)
 _contact_limiter = RateLimiter(max_requests=5, window_seconds=3600)
 
 
@@ -45,10 +45,10 @@ def _raise_if_limited(limiter: RateLimiter, key: str):
         raise RateLimitExceeded(retry_after)
 
 
-async def rate_limit_session(request: Request):
-    """Dependency: limit session creation by client IP."""
+async def rate_limit_chat_ip(request: Request):
+    """Dependency: limit chat requests by client IP."""
     ip = request.client.host if request.client else "unknown"
-    _raise_if_limited(_session_limiter, ip)
+    _raise_if_limited(_chat_ip_limiter, ip)
 
 
 def check_chat_rate_limit(session_id: str):

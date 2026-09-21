@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { MenuIcon, XIcon } from "lucide-react";
+import { ArrowUpRight, MenuIcon, XIcon } from "lucide-react";
 import {
   Sheet,
   SheetClose,
@@ -12,20 +12,22 @@ import {
 import { openCalendlyPopup } from "@/lib/calendly";
 
 const NAV_LINK_CLASS =
-  "rounded-lg px-3.5 py-2 text-sm text-foreground underline-offset-4 transition-colors hover:underline";
+  "header-nav-link";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-hairline bg-background">
-      <div className="mx-auto flex h-[72px] max-w-[1200px] items-center justify-between gap-6 px-5 sm:px-10">
-        <Link to="/" className="flex items-center gap-3">
+    <header className="site-header sticky top-0 z-50">
+      <div className="header-inner">
+        <Link to="/" className="flex items-center gap-3" aria-label="Neuronetis">
+          <img src="/logo-mark.png" alt="" className="h-6 w-auto" />
           <span className="font-heading text-[18px] font-semibold tracking-[0.01em]">
             Neuronetis
           </span>
         </Link>
 
-        <nav className="flex items-center gap-1">
-          <div className="hidden items-center gap-1 sm:flex">
+        <nav className="header-navigation" aria-label="Main navigation">
+          <div className="header-nav-links hidden md:flex">
+            <NavLink to="/" end className={NAV_LINK_CLASS}>Studio</NavLink>
             <NavLink to="/pricing" className={NAV_LINK_CLASS}>
               Pricing
             </NavLink>
@@ -35,15 +37,15 @@ export function SiteHeader() {
           </div>
           <button
             onClick={() => openCalendlyPopup()}
-            className="btn-header-cta ml-3 hidden cursor-pointer px-3.5 py-[7px] text-[13.5px] sm:block"
+            className="btn-header-cta hidden cursor-pointer text-[13px] md:inline-flex"
           >
-            Talk to AI Engineer
+            Talk to AI Engineer <ArrowUpRight size={15} aria-hidden="true" />
           </button>
 
           <Sheet>
             <SheetTrigger
               aria-label="Open menu"
-              className="cursor-pointer rounded-lg border border-hairline-strong p-2.5 text-foreground transition-colors hover:border-white/45 sm:hidden"
+              className="cursor-pointer rounded-lg border border-hairline-strong p-2.5 text-foreground transition-colors hover:border-white/45 md:hidden"
             >
               <MenuIcon className="size-[18px]" />
             </SheetTrigger>
@@ -65,7 +67,8 @@ export function SiteHeader() {
                 </SheetClose>
               </SheetHeader>
 
-              <nav className="flex flex-col px-5 py-4">
+              <nav className="mobile-navigation flex flex-col px-5 py-4" aria-label="Mobile navigation">
+                <SheetClose render={<NavLink to="/" end className="py-2.5 text-[15px] text-foreground" />}>Studio</SheetClose>
                 <SheetClose
                   render={
                     <NavLink

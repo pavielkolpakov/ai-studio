@@ -1,18 +1,6 @@
 import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 
 export function NotFoundPage() {
-  return (
-    <section className="mx-auto max-w-[1200px] px-5 py-[120px] text-center sm:px-10">
-      <div className="eyebrow mb-[26px]">404</div>
-      <h1 className="mb-[22px] font-heading text-[42px] leading-[1.03] font-semibold tracking-[-0.03em] text-balance sm:text-[54px]">
-        This page doesn't exist.
-      </h1>
-      <p className="mx-auto mb-9 max-w-[560px] text-[19px] leading-[1.55] text-pretty text-muted-foreground">
-        The link may be outdated. Start from the Opportunity Scanner instead.
-      </p>
-      <Link to="/" className="btn-primary inline-block px-6 py-[13px] text-[15px]">
-        Run the AI Opportunity Scanner
-      </Link>
-    </section>
-  );
+  return <main className="design-page not-found dot-field"><p className="studio-kicker">404 / Page not found</p><h1>A little off course.</h1><p>This page may have moved. There’s still plenty worth exploring.</p><Link to="/" className="studio-button">Back to Neuronetis <ArrowUpRight size={17} /></Link></main>;
 }

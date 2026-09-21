@@ -12,6 +12,7 @@ export function render(path: string, assets: { script: string; styles: string[] 
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <noscript><style>{`#root [style*="opacity:0"] { opacity: 1 !important; transform: none !important; }`}</style></noscript>
         <link rel="icon" type="image/png" href="/NN.png" />
         {assets.styles.map((href) => <link key={href} rel="stylesheet" href={href} />)}
       </head>
