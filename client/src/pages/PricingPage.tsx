@@ -32,14 +32,14 @@ export function PricingPage() {
   const reduce = useReducedMotion();
   return <main className="design-page pricing-page">
     <header className="design-hero pricing-hero dot-field">
-      <Reveal><p className="studio-kicker">Pricing & engagements</p><h1>The right scope.<br />A clear way forward.</h1><p>Start with the question you need answered. We scope the engineering around a defined outcome.</p><a className="studio-button" href="#engagements">Explore engagements <ArrowDownIcon /></a></Reveal>
+      <Reveal><p className="studio-kicker">Pricing & engagements</p><h1>The right scope.<br />A clear way forward.</h1><p>Start with the question you need answered. We scope the engineering around a defined outcome.</p><Link className="studio-button" to="/pricing#engagements">Explore engagements <ArrowDownIcon /></Link></Reveal>
       <div className="pricing-art"><img src="/images/optical-layers.jpg" alt="Precisely layered optical glass, an abstract study of systems engineering" width="1536" height="1024" fetchPriority="high" /></div>
     </header>
 
     <section className="design-section engagement-section" id="engagements" aria-labelledby="engagement-title">
+      <div className="service-anchors" aria-hidden="true">{services.map(item => <span key={item.id} id={item.id} />)}</div>
       <div className="section-intro"><h2 id="engagement-title">Where are you with AI?</h2><p>Choose your starting point. An audit is optional when the requirements are already clear.</p></div>
       <nav className="engagement-selector" aria-label="Choose an engagement">{PRICING_PAGE.paths.map((path, index) => <Link key={path.service} to={`/pricing${path.href}`} aria-current={selected === index ? "true" : undefined}><span>{path.situation}</span><strong>{path.answer}</strong><small>{path.service}</small><ArrowUpRight size={22} /></Link>)}</nav>
-      <div className="service-anchors" aria-hidden="true">{services.map(item => <span key={item.id} id={item.id} />)}</div>
       <AnimatePresence mode="wait" initial={false}><motion.div key={service.id} className={`engagement-detail engagement-${selected}`} initial={{ opacity: 0, y: reduce ? 0 : 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : .2 }}>
         <div className="engagement-lead"><span className="studio-kicker">{selected === 0 ? "Clarity before commitment" : selected === 1 ? "From validated idea to production" : "Make what runs work better"}</span><h3>{service.title}</h3><p>{clean(service.lead)}</p><div className="engagement-price">{service.price}</div><p className="price-caption">{selected === 0 ? "One-week audit. Broader assessments scoped separately." : "Starting point. Final proposal follows technical scoping."}</p><button className="studio-button" onClick={() => openCalendlyPopup()}>{service.cta}<ArrowUpRight size={17} /></button></div>
         <div className="engagement-includes">
@@ -55,7 +55,7 @@ export function PricingPage() {
     <section className="design-section" aria-labelledby="ongoing-title"><Reveal className="ongoing-panel"><div><p className="studio-kicker">Beyond the first release</p><h2 id="ongoing-title">Keep making<br />the system better.</h2><p>Continue with a standing engineering capacity for new features, integrations, evaluations, and production improvements.</p></div><div className="ongoing-price"><span>Ongoing AI Engineering</span><strong>From $3,000<small>/month</small></strong><p>Optional, scoped to the work ahead.</p><button className="studio-text-link" onClick={() => openCalendlyPopup()}>Discuss ongoing support <ArrowUpRight size={17} /></button></div></Reveal></section>
 
     <section className="design-section faq-section" aria-labelledby="faq-title"><div className="section-intro"><h2 id="faq-title">Good questions.<br />Straight answers.</h2><p>What to know before we work together.</p></div><div className="faq-list">{FAQS.map(item => <details key={item.q}><summary>{item.q}<Plus size={20} /></summary><p>{clean(item.a)}</p></details>)}</div></section>
-    <section className="design-section page-closing"><h2>Let’s find your<br />next useful move.</h2><button className="studio-button" onClick={() => openCalendlyPopup()}>Talk to AI Engineer <ArrowUpRight size={17} /></button></section>
+    <section className="design-section page-closing"><h2>Let’s find your<br />next useful move.</h2><div className="scanner-actions"><Link to="/#scanner" className="studio-button">Explore your AI opportunity <ArrowUpRight size={17} /></Link><button type="button" className="studio-button engineer-button" onClick={() => openCalendlyPopup()}>Talk to AI Engineer <ArrowUpRight size={17} aria-hidden="true" /></button></div></section>
   </main>;
 }
 

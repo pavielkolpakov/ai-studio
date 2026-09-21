@@ -113,8 +113,6 @@
 .hero-copy > .studio-kicker { color: #d4dfef; display: inline-flex; align-items: center; gap: 10px; }
 .hero-copy > .studio-kicker::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #b7d5f4; box-shadow: 0 0 12px #a9ccff; }
 .hero-scanner { margin-top: 30px; max-width: 650px; scroll-margin-top: 110px; }
-.scanner-label { display: flex; align-items: center; justify-content: center; gap: 9px; color: #d3dce9; font-size: 12px; margin-bottom: 12px; }
-.scanner-spark { height: 5px; width: 5px; background: #c7b8ee; border-radius: 50%; }
 .hero-assurance { color: #b3c0d3; font-size: 11px; margin-top: 18px; }
 .hero-scanner .scanner-shortcuts { margin-top: 14px; gap: 8px 20px; }
 .hero-scanner .scanner-shortcuts button { padding: 3px 0; border: 0; border-radius: 0; font-size: 11px; color: #c7d1df; border-bottom: 1px solid #c7d1df35; }

@@ -16,8 +16,8 @@ export function ProjectExplorer() {
     <Reveal className="section-intro"><p className="studio-kicker">What we can build</p><h2 id="projects-title">Real problems.<br />Thoughtfully engineered answers.</h2><p>Explore the kinds of systems in our project library. Each one starts with a business problem.</p></Reveal>
     <div className="project-selector" aria-label="Project categories">{PROJECT_SHOWCASE.map((item, index) => <button key={item.name} aria-pressed={index === selected} onClick={() => setSelected(index)}>{item.name}</button>)}</div>
     <div className={`project-explorer tone-${project.color}`}>
-      <div className={`project-visual dot-field${project.icon === "search" ? " knowledge-visual" : ""}`}>
-        {project.icon === "search" ? <motion.img initial={reduce ? false : { scale: 1.05 }} whileInView={{ scale: 1 }} viewport={{ once: true, amount: .4 }} transition={{ duration: reduce ? 0 : 3, ease: "easeOut" }} className="knowledge-art editorial-asset" src="/images/knowledge-archive.jpg" alt="An illuminated document retrieved from an ordered glass archive" width="1200" height="800" loading="lazy" /> : <Icon className="project-symbol" strokeWidth={0.65} aria-hidden="true" />}
+      <div className="project-visual dot-field">
+        <Icon className="project-symbol" strokeWidth={0.65} aria-hidden="true" />
         <ol className="workflow-diagram" aria-label="Example workflow">{project.flow.map((step, index) => <li key={step}><span>{step}</span>{index < 2 && <ArrowRight size={16} aria-hidden="true" />}</li>)}</ol>
       </div>
       <div className="project-detail">
