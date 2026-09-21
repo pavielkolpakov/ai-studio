@@ -12,6 +12,25 @@ from pydantic import Field
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from typesafe_sdk import NoulAnswer, SystemOneResponse, Usage
+
+ON_TOPIC_SIGNALS = {"about_agency": 0.99, "about_own_business": 0.0, "is_followup": 0.0}
+OFF_TOPIC_SIGNALS = dict.fromkeys(ON_TOPIC_SIGNALS, 0.0)
+
+
+class FakeJevClient:
+    """Stands in for the guardrail's TypeSafeClient: replays fixed nouls."""
+
+    def __init__(self, nouls: dict[str, float]):
+        self.nouls = nouls
+
+    def system_one(self, state, questions, **_kwargs):
+        return SystemOneResponse(
+            model="jev-latest",
+            usage=Usage(),
+            answers={name: NoulAnswer(noul=value) for name, value in self.nouls.items()},
+        )
+
 
 class RecordingModel(FakeMessagesListChatModel):
     calls: list = Field(default_factory=list)
@@ -36,12 +55,10 @@ class StructuredModel(RecordingModel):
 
 
 def configure_models(monkeypatch, verdicts, responses):
-    classifier = StructuredModel(
-        responses=[AIMessage(content=json.dumps({"verdict": verdict})) for verdict in verdicts],
-        disable_streaming=True,
-    )
+    """Replay `verdicts` from the guardrail's Jev client, `responses` from the agent."""
+    clients = [FakeJevClient(ON_TOPIC_SIGNALS if v == "ON_TOPIC" else OFF_TOPIC_SIGNALS) for v in verdicts]
     model = RecordingModel(responses=responses)
-    monkeypatch.setattr("app.rag.guardrail.ChatOpenAI", lambda **kwargs: classifier)
+    monkeypatch.setattr("app.rag.guardrail._client", lambda: clients.pop(0))
     monkeypatch.setattr("app.rag.chain.ChatOpenAI", lambda **kwargs: model)
     return model
 

@@ -33,6 +33,7 @@ jobs:
     env:
       DATABASE_URL: postgresql://aistudio:aistudio@localhost:5432/aistudio
       OPENAI_API_KEY: test
+      TYPESAFE_API_KEY: test
       QDRANT_URL: http://localhost:6333
       QDRANT_API_KEY: test
       RESEND_API_KEY: test

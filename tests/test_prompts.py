@@ -3,7 +3,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from app.rag.prompts import AGENT_SYSTEM_PROMPT, GUARDRAIL_PROMPT
+from app.rag.prompts import AGENT_SYSTEM_PROMPT
 
 
 class TestAgentSystemPrompt:
@@ -33,20 +33,3 @@ class TestAgentSystemPrompt:
             assert function["description"] == tool.description
             assert function["description"]
             assert set(function["parameters"]["properties"]) == arguments
-
-
-class TestGuardrailPrompt:
-    def test_has_input_variable(self):
-        assert "input" in GUARDRAIL_PROMPT.input_variables
-
-    def test_is_a_binary_on_off_topic_gate(self):
-        txt = str(GUARDRAIL_PROMPT)
-        assert "ON_TOPIC" in txt
-        assert "OFF_TOPIC" in txt
-
-    def test_no_longer_classifies_business_vs_agency_intent(self):
-        """The gate only judges on/off topic; tool + context decisions moved to
-        the agent, so the old intent labels must be gone."""
-        txt = str(GUARDRAIL_PROMPT)
-        assert "BUSINESS" not in txt
-        assert "FOLLOWUP" not in txt

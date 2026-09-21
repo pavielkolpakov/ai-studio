@@ -1,115 +1,131 @@
-import json
 import sys
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from langchain_core.language_models.fake_chat_models import FakeListChatModel
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
-from pydantic import ValidationError
+from typesafe_sdk import NoulAnswer, SystemOneResponse, Usage
 
 
-class StructuredClassifier(FakeListChatModel):
-    def with_structured_output(self, schema, **kwargs):
-        return self | (lambda message: schema.model_validate_json(message.content))
+class FakeJevClient:
+    """Stands in for TypeSafeClient: replays fixed nouls, records every state."""
+
+    def __init__(self, **nouls: float):
+        self.nouls = nouls
+        self.states: list = []
+        self.questions: list = []
+
+    def system_one(self, state, questions, **_kwargs):
+        self.states.append(state)
+        self.questions.append(questions)
+        return SystemOneResponse(
+            model="jev-latest",
+            usage=Usage(),
+            answers={name: NoulAnswer(noul=value) for name, value in self.nouls.items()},
+        )
 
 
-def fake_classifier(verdict: str):
-    """Patch target for ChatOpenAI inside the guardrail: replies with `verdict`."""
-    return lambda **_kwargs: StructuredClassifier(responses=[json.dumps({"verdict": verdict})])
+def fake_jev(**nouls: float):
+    """Patch target for `app.rag.guardrail._client`."""
+    client = FakeJevClient(**nouls)
+    return lambda: client
 
 
-def recording_classifier(verdict: str, seen: list[str]):
-    """Like `fake_classifier`, but appends every prompt it receives to `seen`."""
-
-    class Recording(StructuredClassifier):
-        def _call(self, messages, stop=None, run_manager=None, **kwargs):
-            seen.extend(str(m.content) for m in messages)
-            return super()._call(messages, stop, run_manager, **kwargs)
-
-    return lambda **_kwargs: Recording(responses=[json.dumps({"verdict": verdict})])
+def all_signals(**overrides: float) -> dict[str, float]:
+    return {"about_agency": 0.0, "about_own_business": 0.0, "is_followup": 0.0} | overrides
 
 
 class TestClassifyTurn:
-    @patch("app.rag.guardrail.ChatOpenAI")
-    def test_keeps_latest_business_description_separate_from_history(self, mock_llm_cls):
+    @patch("app.rag.guardrail._client")
+    def test_keeps_latest_business_description_separate_from_history(self, mock_client):
         from app.rag.guardrail import classify_turn
 
-        seen = []
-
-        class Recording(StructuredClassifier):
-            def _call(self, messages, **kwargs):
-                seen.extend(messages)
-                return super()._call(messages, **kwargs)
-
-        mock_llm_cls.return_value = Recording(responses=['{"verdict": "ON_TOPIC"}'])
+        client = FakeJevClient(**all_signals(about_own_business=0.97))
+        mock_client.return_value = client
         result = classify_turn([
             HumanMessage(content="Can you suggest ideas?"),
             AIMessage(content="Tell me about your company."),
             HumanMessage(content="i have a marketing lead generation company"),
         ])
 
-        assert seen[-1].content == "Latest user message:\ni have a marketing lead generation company"
-        assert "Tell me about your company." in seen[-2].content
-        assert "marketing lead generation" not in seen[-2].content
+        state = client.states[-1]
+        assert state["latest_user_message"] == "i have a marketing lead generation company"
+        assert "Tell me about your company." in state["earlier_conversation"]
+        assert "marketing lead generation" not in state["earlier_conversation"]
         assert result.verdict == "ON_TOPIC"
 
-    @patch("app.rag.guardrail.ChatOpenAI")
-    def test_returns_on_topic_for_an_agency_question(self, mock_llm_cls):
+    @patch("app.rag.guardrail._client")
+    def test_asks_all_three_signals_in_one_request(self, mock_client):
         from app.rag.guardrail import classify_turn
 
-        mock_llm_cls.side_effect = fake_classifier("ON_TOPIC")
+        client = FakeJevClient(**all_signals(about_agency=0.99))
+        mock_client.return_value = client
+        result = classify_turn([HumanMessage(content="What services does Neuronetis offer?")])
+
+        assert len(client.questions) == 1
+        assert set(client.questions[0]) == {"about_agency", "about_own_business", "is_followup"}
+        assert result.signals == all_signals(about_agency=0.99)
+
+    @patch("app.rag.guardrail._client")
+    def test_returns_on_topic_for_an_agency_question(self, mock_client):
+        from app.rag.guardrail import classify_turn
+
+        mock_client.side_effect = fake_jev(**all_signals(about_agency=0.99))
 
         assert classify_turn([HumanMessage(content="What services does Neuronetis offer?")]).verdict == "ON_TOPIC"
 
-    @patch("app.rag.guardrail.ChatOpenAI")
-    def test_returns_on_topic_for_a_business_description(self, mock_llm_cls):
+    @patch("app.rag.guardrail._client")
+    def test_returns_on_topic_for_a_business_description(self, mock_client):
         from app.rag.guardrail import classify_turn
 
-        mock_llm_cls.side_effect = fake_classifier("ON_TOPIC")
+        mock_client.side_effect = fake_jev(**all_signals(about_own_business=0.95))
         messages = [HumanMessage(content="i have a marketing lead generation company")]
 
         assert classify_turn(messages).verdict == "ON_TOPIC"
 
-    @patch("app.rag.guardrail.ChatOpenAI")
-    def test_malformed_model_output_is_not_misreported_as_off_topic(self, mock_llm_cls):
+    @patch("app.rag.guardrail._client")
+    def test_a_single_signal_above_the_threshold_is_enough(self, mock_client):
+        from app.rag.guardrail import ON_TOPIC_THRESHOLD, classify_turn
+
+        mock_client.side_effect = fake_jev(**all_signals(is_followup=ON_TOPIC_THRESHOLD))
+
+        assert classify_turn([HumanMessage(content="and the second one?")]).verdict == "ON_TOPIC"
+
+    @patch("app.rag.guardrail._client")
+    def test_signals_below_the_threshold_do_not_add_up_to_on_topic(self, mock_client):
+        """Composition is max(), not a sum: three weak signals stay off-topic."""
         from app.rag.guardrail import classify_turn
 
-        mock_llm_cls.side_effect = fake_classifier("I'm not sure")
+        mock_client.side_effect = fake_jev(about_agency=0.3, about_own_business=0.3, is_followup=0.3)
 
-        with pytest.raises(ValidationError):
-            classify_turn([HumanMessage(content="???")])
+        assert classify_turn([HumanMessage(content="write me a poem")]).verdict == "OFF_TOPIC"
 
-    @patch("app.rag.guardrail.ChatOpenAI")
-    def test_classifier_sees_prior_turns_not_just_the_latest_message(self, mock_llm_cls):
+    @patch("app.rag.guardrail._client")
+    def test_classifier_sees_prior_turns_not_just_the_latest_message(self, mock_client):
         """Without history the classifier cannot tell a NEW business from
         elaboration on ideas already generated this session."""
         from app.rag.guardrail import classify_turn
 
-        seen: list[str] = []
-        mock_llm_cls.side_effect = recording_classifier("ON_TOPIC", seen)
-        messages = [
+        client = FakeJevClient(**all_signals(is_followup=0.9))
+        mock_client.return_value = client
+        classify_turn([
             HumanMessage(content="I run a 40-person logistics company."),
             AIMessage(content="Here are three ideas for your logistics business."),
             HumanMessage(content="we also do last-mile delivery in Poland"),
-        ]
+        ])
 
-        classify_turn(messages)
+        state = client.states[-1]
+        assert state["latest_user_message"] == "we also do last-mile delivery in Poland"
+        assert "logistics company" in state["earlier_conversation"]
 
-        prompt_text = "\n".join(seen)
-        assert "last-mile delivery" in prompt_text
-        assert "logistics company" in prompt_text
-
-    @patch("app.rag.guardrail.ChatOpenAI")
-    def test_classifier_window_excludes_stale_turns(self, mock_llm_cls):
+    @patch("app.rag.guardrail._client")
+    def test_classifier_window_excludes_stale_turns(self, mock_client):
         from app.rag.guardrail import classify_turn
 
-        seen: list[str] = []
-        mock_llm_cls.side_effect = recording_classifier("ON_TOPIC", seen)
-        messages = [
+        client = FakeJevClient(**all_signals(about_agency=0.9))
+        mock_client.return_value = client
+        classify_turn([
             HumanMessage(content="ancient unrelated topic"),
             AIMessage(content="a"),
             HumanMessage(content="b"),
@@ -117,17 +133,25 @@ class TestClassifyTurn:
             HumanMessage(content="d"),
             AIMessage(content="e"),
             HumanMessage(content="what's your pricing?"),
-        ]
+        ])
 
-        classify_turn(messages)
+        assert "ancient unrelated topic" not in client.states[-1]["earlier_conversation"]
 
-        assert "ancient unrelated topic" not in "\n".join(seen)
+    @patch("app.rag.guardrail._client")
+    def test_a_first_turn_reports_no_earlier_conversation(self, mock_client):
+        from app.rag.guardrail import classify_turn
+
+        client = FakeJevClient(**all_signals(about_agency=0.9))
+        mock_client.return_value = client
+        classify_turn([HumanMessage(content="what's your pricing?")])
+
+        assert client.states[-1]["earlier_conversation"] == "No earlier conversation."
 
 
 class TestRouting:
-    """Verdict -> routing decision, with the classifier mocked."""
+    """Signals -> routing decision, with the Jev client mocked."""
 
-    @patch("app.rag.guardrail.ChatOpenAI", side_effect=fake_classifier("OFF_TOPIC"))
+    @patch("app.rag.guardrail._client", side_effect=fake_jev(**all_signals()))
     def test_offtopic_short_circuits_with_rejection_message(self, _mock):
         from app.rag.guardrail import REJECTION_MESSAGE, GuardrailMiddleware
 
@@ -141,7 +165,7 @@ class TestRouting:
         assert isinstance(new_msgs[0], AIMessage)
         assert new_msgs[0].content == REJECTION_MESSAGE
 
-    @patch("app.rag.guardrail.ChatOpenAI", side_effect=fake_classifier("OFF_TOPIC"))
+    @patch("app.rag.guardrail._client", side_effect=fake_jev(**all_signals()))
     def test_bare_greeting_is_rejected(self, _mock):
         from app.rag.guardrail import GuardrailMiddleware
 
@@ -150,7 +174,7 @@ class TestRouting:
 
         assert mw.before_model(state, runtime=None)["jump_to"] == "end"
 
-    @patch("app.rag.guardrail.ChatOpenAI", side_effect=fake_classifier("ON_TOPIC"))
+    @patch("app.rag.guardrail._client", side_effect=fake_jev(**all_signals(about_agency=0.98)))
     def test_ontopic_agency_question_lets_the_agent_proceed(self, _mock):
         from app.rag.guardrail import GuardrailMiddleware
 
@@ -159,7 +183,7 @@ class TestRouting:
 
         assert mw.before_model(state, runtime=None) is None
 
-    @patch("app.rag.guardrail.ChatOpenAI", side_effect=fake_classifier("ON_TOPIC"))
+    @patch("app.rag.guardrail._client", side_effect=fake_jev(**all_signals(about_own_business=0.96)))
     def test_ontopic_business_description_lets_the_agent_proceed(self, _mock):
         from app.rag.guardrail import GuardrailMiddleware
 
@@ -168,8 +192,8 @@ class TestRouting:
 
         assert mw.before_model(state, runtime=None) is None
 
-    @patch("app.rag.guardrail.ChatOpenAI")
-    def test_skips_classification_during_tool_loop(self, mock_classify):
+    @patch("app.rag.guardrail._client")
+    def test_skips_classification_during_tool_loop(self, mock_client):
         """After a tool call, the last message is a ToolMessage, not Human.
         Middleware must not re-classify mid-loop."""
         from app.rag.guardrail import GuardrailMiddleware
@@ -188,4 +212,4 @@ class TestRouting:
         result = mw.before_model(state, runtime=None)
 
         assert result is None
-        mock_classify.assert_not_called()
+        mock_client.assert_not_called()

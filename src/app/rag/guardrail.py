@@ -1,12 +1,12 @@
+from functools import cache
 from typing import Any, Literal
 
 from langchain.agents.middleware import AgentMiddleware, hook_config
 from langchain_core.messages import AIMessage, HumanMessage
-from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
+from typesafe_sdk import Noul, TypeSafeClient
 
 from app.core.config import settings
-from app.rag.prompts import GUARDRAIL_PROMPT
 
 REJECTION_MESSAGE = (
     "I'm sorry, but as Neuronetis AI assistant, I can only answer questions "
@@ -20,9 +20,39 @@ Verdict = Literal["ON_TOPIC", "OFF_TOPIC"]
 
 class TurnClassification(BaseModel):
     verdict: Verdict
+    signals: dict[str, float]
 
 
 CONTEXT_WINDOW = 6  # Latest user message plus recent history (~3 exchanges).
+
+# A turn is on-topic if ANY signal fires; each noul is the probability that its
+# statement holds. Calibrated on the labelled cases in tests/test_guardrail_live.py:
+# off-topic turns top out at 0.27, the weakest on-topic turn scores 0.46, so this
+# sits mid-gap. Re-sweep against real traffic before moving it.
+ON_TOPIC_THRESHOLD = 0.35
+
+QUESTIONS = {
+    "about_agency": Noul(
+        instructions=(
+            "The latest user message asks about Neuronetis — its services, capabilities, "
+            "pricing, process, team, projects, or what working with the agency is like. "
+            "'You' and 'your' refer to Neuronetis; misspellings such as 'neuronets' count."
+        )
+    ),
+    "about_own_business": Noul(
+        instructions=(
+            "The latest user message describes the user's own business, company, product, "
+            "project, industry, or a business problem they might want AI help with."
+        )
+    ),
+    "is_followup": Noul(
+        instructions=(
+            "The latest user message refines, discusses, or asks about something already "
+            "raised in the earlier conversation, such as a project idea already suggested. "
+            "False when there is no earlier conversation."
+        )
+    ),
+}
 
 
 def _transcript(messages: list) -> str:
@@ -37,18 +67,28 @@ def _transcript(messages: list) -> str:
     return "\n".join(f"{'User' if isinstance(m, HumanMessage) else 'Assistant'}: {m.content}" for m in recent)
 
 
+@cache
+def _client() -> TypeSafeClient:
+    """One pooled client for the process; built on first use, not at import."""
+    return TypeSafeClient(api_key=settings.TYPESAFE_API_KEY, model=settings.TYPESAFE_MODEL)
+
+
 def classify_turn(messages: list) -> TurnClassification:
-    """Gate the latest turn: is it on-topic for Neuronetis, or off-topic?"""
-    llm = ChatOpenAI(
-        model="gpt-4o-mini",
-        api_key=settings.OPENAI_API_KEY,
-        temperature=0,
-        streaming=False,
-    ).with_structured_output(TurnClassification, method="json_schema", strict=True).with_config(tags=["guardrail"])
-    return (GUARDRAIL_PROMPT | llm).invoke({
-        "history": _transcript(messages[:-1]) or "No earlier conversation.",
-        "input": messages[-1].content,
-    })
+    """Gate the latest turn: is it on-topic for Neuronetis, or off-topic?
+
+    One Jev request asks three atomic nouls in parallel; the routing decision is
+    composed here rather than delegated to the model, so the threshold is ours.
+    """
+    response = _client().system_one(
+        state={
+            "earlier_conversation": _transcript(messages[:-1]) or "No earlier conversation.",
+            "latest_user_message": str(messages[-1].content),
+        },
+        questions=QUESTIONS,
+    )
+    signals = {name: response.nouls[name].noul for name in QUESTIONS}
+    verdict: Verdict = "ON_TOPIC" if max(signals.values()) >= ON_TOPIC_THRESHOLD else "OFF_TOPIC"
+    return TurnClassification(verdict=verdict, signals=signals)
 
 
 class GuardrailMiddleware(AgentMiddleware):
