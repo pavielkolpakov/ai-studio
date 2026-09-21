@@ -15,8 +15,9 @@ class TestAgentSystemPrompt:
         assert "neuronetis" in txt
         assert "we" in txt or "our" in txt
 
-    def test_has_index_placeholder(self):
-        assert "{index}" in AGENT_SYSTEM_PROMPT
+    def test_has_no_index_placeholder(self):
+        """Tool routing moved to Jev, so the model no longer reads a menu."""
+        assert "{index}" not in AGENT_SYSTEM_PROMPT
 
 
     def test_tool_schemas_supply_descriptions_and_arguments(self):

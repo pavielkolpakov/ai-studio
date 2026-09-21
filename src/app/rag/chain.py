@@ -13,7 +13,7 @@ from app.rag.followups import pick_followups
 from app.rag.guardrail import GuardrailMiddleware
 from app.rag.ideas import generate_ideas_payload
 from app.rag.prompts import AGENT_SYSTEM_PROMPT
-from app.vault.loader import load_index, read_notes
+from app.vault.loader import read_notes
 
 IDEAS_MODE_FOLLOWUPS = ["services_pricing", "process_overview", "about_neuronetis"]
 
@@ -36,8 +36,7 @@ def get_agency_info() -> str:
 @tool
 def read_knowledge_base(names: list[str]) -> str:
     """Read complete Neuronetis project files by name (e.g.
-    ['projects/01-rag-knowledge-assistant']). The Project Index in your system
-    prompt lists the available projects and when to read each. Only project
+    ['projects/01-rag-knowledge-assistant']). Only project
     files can be retrieved. Use these for project-specific scopes, technologies,
     indicative prices, timelines, and follow-up questions about project ideas.
     For general agency facts, use get_agency_info."""
@@ -62,7 +61,11 @@ def generate_project_ideas(description: str) -> tuple[str, dict]:
 
 
 def build_agent():
-    """Build a LangChain agent with knowledge-base search tool and guardrail middleware."""
+    """Build a LangChain agent whose tools are routed by Jev, not by the model.
+
+    Tools stay registered so the tools node can execute them; the middleware
+    strips them from the model request, leaving one call that only writes prose.
+    """
     llm = ChatOpenAI(
         model=settings.OPENAI_CHAT_MODEL,
         api_key=settings.OPENAI_API_KEY,
@@ -71,7 +74,7 @@ def build_agent():
     return create_agent(
         model=llm,
         tools=[get_agency_info, read_knowledge_base, generate_project_ideas],
-        system_prompt=AGENT_SYSTEM_PROMPT.replace("{index}", load_index()),
+        system_prompt=AGENT_SYSTEM_PROMPT,
         middleware=[GuardrailMiddleware()],
     )
 

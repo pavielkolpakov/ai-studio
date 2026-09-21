@@ -11,75 +11,90 @@ def _note(name, title, body="body text"):
     return Note(name=name, title=title, read_when=f"when {title}", body=body)
 
 
+class FakeJevClient:
+    """Stands in for TypeSafeClient: scores projects by name, records each call."""
+
+    def __init__(self, scores: dict[str, float]):
+        self.scores = scores
+        self.states: list = []
+        self.questions: list = []
+
+    def system_one(self, state, questions, **_kwargs):
+        from typesafe_sdk import NoulAnswer, SystemOneResponse, Usage
+
+        self.states.append(state)
+        self.questions.append(questions)
+        return SystemOneResponse(
+            model="jev-latest",
+            usage=Usage(),
+            answers={name: NoulAnswer(noul=self.scores.get(name, 0.0)) for name in questions},
+        )
+
+
 class TestSelectProjects:
-    @patch("app.rag.ideas.ChatOpenAI")
-    def test_selects_from_committed_index_without_sending_project_bodies(self, mock_llm_cls):
-        from app.rag.ideas import ProjectSelection, select_projects
-        from app.vault.loader import load_index, load_vault
-
-        names = ["projects/13-multi-agent-research-reports", "projects/17-llm-gateway"]
-        structured = mock_llm_cls.return_value.with_structured_output.return_value
-        structured.with_config.return_value = structured
-        structured.invoke.return_value = ProjectSelection(names=names)
-
-        result = select_projects("We need research reports and model spend control")
-
-        prompt = structured.invoke.call_args.args[0]
-        assert load_index() in prompt
-        assert [note.name for note in result] == names
-        assert all(note.body not in prompt for note in load_vault().values())
-        assert "30% upfront" not in prompt
-
-    @patch("app.rag.ideas.ChatOpenAI")
+    @patch("app.rag.ideas._client")
     @patch("app.rag.ideas.project_notes")
-    def test_returns_selected_notes(self, mock_project_notes, mock_llm_cls):
+    def test_returns_the_three_best_scoring_notes(self, mock_project_notes, mock_client):
         notes = [
             _note("projects/01-rag", "RAG Assistant"),
             _note("projects/04-support", "Support Copilot"),
             _note("projects/06-workflow", "Workflow Automation"),
+            _note("projects/09-gateway", "LLM Gateway"),
         ]
         mock_project_notes.return_value = notes
-
-        from app.rag.ideas import ProjectSelection
-
-        structured = MagicMock()
-        structured.with_config.return_value = structured
-        structured.invoke.return_value = ProjectSelection(
-            names=["projects/04-support", "projects/06-workflow"]
-        )
-        llm = MagicMock()
-        llm.with_structured_output.return_value = structured
-        mock_llm_cls.return_value = llm
+        mock_client.return_value = FakeJevClient({
+            "projects/01-rag": 0.10,
+            "projects/04-support": 0.95,
+            "projects/06-workflow": 0.40,
+            "projects/09-gateway": 0.80,
+        })
 
         from app.rag.ideas import select_projects
 
         result = select_projects("I run a support team")
 
-        assert [n.name for n in result] == ["projects/04-support", "projects/06-workflow"]
-        prompt = str(structured.invoke.call_args[0][0])
-        assert "support team" in prompt
-        assert "projects/01-rag" in prompt  # full catalog offered as menu
+        assert [n.name for n in result] == [
+            "projects/04-support", "projects/09-gateway", "projects/06-workflow",
+        ]
 
-    @patch("app.rag.ideas.ChatOpenAI")
+    @patch("app.rag.ideas._client")
     @patch("app.rag.ideas.project_notes")
-    def test_falls_back_when_selection_unknown(self, mock_project_notes, mock_llm_cls):
-        notes = [_note(f"projects/0{i}-p", f"P{i}") for i in range(1, 5)]
+    def test_asks_one_noul_per_project_carrying_its_read_when(self, mock_project_notes, mock_client):
+        notes = [_note("projects/01-rag", "RAG Assistant"), _note("projects/04-support", "Support Copilot")]
         mock_project_notes.return_value = notes
-
-        from app.rag.ideas import ProjectSelection
-
-        structured = MagicMock()
-        structured.with_config.return_value = structured
-        structured.invoke.return_value = ProjectSelection(names=["nope/x", "nope/y"])
-        llm = MagicMock()
-        llm.with_structured_output.return_value = structured
-        mock_llm_cls.return_value = llm
+        client = FakeJevClient({})
+        mock_client.return_value = client
 
         from app.rag.ideas import select_projects
 
-        result = select_projects("something")
+        select_projects("I run a support team")
 
-        assert [n.name for n in result] == [n.name for n in notes[:3]]
+        assert len(client.questions) == 1, "the whole catalogue is scored in one request"
+        questions = client.questions[0]
+        assert set(questions) == {"projects/01-rag", "projects/04-support"}
+        assert questions["projects/04-support"].instructions == "when Support Copilot"
+        assert client.states[0] == "I run a support team"
+
+    @patch("app.rag.ideas._client")
+    def test_scores_the_real_catalogue_without_sending_project_bodies(self, mock_client):
+        """Bodies are the expensive part and the selector never needs them —
+        `read_when` alone decides fit. Guards against a regression to sending
+        the full vault on every ideas turn."""
+        from app.vault.loader import load_vault
+
+        client = FakeJevClient({})
+        mock_client.return_value = client
+
+        from app.rag.ideas import select_projects
+
+        select_projects("We need research reports and model spend control")
+
+        sent = "\n".join(
+            [client.states[0]] + [q.instructions for q in client.questions[0].values()]
+        )
+        for note in load_vault().values():
+            assert note.body not in sent
+        assert "30% upfront" not in sent
 
 
 class TestGenerateIdeasPayload:

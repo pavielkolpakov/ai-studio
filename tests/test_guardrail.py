@@ -19,10 +19,13 @@ class FakeJevClient:
     def system_one(self, state, questions, **_kwargs):
         self.states.append(state)
         self.questions.append(questions)
+        # Jev answers every question it is asked; unscored ones come back near zero.
         return SystemOneResponse(
             model="jev-latest",
             usage=Usage(),
-            answers={name: NoulAnswer(noul=value) for name, value in self.nouls.items()},
+            answers={
+                name: NoulAnswer(noul=self.nouls.get(name, 0.0)) for name in questions
+            },
         )
 
 
@@ -56,16 +59,26 @@ class TestClassifyTurn:
         assert result.verdict == "ON_TOPIC"
 
     @patch("app.rag.guardrail._client")
-    def test_asks_all_three_signals_in_one_request(self, mock_client):
-        from app.rag.guardrail import classify_turn
+    def test_gating_and_routing_share_one_request(self, mock_client):
+        """Both decisions read the same state, so they ride in one Jev call."""
+        from app.rag.guardrail import GUARDRAIL_QUESTIONS, ROUTING_QUESTIONS, classify_turn
+
 
         client = FakeJevClient(**all_signals(about_agency=0.99))
         mock_client.return_value = client
         result = classify_turn([HumanMessage(content="What services does Neuronetis offer?")])
 
+        from app.vault.loader import project_notes
+
         assert len(client.questions) == 1
-        assert set(client.questions[0]) == {"about_agency", "about_own_business", "is_followup"}
+        asked = set(client.questions[0])
+        assert asked == (
+            set(GUARDRAIL_QUESTIONS)
+            | set(ROUTING_QUESTIONS)
+            | {f"detail:{note.name}" for note in project_notes()}
+        )
         assert result.signals == all_signals(about_agency=0.99)
+        assert set(result.routing) == asked - set(GUARDRAIL_QUESTIONS)
 
     @patch("app.rag.guardrail._client")
     def test_returns_on_topic_for_an_agency_question(self, mock_client):
@@ -146,6 +159,146 @@ class TestClassifyTurn:
         classify_turn([HumanMessage(content="what's your pricing?")])
 
         assert client.states[-1]["earlier_conversation"] == "No earlier conversation."
+
+
+class TestToolRouting:
+    """Jev picks the tools; the middleware injects them and skips the router LLM."""
+
+    @patch("app.rag.guardrail._client")
+    def test_agency_question_injects_the_agency_tool_call(self, mock_client):
+        from app.rag.guardrail import GuardrailMiddleware
+
+        mock_client.return_value = FakeJevClient(
+            **all_signals(about_agency=0.98), wants_agency_info=0.95
+        )
+        state = {"messages": [HumanMessage(content="what's your pricing?")]}
+
+        result = GuardrailMiddleware().before_model(state, runtime=None)
+
+        assert result["jump_to"] == "tools"
+        injected = result["messages"][0]
+        assert isinstance(injected, AIMessage) and injected.content == ""
+        assert [tc["name"] for tc in injected.tool_calls] == ["get_agency_info"]
+        assert injected.tool_calls[0]["args"] == {}
+
+    @patch("app.rag.guardrail._client")
+    def test_business_description_routes_to_ideas_with_the_message_verbatim(self, mock_client):
+        from app.rag.guardrail import GuardrailMiddleware
+
+        mock_client.return_value = FakeJevClient(
+            **all_signals(about_own_business=0.96), wants_ideas=0.93
+        )
+        state = {"messages": [HumanMessage(content="I run a 40-person logistics company.")]}
+
+        result = GuardrailMiddleware().before_model(state, runtime=None)
+
+        assert result["jump_to"] == "tools"
+        calls = result["messages"][0].tool_calls
+        assert [tc["name"] for tc in calls] == ["generate_project_ideas"]
+        assert calls[0]["args"] == {"description": "I run a 40-person logistics company."}
+
+    @patch("app.rag.guardrail._client")
+    def test_mixed_message_fires_both_tools_in_one_message(self, mock_client):
+        """Signals are independent, so a business description plus an agency
+        question routes to both tools in a single turn."""
+        from app.rag.guardrail import GuardrailMiddleware
+
+        mock_client.return_value = FakeJevClient(
+            **all_signals(about_own_business=0.96, about_agency=0.71),
+            wants_ideas=0.91, wants_agency_info=0.88,
+        )
+        state = {"messages": [HumanMessage(content="I run a bakery. What are your rates?")]}
+
+        result = GuardrailMiddleware().before_model(state, runtime=None)
+
+        injected = result["messages"][0]
+        assert {tc["name"] for tc in injected.tool_calls} == {
+            "get_agency_info", "generate_project_ideas",
+        }
+        assert len({tc["id"] for tc in injected.tool_calls}) == 2, "ids must be unique"
+
+    @patch("app.rag.guardrail.project_notes")
+    @patch("app.rag.guardrail._client")
+    def test_project_followup_reads_the_projects_it_asks_about(self, mock_client, mock_notes):
+        from app.vault.loader import Note
+
+        from app.rag.guardrail import GuardrailMiddleware
+
+        mock_notes.return_value = [
+            Note(name="projects/01-rag", title="RAG", read_when="w", body="b"),
+            Note(name="projects/17-gateway", title="Gateway", read_when="w", body="b"),
+            Note(name="projects/04-support", title="Support", read_when="w", body="b"),
+        ]
+        mock_client.return_value = FakeJevClient(
+            **all_signals(is_followup=0.94),
+            **{
+                "detail:projects/01-rag": 0.10,
+                "detail:projects/17-gateway": 0.92,
+                "detail:projects/04-support": 0.61,
+            },
+        )
+        state = {"messages": [HumanMessage(content="can the gateway one work with Bedrock?")]}
+
+        result = GuardrailMiddleware().before_model(state, runtime=None)
+
+        calls = result["messages"][0].tool_calls
+        assert [tc["name"] for tc in calls] == ["read_knowledge_base"]
+        assert calls[0]["args"] == {
+            "names": ["projects/17-gateway", "projects/04-support"]
+        }, "only projects above the threshold, best first"
+
+    @patch("app.rag.guardrail._client")
+    def test_ideas_suppresses_reading_notes(self, mock_client):
+        """generate_project_ideas injects three note bodies of its own; reading
+        notes as well would duplicate that context in the prose prompt."""
+        from app.rag.guardrail import GuardrailMiddleware
+        from app.vault.loader import project_notes
+
+        first = project_notes()[0].name
+        mock_client.return_value = FakeJevClient(
+            **all_signals(about_own_business=0.95),
+            wants_ideas=0.90, **{f"detail:{first}": 0.99},
+        )
+        state = {"messages": [HumanMessage(content="I run a bakery")]}
+
+        calls = GuardrailMiddleware().before_model(state, runtime=None)["messages"][0].tool_calls
+
+        assert [tc["name"] for tc in calls] == ["generate_project_ideas"]
+
+    @patch("app.rag.guardrail._client")
+    def test_routing_signals_cannot_unblock_an_off_topic_turn(self, mock_client):
+        """Only the three guardrail nouls feed the gate. An over-eager routing
+        score must never let an off-topic message through."""
+        from app.rag.guardrail import GuardrailMiddleware, REJECTION_MESSAGE
+
+        mock_client.return_value = FakeJevClient(
+            **all_signals(), wants_ideas=0.99, wants_agency_info=0.99
+        )
+        state = {"messages": [HumanMessage(content="write me a poem about the sea")]}
+
+        result = GuardrailMiddleware().before_model(state, runtime=None)
+
+        assert result["jump_to"] == "end"
+        assert result["messages"][0].content == REJECTION_MESSAGE
+
+    async def test_model_request_carries_no_tools(self):
+        """Jev routes now, so the model never needs tool schemas. Production
+        streams, so it is the ASYNC hook that has to strip them."""
+        from types import SimpleNamespace
+
+        from app.rag.guardrail import GuardrailMiddleware
+
+        seen = []
+
+        async def handler(request):
+            seen.append(list(request.tools))
+            return "model-response"
+
+        request = SimpleNamespace(tools=["get_agency_info", "read_knowledge_base"])
+        result = await GuardrailMiddleware().awrap_model_call(request, handler)
+
+        assert seen == [[]]
+        assert result == "model-response"
 
 
 class TestRouting:

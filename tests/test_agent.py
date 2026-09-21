@@ -33,7 +33,9 @@ class TestBuildAgent:
 
     @patch("app.rag.chain.create_agent")
     @patch("app.rag.chain.ChatOpenAI")
-    def test_injects_index_into_system_prompt(self, mock_llm_cls, mock_create_agent):
+    def test_system_prompt_carries_no_project_index(self, mock_llm_cls, mock_create_agent):
+        """The index existed so the model could pick project names; Jev does
+        that now, so shipping it on every call is dead weight."""
         mock_llm_cls.return_value = MagicMock()
 
         from app.rag.chain import build_agent
@@ -41,5 +43,5 @@ class TestBuildAgent:
         build_agent()
 
         system_prompt = mock_create_agent.call_args[1]["system_prompt"]
-        assert "{index}" not in system_prompt  # placeholder was filled
-        assert "## " in system_prompt  # index sections present
+        assert "{index}" not in system_prompt
+        assert "projects/" not in system_prompt
