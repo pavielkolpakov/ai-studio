@@ -248,9 +248,11 @@ class TestToolRouting:
         }, "only projects above the threshold, best first"
 
     @patch("app.rag.guardrail._client")
-    def test_ideas_suppresses_reading_notes(self, mock_client):
-        """generate_project_ideas injects three note bodies of its own; reading
-        notes as well would duplicate that context in the prose prompt."""
+    def test_ideas_and_project_detail_can_both_fire(self, mock_client):
+        """A turn can ask for new ideas AND about a project already discussed.
+        The ideas tool returns only a title summary to the answering model, and
+        that model has no tools, so dropping the detail route loses it for good.
+        """
         from app.rag.guardrail import GuardrailMiddleware
         from app.vault.loader import project_notes
 
@@ -259,11 +261,17 @@ class TestToolRouting:
             **all_signals(about_own_business=0.95),
             wants_ideas=0.90, **{f"detail:{first}": 0.99},
         )
-        state = {"messages": [HumanMessage(content="I run a bakery")]}
+        state = {"messages": [
+            HumanMessage(content="I run a bakery"),
+            AIMessage(content="Here are three ideas."),
+            HumanMessage(content="other ideas? and how does the first one work?"),
+        ]}
 
         calls = GuardrailMiddleware().before_model(state, runtime=None)["messages"][0].tool_calls
 
-        assert [tc["name"] for tc in calls] == ["generate_project_ideas"]
+        assert {tc["name"] for tc in calls} == {"generate_project_ideas", "read_knowledge_base"}
+        names = next(tc for tc in calls if tc["name"] == "read_knowledge_base")["args"]["names"]
+        assert names == [first]
 
     @patch("app.rag.guardrail._client")
     def test_routing_signals_cannot_unblock_an_off_topic_turn(self, mock_client):
@@ -299,6 +307,29 @@ class TestToolRouting:
 
         assert seen == [[]]
         assert result == "model-response"
+
+    @patch("app.rag.guardrail._client")
+    def test_regenerating_ideas_keeps_the_business_description(self, mock_client):
+        """"got any other ideas?" carries no business. The description handed to
+        generate_project_ideas has to reach back for it, or select_projects
+        ranks the catalogue against a bare revision request."""
+        from app.rag.guardrail import GuardrailMiddleware
+
+        mock_client.return_value = FakeJevClient(
+            **all_signals(is_followup=0.9, about_own_business=0.4), wants_ideas=0.88
+        )
+        state = {"messages": [
+            HumanMessage(content="I run a 40-person logistics company with manual dispatch"),
+            AIMessage(content="Here are three ideas: routing, forecasting, doc extraction."),
+            HumanMessage(content="got any other ideas?"),
+        ]}
+
+        calls = GuardrailMiddleware().before_model(state, runtime=None)["messages"][0].tool_calls
+
+        assert [tc["name"] for tc in calls] == ["generate_project_ideas"]
+        description = calls[0]["args"]["description"]
+        assert "logistics" in description, "the business must survive the revision request"
+        assert "got any other ideas?" in description, "and so must the request itself"
 
 
 class TestRouting:

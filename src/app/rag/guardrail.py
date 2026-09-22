@@ -24,22 +24,27 @@ class TurnClassification(BaseModel):
     signals: dict[str, float]
     routing: dict[str, float]
 
-    def tool_calls(self, message: str) -> list[dict]:
+    def tool_calls(self, description: str) -> list[dict]:
         """The tool calls this turn asks for, as LangChain tool_call dicts.
 
-        Signals are independent, so a message that both describes a business and
-        asks an agency question yields both calls. Ids are derived from the tool
-        name — one call per tool per turn, and `stream_response` dedups on id.
+        `description` is the user's recent turns, not just the latest message —
+        see `_user_context`. Signals are independent, so a message that both
+        describes a business and asks an agency question yields both calls. Ids
+        are derived from the tool name — one call per tool per turn, and
+        `stream_response` dedups on id.
         """
         wanted: list[tuple[str, dict]] = []
         if self.routing.get("wants_agency_info", 0.0) >= ROUTE_THRESHOLD:
             wanted.append(("get_agency_info", {}))
-        if self.routing.get("wants_ideas", 0.0) >= ROUTE_THRESHOLD:
-            # Ideas already injects three full note bodies of its own; also
-            # reading notes here would duplicate that context in the prompt.
-            wanted.append(("generate_project_ideas", {"description": message}))
-        elif names := self._detail_names():
+        # Independent of ideas: `generate_project_ideas` hands the answering
+        # model only a title summary — the note bodies it reads stay inside the
+        # generator — and that model has no tools, so a detail dropped here
+        # cannot be recovered later in the turn.
+        if names := self._detail_names():
             wanted.append(("read_knowledge_base", {"names": names}))
+        if self.routing.get("wants_ideas", 0.0) >= ROUTE_THRESHOLD:
+            # Emitted last so the slow ideas step owns the frontend spinner.
+            wanted.append(("generate_project_ideas", {"description": description}))
         return [
             {"name": name, "args": args, "id": f"jev-{name}", "type": "tool_call"}
             for name, args in wanted
@@ -140,6 +145,18 @@ def _detail_questions() -> dict[str, Noul]:
     }
 
 
+def _user_context(messages: list) -> str:
+    """The user's own recent turns, oldest first.
+
+    `generate_project_ideas` scopes entirely from this string, so it cannot be
+    just the latest message: "got any other ideas?" would leave both the
+    catalogue ranking and the generator with no business to work from. Assistant
+    turns are left out so previously suggested ideas do not steer the new set.
+    """
+    recent = [m for m in messages if isinstance(m, HumanMessage) and str(m.content).strip()]
+    return "\n\n".join(str(m.content) for m in recent[-(CONTEXT_WINDOW - 1):])
+
+
 def _transcript(messages: list) -> str:
     """The last few exchanges, oldest first, as `Role: content` lines.
 
@@ -216,7 +233,7 @@ class GuardrailMiddleware(AgentMiddleware):
                 "messages": [AIMessage(content=REJECTION_MESSAGE)],
                 "jump_to": "end",
             }
-        tool_calls = classification.tool_calls(str(messages[-1].content))
+        tool_calls = classification.tool_calls(_user_context(messages))
         if tool_calls:
             return {
                 "messages": [AIMessage(content="", tool_calls=tool_calls)],
