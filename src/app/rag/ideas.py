@@ -1,11 +1,14 @@
+from functools import cache
+
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
+from typesafe_sdk import Noul, TypeSafeClient
 
 from app.core.config import settings
-from app.rag.prompts import IDEAS_GENERATION_PROMPT, IDEAS_SELECTION_PROMPT
-from app.vault.loader import Note, load_index, project_notes
+from app.rag.prompts import IDEAS_GENERATION_PROMPT
+from app.vault.loader import Note, project_notes
 
-SELECT_MODEL = "gpt-4o-mini"
+SELECTED_COUNT = 3
 
 
 class Idea(BaseModel):
@@ -25,27 +28,26 @@ class IdeasPayload(BaseModel):
     )
 
 
-class ProjectSelection(BaseModel):
-    names: list[str] = Field(
-        description="2 or 3 project names copied verbatim from the catalog.",
-        min_length=2,
-        max_length=3,
-    )
+@cache
+def _client() -> TypeSafeClient:
+    """One pooled client for the process; built on first use, not at import."""
+    return TypeSafeClient(api_key=settings.TYPESAFE_API_KEY, model=settings.TYPESAFE_MODEL)
 
 
 def select_projects(description: str) -> list[Note]:
-    """Ask a cheap LLM to pick the 2-3 best-fitting project notes for the description."""
+    """The best-fitting project notes for the description, best first.
+
+    One Jev request scores every catalogue entry in parallel — one noul per
+    project, asking whether that entry's `read_when` describes this user. The
+    ranking is ours, so there is no name to mis-copy and nothing to fall back to.
+    """
     notes = project_notes()
-    by_name = {note.name: note for note in notes}
-
-    llm = ChatOpenAI(model=SELECT_MODEL, api_key=settings.OPENAI_API_KEY, streaming=False)
-    structured_llm = llm.with_structured_output(ProjectSelection).with_config(tags=["ideas"])
-    prompt = IDEAS_SELECTION_PROMPT.format(description=description, index=load_index())
-    selection = structured_llm.invoke(prompt)
-
-    # IdeasPayload requires 2+ ideas, so a partial match is as unusable as no match.
-    selected = [by_name[name] for name in selection.names if name in by_name]
-    return selected if len(selected) >= 2 else notes[:3]
+    response = _client().system_one(
+        state=description,
+        questions={note.name: Noul(instructions=note.read_when) for note in notes},
+    )
+    ranked = sorted(notes, key=lambda note: response.nouls[note.name].noul, reverse=True)
+    return ranked[:SELECTED_COUNT]
 
 
 def generate_ideas_payload(description: str) -> IdeasPayload:

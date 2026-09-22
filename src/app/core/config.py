@@ -43,6 +43,11 @@ class OpenAISettings(BaseSettings):
     OPENAI_CHAT_MODEL: str = "gpt-4o"
 
 
+class TypeSafeSettings(BaseSettings):
+    TYPESAFE_API_KEY: str = ""
+    TYPESAFE_MODEL: str = "jev-latest"
+
+
 class ResendSettings(BaseSettings):
     RESEND_API_KEY: str = ""
     CONTACT_TO_EMAIL: str = "paviel@neuronetis.com"
@@ -56,6 +61,7 @@ class Settings(
     AppSettings,
     PostgresSettings,
     OpenAISettings,
+    TypeSafeSettings,
     ResendSettings,
     CORSSettings,
 ):
